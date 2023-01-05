@@ -1,9 +1,7 @@
 ﻿using Backend.Controllers;
 using Backend.Database.Entities;
-using Thread = Backend.Database.Entities.Thread;
 using Backend.Database.Repositories;
-
-using Moq;
+using Thread = Backend.Database.Entities.Thread;
 
 namespace Backend.Test.Controllers;
 
@@ -13,29 +11,64 @@ public class ThreadControllerTest
 
     public ThreadControllerTest()
     {
-        var repoMock = new Mock<IThreadRepository>();
-        repoMock.Setup(r => r.GetByIdAsync(0))
-            .ReturnsAsync(new Thread(
-                new User("MrSterdy"),
-                "How to prevent soap from dropping in the jail: 10 efficient methods",
-                "10) ..."
-            ));
-
-        _instance = new ThreadController(repoMock.Object);
+        var ctx = DatabaseHelper.CreateContext();
+        ctx.Users.Add(new User("MrSterdy"));
+        ctx.Threads.Add(new Thread(1, "TestName", "TestContent"));
+        ctx.SaveChanges();
+        
+        _instance = new ThreadController(new ThreadRepository(ctx));
     }
 
     [Fact]
-    public async void TestGetByIdAsync()
+    public async void GetByIdAsync_ValidId_Success()
     {
-        var result = await _instance.GetByIdAsync(0);
+        var result = await _instance.GetByIdAsync(1);
         
         Assert.NotNull(result);
         
-        Assert.Equal(0, result.Id);
-        Assert.Equal(0, result.UserId);
+        Assert.Equal(1, result.Id);
+        Assert.Equal(1, result.UserId);
         Assert.Equal("MrSterdy", result.User.Username);
+        Assert.Equal("TestName", result.Name);
+        Assert.Equal("TestContent", result.Content);
+    }
+    
+    [Fact]
+    public async void GetByIdAsync_InvalidId_Null()
+    {
+        var result = await _instance.GetByIdAsync(-1);
         
-        Assert.StartsWith("How to prevent", result.Name);
-        Assert.StartsWith("10)", result.Content);
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async void GetByPageAsync_ValidPage_Success()
+    {
+        var result = await _instance.GetByPageAsync(1);
+        
+        Assert.Single(result.Entities);
+        
+        Assert.True(result.IsLast);
+    }
+    
+    [Fact]
+    public async void GetByPageAsync_InvalidPage_Empty()
+    {
+        var result = await _instance.GetByPageAsync(-1);
+        
+        Assert.Empty(result.Entities);
+    }
+
+    [Fact]
+    public async void GetByUserId_ValidId_ValidPage_Success()
+    {
+        var result = await _instance.GetByUserIdAsync(1, 1);
+        
+        Assert.Single(result.Entities);
+
+        Assert.True(result.IsLast);
+        
+        Assert.Equal(1, result.Entities.First().Id);
+        Assert.Equal(1, ((Thread) result.Entities.First()).UserId);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Thread = Backend.Database.Entities.Thread;
+﻿using Backend.Database.Entities;
+using Thread = Backend.Database.Entities.Thread;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -17,24 +18,27 @@ public class ThreadRepository : IThreadRepository
     public async Task<Thread?> GetByIdAsync(int id) =>
         await _context.Threads.Include("User").SingleOrDefaultAsync(t => t.Id == id);
 
-    public async Task<IEnumerable<Thread>> GetByPageAsync(int page) =>
-        page <= 0
-            ? new List<Thread>()
-            : await _context.Threads
-                .Skip((page - 1) * 10)
-                .Take(10)
-                .Include("User")
-                .ToListAsync();
+    public async Task<EntityPage<Thread>> GetByPageAsync(int page)
+    {
+        if (page <= 0)
+            return new EntityPage<Thread>(new List<Thread>(), true);
 
-    public async Task<IEnumerable<Thread>> GetByUserIdAsync(int userId, int page) =>
-        page <= 0
-            ? new List<Thread>()
-            : await _context.Threads
-                .Where(t => t.UserId == userId)
-                .Skip((page - 1) * 10)
-                .Take(10)
-                .Include("User")
-                .ToListAsync();
+        var skipped = _context.Threads.Skip((page - 1) * Page.Capacity);
+        var isLast = Math.Ceiling((skipped.Count() - Page.Capacity) / (float) Page.Capacity) < 1;
+
+        return new EntityPage<Thread>(await skipped.Take(10).Include("User").ToListAsync(), isLast);
+    }
+
+    public async Task<EntityPage<Thread>> GetByUserIdAsync(int userId, int page)
+    {
+        if (page <= 0)
+            return new EntityPage<Thread>(new List<Thread>(), true);
+
+        var skipped = _context.Threads.Where(t => t.UserId == userId).Skip((page - 1) * Page.Capacity);
+        var isLast = Math.Ceiling((skipped.Count() - Page.Capacity) / (float) Page.Capacity) < 1;
+
+        return new EntityPage<Thread>(await skipped.Take(10).Include("User").ToListAsync(), isLast);
+    }
 
     public async void DeleteAsync(Thread entity)
     {

@@ -1,4 +1,5 @@
-﻿using Backend.Database.Repositories;
+﻿using Backend.Database.Entities;
+using Backend.Database.Repositories;
 using Thread = Backend.Database.Entities.Thread;
 
 using Microsoft.AspNetCore.Mvc;
@@ -19,10 +20,10 @@ public class ThreadController : ControllerBase
         await _repository.GetByIdAsync(id);
 
     [HttpGet("page/{page:int}")]
-    public async Task<IEnumerable<Thread>> GetByPageAsync(int page) => 
+    public async Task<EntityPage<Thread>> GetByPageAsync(int page) => 
         await _repository.GetByPageAsync(page);
 
     [HttpGet("user/{userId:int}")]
-    public async Task<IEnumerable<Thread>> GetByUserIdAsync(int userId, [FromQuery] int page) =>
+    public async Task<EntityPage<Thread>> GetByUserIdAsync(int userId, [FromQuery] int page) =>
         await _repository.GetByUserIdAsync(userId, page);
 }
