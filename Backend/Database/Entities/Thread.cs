@@ -2,13 +2,13 @@
 
 public class Thread : Entity
 {
-    public long UserId { get; set; }
+    public int UserId { get; set; }
     public User User { get; set; } = default!;
     
     public string Name { get; set; }
     public string Content { get; set; }
 
-    public Thread(long userId, string name, string content)
+    public Thread(int userId, string name, string content)
     {
         UserId = userId;
         Name = name;

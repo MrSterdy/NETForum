@@ -5,5 +5,5 @@ namespace Backend.Database.Entities;
 public abstract class Entity
 {
     [Key]
-    public long Id { get; private set; }
+    public int Id { get; private set; }
 }

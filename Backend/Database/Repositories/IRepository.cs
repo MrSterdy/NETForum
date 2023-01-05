@@ -6,7 +6,7 @@ public interface IRepository<T> where T : Entity
 {
     Task<IEnumerable<T>> GetAllAsync();
 
-    Task<T?> GetByIdAsync(long id);
+    Task<T?> GetByIdAsync(int id);
 
     void DeleteAsync(T entity);
 

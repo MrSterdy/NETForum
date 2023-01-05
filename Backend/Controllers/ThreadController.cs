@@ -14,15 +14,15 @@ public class ThreadController : ControllerBase
     public ThreadController(IThreadRepository repository) =>
         _repository = repository;
 
-    [HttpGet("id/{id:long}")]
-    public async Task<Thread?> GetByIdAsync(long id) =>
+    [HttpGet("id/{id:int}")]
+    public async Task<Thread?> GetByIdAsync(int id) =>
         await _repository.GetByIdAsync(id);
 
     [HttpGet("page/{page:int}")]
     public async Task<IEnumerable<Thread>> GetByPageAsync(int page) => 
         await _repository.GetByPageAsync(page);
 
-    [HttpGet("user/{userId:long}")]
-    public async Task<IEnumerable<Thread>> GetByUserIdAsync(long userId, [FromQuery] int page) =>
+    [HttpGet("user/{userId:int}")]
+    public async Task<IEnumerable<Thread>> GetByUserIdAsync(int userId, [FromQuery] int page) =>
         await _repository.GetByUserIdAsync(userId, page);
 }

@@ -14,7 +14,7 @@ public class UserController : ControllerBase
     public UserController(IUserRepository repository) =>
         _repository = repository;
     
-    [HttpGet("id/{id:long}")]
-    public async Task<User?> GetByIdAsync(long id) => 
+    [HttpGet("id/{id:int}")]
+    public async Task<User?> GetByIdAsync(int id) => 
         await _repository.GetByIdAsync(id);
 }

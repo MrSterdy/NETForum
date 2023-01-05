@@ -14,7 +14,7 @@ public class ThreadRepository : IThreadRepository
     public async Task<IEnumerable<Thread>> GetAllAsync() =>
         await _context.Threads.Include("User").ToListAsync();
 
-    public async Task<Thread?> GetByIdAsync(long id) =>
+    public async Task<Thread?> GetByIdAsync(int id) =>
         await _context.Threads.Include("User").SingleOrDefaultAsync(t => t.Id == id);
 
     public async Task<IEnumerable<Thread>> GetByPageAsync(int page) =>
@@ -26,7 +26,7 @@ public class ThreadRepository : IThreadRepository
                 .Include("User")
                 .ToListAsync();
 
-    public async Task<IEnumerable<Thread>> GetByUserIdAsync(long userId, int page) =>
+    public async Task<IEnumerable<Thread>> GetByUserIdAsync(int userId, int page) =>
         page <= 0
             ? new List<Thread>()
             : await _context.Threads
