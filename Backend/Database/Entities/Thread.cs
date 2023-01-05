@@ -2,8 +2,8 @@
 
 public class Thread : Entity
 {
-    public long UserId { get; private set; }
-    public User User { get; private set; } = default!;
+    public long UserId { get; set; }
+    public User User { get; set; } = default!;
     
     public string Name { get; set; }
     public string Content { get; set; }
@@ -14,4 +14,7 @@ public class Thread : Entity
         Name = name;
         Content = content;
     }
+
+    public Thread(User user, string name, string content) : this(user.Id, name, content) =>
+        User = user;
 }

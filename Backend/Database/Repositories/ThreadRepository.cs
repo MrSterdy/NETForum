@@ -12,13 +12,29 @@ public class ThreadRepository : IThreadRepository
         _context = context;
 
     public async Task<IEnumerable<Thread>> GetAllAsync() =>
-        await _context.Threads.ToListAsync();
+        await _context.Threads.Include("User").ToListAsync();
 
     public async Task<Thread?> GetByIdAsync(long id) =>
-        await _context.Threads.FindAsync(id);
+        await _context.Threads.Include("User").SingleOrDefaultAsync(t => t.Id == id);
 
     public async Task<IEnumerable<Thread>> GetByPageAsync(int page) =>
-        page <= 0 ? new List<Thread>() : await _context.Threads.Skip((page - 1) * 10).Take(10).ToListAsync();
+        page <= 0
+            ? new List<Thread>()
+            : await _context.Threads
+                .Skip((page - 1) * 10)
+                .Take(10)
+                .Include("User")
+                .ToListAsync();
+
+    public async Task<IEnumerable<Thread>> GetByUserIdAsync(long userId, int page) =>
+        page <= 0
+            ? new List<Thread>()
+            : await _context.Threads
+                .Where(t => t.UserId == userId)
+                .Skip((page - 1) * 10)
+                .Take(10)
+                .Include("User")
+                .ToListAsync();
 
     public async void DeleteAsync(Thread entity)
     {

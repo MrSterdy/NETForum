@@ -1,4 +1,5 @@
 ﻿using Backend.Controllers;
+using Backend.Database.Entities;
 using Thread = Backend.Database.Entities.Thread;
 using Backend.Database.Repositories;
 
@@ -14,7 +15,11 @@ public class ThreadControllerTest
     {
         var repoMock = new Mock<IThreadRepository>();
         repoMock.Setup(r => r.GetByIdAsync(0))
-            .ReturnsAsync(new Thread(0, "How to prevent soap from dropping in the jail: 10 efficient methods", "10) ..."));
+            .ReturnsAsync(new Thread(
+                new User("MrSterdy"),
+                "How to prevent soap from dropping in the jail: 10 efficient methods",
+                "10) ..."
+            ));
 
         _instance = new ThreadController(repoMock.Object);
     }
@@ -28,6 +33,7 @@ public class ThreadControllerTest
         
         Assert.Equal(0, result.Id);
         Assert.Equal(0, result.UserId);
+        Assert.Equal("MrSterdy", result.User.Username);
         
         Assert.StartsWith("How to prevent", result.Name);
         Assert.StartsWith("10)", result.Content);

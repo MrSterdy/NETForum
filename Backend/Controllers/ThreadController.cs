@@ -21,4 +21,8 @@ public class ThreadController : ControllerBase
     [HttpGet("page/{page:int}")]
     public async Task<IEnumerable<Thread>> GetByPageAsync(int page) => 
         await _repository.GetByPageAsync(page);
+
+    [HttpGet("user/{userId:long}")]
+    public async Task<IEnumerable<Thread>> GetByUserIdAsync(long userId, [FromQuery] int page) =>
+        await _repository.GetByUserIdAsync(userId, page);
 }
