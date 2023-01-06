@@ -1,11 +1,8 @@
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
-import Error from "../../components/Error"
-import Title from "../../components/Title";
+import { Error, Title, Button, Loader } from "../../components";
 import { IPage, IThread } from "../../models";
-import Button from "../../components/Button";
-import Loader from "../../components/Loader";
 
 import "./index.css";
 
@@ -16,22 +13,13 @@ export default function Home() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        const fetchThreads = async () => {
-            try {
-                const res = await axios.get<IPage<IThread>>(`https://localhost:7191/api/thread/page/${pageNumber}`);
-
-                setPage({
-                    items: page ? page.items.concat(res.data.items) : res.data.items,
-                    isLast: res.data.isLast
-                });
-            } catch (e: unknown) {
-                setError((e as Error).message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        
-        fetchThreads();
+        axios.get<IPage<IThread>>(`${process.env.REACT_APP_THREAD_PAGE_URL}/${pageNumber}`)
+            .then(res => setPage(p => ({
+                items: p ? p.items.concat(res.data.items) : res.data.items,
+                isLast: res.data.isLast
+            })))
+            .catch(err => setError((err as Error).message))
+            .finally(() => setLoading(false));
     }, [pageNumber]);
 
     const loadMore = () => setPageNumber(pageNumber + 1);
@@ -55,7 +43,7 @@ export default function Home() {
                 )) }
             </ul>
 
-            { !page!.isLast && <Button name="Load more" onClick={loadMore}/> }
+            { !page!.isLast && <Button name="Load more" onClick={ loadMore } /> }
         </>
     );
 }
