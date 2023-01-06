@@ -46,9 +46,14 @@ public class ThreadControllerTest
     {
         var result = await _instance.GetByPageAsync(1);
         
-        Assert.Single(result.Entities);
+        Assert.Single(result.Items);
         
         Assert.True(result.IsLast);
+        
+        var thread = result.Items.First();
+
+        Assert.Equal(1, thread.Id);
+        Assert.Equal(1, thread.User.Id);
     }
     
     [Fact]
@@ -56,7 +61,7 @@ public class ThreadControllerTest
     {
         var result = await _instance.GetByPageAsync(-1);
         
-        Assert.Empty(result.Entities);
+        Assert.Empty(result.Items);
     }
 
     [Fact]
@@ -64,11 +69,13 @@ public class ThreadControllerTest
     {
         var result = await _instance.GetByUserIdAsync(1, 1);
         
-        Assert.Single(result.Entities);
+        Assert.Single(result.Items);
 
         Assert.True(result.IsLast);
+
+        var thread = result.Items.First();
         
-        Assert.Equal(1, result.Entities.First().Id);
-        Assert.Equal(1, ((Thread) result.Entities.First()).UserId);
+        Assert.Equal(1, thread.Id);
+        Assert.Equal(1, thread.User.Id);
     }
 }

@@ -1,16 +1,14 @@
 ﻿namespace Backend.Database.Entities;
 
-public abstract class Page
+public class Page<T> where T : Entity
 {
-    public const int Capacity = 10;
-    
-    public IEnumerable<Entity> Entities { get; set; }
-    
-    public bool IsLast { get; set; }
+    public IEnumerable<T> Items { get; }
 
-    public Page(IEnumerable<Entity> entities, bool isLast)
+    public bool IsLast { get; }
+
+    public Page(IEnumerable<T> items, bool isLast)
     {
-        Entities = entities;
+        Items = items;
         IsLast = isLast;
     }
 }

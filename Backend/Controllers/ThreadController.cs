@@ -20,10 +20,10 @@ public class ThreadController : ControllerBase
         await _repository.GetByIdAsync(id);
 
     [HttpGet("page/{page:int}")]
-    public async Task<EntityPage<Thread>> GetByPageAsync(int page) => 
+    public async Task<Page<Thread>> GetByPageAsync(int page) => 
         await _repository.GetByPageAsync(page);
 
     [HttpGet("user/{userId:int}")]
-    public async Task<EntityPage<Thread>> GetByUserIdAsync(int userId, [FromQuery] int page) =>
+    public async Task<Page<Thread>> GetByUserIdAsync(int userId, [FromQuery] int page) =>
         await _repository.GetByUserIdAsync(userId, page);
 }

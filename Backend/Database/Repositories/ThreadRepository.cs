@@ -18,26 +18,26 @@ public class ThreadRepository : IThreadRepository
     public async Task<Thread?> GetByIdAsync(int id) =>
         await _context.Threads.Include("User").SingleOrDefaultAsync(t => t.Id == id);
 
-    public async Task<EntityPage<Thread>> GetByPageAsync(int page)
+    public async Task<Page<Thread>> GetByPageAsync(int page)
     {
         if (page <= 0)
-            return new EntityPage<Thread>(new List<Thread>(), true);
+            return new Page<Thread>(new List<Thread>(), true);
 
-        var skipped = _context.Threads.Skip((page - 1) * Page.Capacity);
-        var isLast = Math.Ceiling((skipped.Count() - Page.Capacity) / (float) Page.Capacity) < 1;
+        var skipped = _context.Threads.Skip((page - 1) * Constants.PageSize);
+        var isLast = Math.Ceiling((skipped.Count() - Constants.PageSize) / (float) Constants.PageSize) < 1;
 
-        return new EntityPage<Thread>(await skipped.Take(10).Include("User").ToListAsync(), isLast);
+        return new Page<Thread>(await skipped.Take(10).Include("User").ToListAsync(), isLast);
     }
 
-    public async Task<EntityPage<Thread>> GetByUserIdAsync(int userId, int page)
+    public async Task<Page<Thread>> GetByUserIdAsync(int userId, int page)
     {
         if (page <= 0)
-            return new EntityPage<Thread>(new List<Thread>(), true);
+            return new Page<Thread>(new List<Thread>(), true);
 
-        var skipped = _context.Threads.Where(t => t.UserId == userId).Skip((page - 1) * Page.Capacity);
-        var isLast = Math.Ceiling((skipped.Count() - Page.Capacity) / (float) Page.Capacity) < 1;
+        var skipped = _context.Threads.Where(t => t.UserId == userId).Skip((page - 1) * Constants.PageSize);
+        var isLast = Math.Ceiling((skipped.Count() - Constants.PageSize) / (float) Constants.PageSize) < 1;
 
-        return new EntityPage<Thread>(await skipped.Take(10).Include("User").ToListAsync(), isLast);
+        return new Page<Thread>(await skipped.Take(10).Include("User").ToListAsync(), isLast);
     }
 
     public async void DeleteAsync(Thread entity)
