@@ -13,7 +13,7 @@ public class ThreadControllerTest
     {
         var ctx = DatabaseHelper.CreateContext();
         ctx.Users.Add(new User("MrSterdy"));
-        ctx.Threads.Add(new Thread(1, "TestName", "TestContent"));
+        ctx.Threads.Add(new Thread(1, "TestTitle", "TestContent"));
         ctx.SaveChanges();
         
         _instance = new ThreadController(new ThreadRepository(ctx));
@@ -29,7 +29,7 @@ public class ThreadControllerTest
         Assert.Equal(1, result.Id);
         Assert.Equal(1, result.UserId);
         Assert.Equal("MrSterdy", result.User.Username);
-        Assert.Equal("TestName", result.Name);
+        Assert.Equal("TestTitle", result.Title);
         Assert.Equal("TestContent", result.Content);
     }
     

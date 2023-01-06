@@ -9,17 +9,17 @@ public class Thread : Entity
     public User User { get; set; } = default!;
     
     [Required, MinLength(4), MaxLength(sbyte.MaxValue)]
-    public string Name { get; set; }
+    public string Title { get; set; }
     [Required, MinLength(4), MaxLength(short.MaxValue)]
     public string Content { get; set; }
 
-    public Thread(int userId, string name, string content)
+    public Thread(int userId, string title, string content)
     {
         UserId = userId;
-        Name = name;
+        Title = title;
         Content = content;
     }
 
-    public Thread(User user, string name, string content) : this(user.Id, name, content) =>
+    public Thread(User user, string title, string content) : this(user.Id, title, content) =>
         User = user;
 }
