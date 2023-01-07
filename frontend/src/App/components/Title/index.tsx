@@ -1,7 +1,9 @@
-﻿import "./index.css";
+import "./index.css";
 
 interface TitleProps {
     title: string
 }
 
-export default ({ title }: TitleProps) => <h1 className="title">{ title }</h1>
+export default function Title({ title }: TitleProps) {
+     return <h1 className="title">{ title }</h1>;
+}

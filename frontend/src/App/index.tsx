@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 
-import { Navbar } from "./components";
-import Home from "./pages/Home";
+import { Error, Navbar } from "./components";
+import { User, Home, Thread } from "./pages";
 
 import "./index.css";
 
@@ -11,9 +11,12 @@ export default function App() {
           <Navbar />
 
           <Routes>
-              <Route path="/">
-                  <Route index element={ <Home /> } />
-              </Route>
+              <Route path="/" element={ <Home /> } />
+
+              <Route path="*" element={ <Error message="Page not found" /> } />
+
+              <Route path="thread/:id" element={ <Thread /> } />
+              <Route path="user/:id" element={ <User /> } />
           </Routes>
       </>
   );

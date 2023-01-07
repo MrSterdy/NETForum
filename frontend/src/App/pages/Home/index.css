@@ -8,22 +8,6 @@
     margin-bottom: 5px;
 }
 
-.thread-list li .description::before {
-    content: "";
-
-    display: block;
-
-    background-image: url("../../../../public/icons/user.svg");
-    background-size: cover;
-
-    width: 18px;
-    height: 18px;
-
-    float: left;
-
-    margin-right: 5px;
-}
-
-.btn {
+.threads .btn {
     margin: 0 auto;
 }

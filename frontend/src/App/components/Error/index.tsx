@@ -1,4 +1,4 @@
-﻿import "./index.css";
+import "./index.css";
 
 interface ErrorProps {
     message: string

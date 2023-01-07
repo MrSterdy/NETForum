@@ -3,11 +3,11 @@ import "./index.css";
 export default function Navbar() {
     return (
         <nav>
-            <object data="icons/logo.svg"></object>
+            <object data="/assets/icons/logo.svg">Logo</object>
 
             <ul>
                 <li>
-                    <a href="#">Account</a>
+                    <a>Account</a>
                 </li>
             </ul>
         </nav>
