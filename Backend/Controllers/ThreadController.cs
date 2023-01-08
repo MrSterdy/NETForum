@@ -1,4 +1,4 @@
-﻿using Backend.Database.Entities;
+﻿using Backend.Database;
 using Backend.Database.Repositories;
 using Thread = Backend.Database.Entities.Thread;
 
@@ -16,8 +16,14 @@ public class ThreadController : ControllerBase
         _repository = repository;
 
     [HttpGet("id/{id:int}")]
-    public async Task<Thread?> GetByIdAsync(int id) =>
-        await _repository.GetByIdAsync(id);
+    public async Task<ActionResult<Thread>> GetByIdAsync(int id) 
+    {
+        var thread = await _repository.GetByIdAsync(id);
+        if (thread is null)
+            return NotFound();
+        return thread;
+    }
+        
 
     [HttpGet("page/{page:int}")]
     public async Task<Page<Thread>> GetByPageAsync(int page) => 

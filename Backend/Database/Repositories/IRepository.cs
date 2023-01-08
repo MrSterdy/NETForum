@@ -1,8 +1,6 @@
-﻿using Backend.Database.Entities;
+﻿namespace Backend.Database.Repositories;
 
-namespace Backend.Database.Repositories;
-
-public interface IRepository<T> where T : Entity
+public interface IRepository<T>
 {
     Task<IEnumerable<T>> GetAllAsync();
 

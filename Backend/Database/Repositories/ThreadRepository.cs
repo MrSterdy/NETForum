@@ -1,5 +1,4 @@
-﻿using Backend.Database.Entities;
-using Thread = Backend.Database.Entities.Thread;
+﻿using Thread = Backend.Database.Entities.Thread;
 
 using Microsoft.EntityFrameworkCore;
 

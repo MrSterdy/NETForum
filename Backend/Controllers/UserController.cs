@@ -1,6 +1,6 @@
-﻿using Backend.Database.Entities;
-using Backend.Database.Repositories;
+﻿using Backend.Models;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers;
@@ -9,12 +9,23 @@ namespace Backend.Controllers;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly IUserRepository _repository;
+    private readonly UserManager<IdentityUser<int>> _manager;
 
-    public UserController(IUserRepository repository) =>
-        _repository = repository;
-    
+    public UserController(UserManager<IdentityUser<int>> manager) =>
+        _manager = manager;
+
     [HttpGet("id/{id:int}")]
-    public async Task<User?> GetByIdAsync(int id) => 
-        await _repository.GetByIdAsync(id);
+    public async Task<ActionResult<User>> GetByIdAsync(int id)
+    {
+        var iUser = await _manager.FindByIdAsync(id.ToString());
+
+        if (iUser is null)
+            return NotFound();
+
+        return new User
+        {
+            UserName = iUser.UserName!,
+            Email = iUser.Email!
+        };
+    }
 }

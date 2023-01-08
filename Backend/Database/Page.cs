@@ -1,6 +1,6 @@
-﻿namespace Backend.Database.Entities;
+﻿namespace Backend.Database;
 
-public class Page<T> where T : Entity
+public class Page<T>
 {
     public IEnumerable<T> Items { get; }
 
