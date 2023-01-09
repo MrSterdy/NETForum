@@ -1,5 +1,6 @@
 using Backend.Core.Database;
 using Backend.Core.Database.Repositories;
+using Backend.Core.Mail;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
@@ -20,18 +21,20 @@ builder.Services.AddCors(options =>
         )
 );
 
-builder.Services.AddIdentityCore<IdentityUser<int>>(options => 
-{
-    options.SignIn.RequireConfirmedEmail = true;
+builder.Services.AddIdentityCore<IdentityUser<int>>(options =>
+    {
+        options.SignIn.RequireConfirmedEmail = true;
 
-    options.Password.RequiredLength = 4;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireDigit = false;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireUppercase = false;
+        options.Password.RequiredLength = 4;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireUppercase = false;
 
-    options.User.RequireUniqueEmail = true;
-}).AddEntityFrameworkStores<Context>();
+        options.User.RequireUniqueEmail = true; 
+    })
+    .AddEntityFrameworkStores<Context>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -44,10 +47,13 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         
         options.ExpireTimeSpan = TimeSpan.FromDays(1);
     });
-    
-builder.Services.AddControllers();
+
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
+builder.Services.AddScoped<IMailService, MailService>();
 
 builder.Services.AddScoped<IThreadRepository, ThreadRepository>();
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -59,3 +65,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

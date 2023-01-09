@@ -12,11 +12,12 @@ public class Thread
     [Required]
     public int UserId { get; set; }
     public IdentityUser<int> User { get; set; } = default!;
-    
+
     [Required, MinLength(4), MaxLength(sbyte.MaxValue)]
-    public string Title { get; set; }
+    public string Title { get; set; } = default!;
+
     [Required, MinLength(4), MaxLength(short.MaxValue)]
-    public string Content { get; set; }
+    public string Content { get; set; } = default!;
 
     public Thread(int userId, string title, string content)
     {
@@ -27,4 +28,6 @@ public class Thread
 
     public Thread(IdentityUser<int> user, string title, string content) : this(user.Id, title, content) =>
         User = user;
+    
+    public Thread() { }
 }

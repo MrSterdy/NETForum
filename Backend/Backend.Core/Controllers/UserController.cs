@@ -24,6 +24,7 @@ public class UserController : ControllerBase
 
         return new User
         {
+            Id = id,
             UserName = iUser.UserName!,
             Email = iUser.Email!
         };
