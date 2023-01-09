@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-import { Error, Button, Loader, Title } from "../../components";
+import { Error, Loader } from "../../components";
 import { IPage, IThread } from "../../models";
 
 import "./index.css";
@@ -33,7 +33,7 @@ export default function Home() {
     
     return (
         <section className="main threads">
-            <Title title="Recent threads" />
+            <h1 className="title">Recent threads</h1>
             
             <ul className="content thread-list">
                 { page!.items.map(thread => (
@@ -48,7 +48,7 @@ export default function Home() {
                 )) }
             </ul>
 
-            { !page!.isLast && <Button name="Load more" onClick={ loadMore } /> }
+            { !page!.isLast && <button type="button" onClick={ loadMore }>Load more</button> }
         </section>
     );
 }

@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 
 import useFetch from "../../hooks/useFetch";
 import { IUser } from "../../models";
-import { Loader, Error, Title } from "../../components";
+import { Loader, Error } from "../../components";
 
 export default function User() {
     const { data, isLoading, error } = useFetch<IUser>(`${process.env.REACT_APP_USER_ID_URL}/${useParams().id}`);
@@ -15,7 +15,7 @@ export default function User() {
 
     return (
         <section className="main">
-            <Title title={ data!.username } />
+            <h1 className="title">{ data!.username }</h1>
 
             <article className="content">TODO...</article>
         </section>

@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom";
 
 import useFetch from "../../hooks/useFetch";
 import { IThread } from "../../models";
-import { Error, Loader, Title } from "../../components";
+import { Error, Loader } from "../../components";
 
 export default function Thread() {
     const { data, isLoading, error } =
@@ -17,7 +17,7 @@ export default function Thread() {
     return (
         <section className="main">
             <div>
-                <Title title={ data!.title } />
+                <h1 className="title">{ data!.title }</h1>
 
                 <h3 className="description">
                     <Link to={ `user/${data!.userId}` }>{ data!.user!.username }</Link>
