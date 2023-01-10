@@ -18,6 +18,8 @@ public class RegisterAuthControllerTest : AuthControllerTest
         .RuleFor(u => u.UserName, faker => faker.Internet.UserName().ClampLength(4, 16))
         .RuleFor(u => u.Password, faker => faker.Internet.Password());
 
+    protected override string Endpoint => base.Endpoint + "/Register";
+
     public RegisterAuthControllerTest(BackendFactory factory) : base(factory)
     {
     }
@@ -30,7 +32,7 @@ public class RegisterAuthControllerTest : AuthControllerTest
         
         // Act
         using var client = Factory.CreateClient();
-        using var response = await client.PostAsJsonAsync(Endpoint + "/register", user);
+        using var response = await client.PostAsJsonAsync(Endpoint, user);
         
         // Assert
         response.EnsureSuccessStatusCode();
@@ -50,7 +52,7 @@ public class RegisterAuthControllerTest : AuthControllerTest
         
         // Act
         using var client = Factory.CreateClient();
-        using var response = await client.PostAsJsonAsync(Endpoint + "/register", user);
+        using var response = await client.PostAsJsonAsync(Endpoint, user);
         
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -64,8 +66,8 @@ public class RegisterAuthControllerTest : AuthControllerTest
 
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync(Endpoint + "/register", user);
-        using var secondResponse = await client.PostAsJsonAsync(Endpoint + "/register", user);
+        using var firstResponse = await client.PostAsJsonAsync(Endpoint, user);
+        using var secondResponse = await client.PostAsJsonAsync(Endpoint, user);
         
         // Assert
         firstResponse.EnsureSuccessStatusCode();
@@ -82,8 +84,8 @@ public class RegisterAuthControllerTest : AuthControllerTest
         
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync(Endpoint + "/login", loginUser);
-        using var secondResponse = await client.PostAsJsonAsync(Endpoint + "/register", registerUser);
+        using var firstResponse = await client.PostAsJsonAsync(base.Endpoint + "/Login", loginUser);
+        using var secondResponse = await client.PostAsJsonAsync(Endpoint, registerUser);
         
         // Assert
         firstResponse.EnsureSuccessStatusCode();

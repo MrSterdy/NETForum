@@ -9,9 +9,9 @@ public abstract class ControllerTest : IAsyncLifetime
 {
     protected readonly BackendFactory Factory;
 
-    protected abstract string Endpoint { get; }
+    protected virtual string Endpoint => "Api";
 
-    public ControllerTest(BackendFactory factory) =>
+    protected ControllerTest(BackendFactory factory) =>
         Factory = factory;
 
     protected static async Task<T> ParseResponse<T>(HttpResponseMessage response)

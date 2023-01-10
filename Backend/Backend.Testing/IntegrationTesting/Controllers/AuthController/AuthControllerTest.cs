@@ -2,7 +2,7 @@
 
 public abstract class AuthControllerTest : ControllerTest
 {
-    protected override string Endpoint => "api/auth";
+    protected override string Endpoint => base.Endpoint + "/Auth";
 
     protected AuthControllerTest(BackendFactory factory) : base(factory)
     {

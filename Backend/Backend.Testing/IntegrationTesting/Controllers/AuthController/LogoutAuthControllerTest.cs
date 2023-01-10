@@ -9,6 +9,8 @@ namespace Backend.Testing.IntegrationTesting.Controllers.AuthController;
 
 public class LogoutAuthControllerTest : AuthControllerTest
 {
+    protected override string Endpoint => base.Endpoint + "/Logout";
+
     public LogoutAuthControllerTest(BackendFactory factory) : base(factory)
     {
     }
@@ -22,8 +24,8 @@ public class LogoutAuthControllerTest : AuthControllerTest
         
         // Act
         using var client = Factory.CreateClient();
-        using var responseLogIn = await client.PostAsJsonAsync(Endpoint + "/login", loginUser);
-        using var responseLogOut = await client.PostAsync(Endpoint + "/logout", null);
+        using var responseLogIn = await client.PostAsJsonAsync(base.Endpoint + "/Login", loginUser);
+        using var responseLogOut = await client.PostAsync(Endpoint, null);
         
         // Assert
         responseLogIn.EnsureSuccessStatusCode();
@@ -37,7 +39,7 @@ public class LogoutAuthControllerTest : AuthControllerTest
 
         // Act
         using var client = Factory.CreateClient();
-        using var response = await client.PostAsync(Endpoint + "/logout", null);
+        using var response = await client.PostAsync(Endpoint, null);
         
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);

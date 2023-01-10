@@ -2,7 +2,7 @@
 
 public abstract class ThreadControllerTest : ControllerTest
 {
-    protected override string Endpoint => "api/thread";
+    protected override string Endpoint => base.Endpoint + "/Thread";
 
     protected ThreadControllerTest(BackendFactory factory) : base(factory)
     {

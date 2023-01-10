@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Backend.Core.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("Api/[controller]")]
 public class ThreadController : ControllerBase
 {
     private readonly IThreadRepository _repository;
@@ -15,7 +15,7 @@ public class ThreadController : ControllerBase
     public ThreadController(IThreadRepository repository) =>
         _repository = repository;
 
-    [HttpGet("id/{id:int}")]
+    [HttpGet("Id/{id:int}")]
     public async Task<ActionResult<Thread>> GetByIdAsync(int id) 
     {
         var thread = await _repository.GetByIdAsync(id);
@@ -25,11 +25,11 @@ public class ThreadController : ControllerBase
     }
         
 
-    [HttpGet("page/{page:int}")]
+    [HttpGet("Page/{page:int}")]
     public async Task<Page<Thread>> GetByPageAsync(int page) => 
         await _repository.GetByPageAsync(page);
 
-    [HttpGet("user/{userId:int}")]
+    [HttpGet("User/{userId:int}")]
     public async Task<Page<Thread>> GetByUserIdAsync(int userId, [FromQuery] int page) =>
         await _repository.GetByUserIdAsync(userId, page);
 }

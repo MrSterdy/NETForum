@@ -1,16 +1,16 @@
 ﻿using System.Net;
 
-using Backend.Core.Models;
+using Thread = Backend.Core.Database.Entities.Thread;
 
 using FluentAssertions;
 
-namespace Backend.Testing.IntegrationTesting.Controllers.UserController;
+namespace Backend.Testing.IntegrationTesting.Controllers.ThreadController;
 
-public class GetByIdUserControllerTest : UserControllerTest
+public class GetByIdThreadControllerTest : ThreadControllerTest
 {
     protected override string Endpoint => base.Endpoint + "/Id";
 
-    public GetByIdUserControllerTest(BackendFactory factory) : base(factory)
+    public GetByIdThreadControllerTest(BackendFactory factory) : base(factory)
     {
     }
 
@@ -18,18 +18,19 @@ public class GetByIdUserControllerTest : UserControllerTest
     public async void GetById_Ok()
     {
         // Arrange
-        var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
+        var thread = await Factory.DbManager.Seeder.SeedThreadAsync();
         
         // Act
         using var client = Factory.CreateClient();
-        using var response = await client.GetAsync(Endpoint + $"/{user.Id}");
+        using var response = await client.GetAsync(Endpoint + $"/{thread.Id}");
         
         // Assert
         response.EnsureSuccessStatusCode();
-        
-        var result = await ParseResponse<User>(response);
-        result.UserName.Should().Be(user.UserName);
-        result.Email.Should().Be(user.Email);
+
+        var result = await ParseResponse<Thread>(response);
+        result.Title.Should().Be(thread.Title);
+        result.Content.Should().Be(thread.Content);
+        result.UserId.Should().Be(thread.UserId);
     }
     
     [Fact]

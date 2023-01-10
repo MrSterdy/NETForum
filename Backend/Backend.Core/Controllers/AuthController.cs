@@ -14,7 +14,7 @@ namespace Backend.Core.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("api/[controller]")]
+[Route("Api/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly UserManager<IdentityUser<int>> _userManager;

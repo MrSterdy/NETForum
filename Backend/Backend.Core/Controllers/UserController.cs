@@ -1,12 +1,13 @@
 ﻿using Backend.Core.Models;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Core.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("Api/[controller]")]
 public class UserController : ControllerBase
 {
     private readonly UserManager<IdentityUser<int>> _manager;
@@ -14,7 +15,7 @@ public class UserController : ControllerBase
     public UserController(UserManager<IdentityUser<int>> manager) =>
         _manager = manager;
 
-    [HttpGet("id/{id:int}")]
+    [HttpGet("Id/{id:int}")]
     public async Task<ActionResult<User>> GetByIdAsync(int id)
     {
         var iUser = await _manager.FindByIdAsync(id.ToString());
@@ -27,6 +28,20 @@ public class UserController : ControllerBase
             Id = id,
             UserName = iUser.UserName!,
             Email = iUser.Email!
+        };
+    }
+    
+    [Authorize]
+    [HttpGet("Current")]
+    public async Task<User> GetCurrentAsync()
+    {
+        var found = await _manager.FindByIdAsync(HttpContext.User.Claims.First().Value);
+
+        return new User
+        {
+            Id = found!.Id,
+            Email = found.Email!,
+            UserName = found.UserName!
         };
     }
 }
