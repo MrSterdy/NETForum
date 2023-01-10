@@ -31,7 +31,7 @@ builder.Services.AddIdentityCore<IdentityUser<int>>(options =>
         options.Password.RequireLowercase = false;
         options.Password.RequireUppercase = false;
 
-        options.User.RequireUniqueEmail = true; 
+        options.User.RequireUniqueEmail = true;
     })
     .AddEntityFrameworkStores<Context>()
     .AddDefaultTokenProviders();

@@ -6,6 +6,7 @@ import { User, Home, Thread } from "./pages";
 import "./index.css";
 
 import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
               <Route path="user/:id" element={ <User /> } />
 
               <Route path="login" element={ <Login /> } />
+              <Route path="register" element={ <Register /> } />
           </Routes>
       </>
   );

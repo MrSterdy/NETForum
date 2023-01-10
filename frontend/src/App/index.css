@@ -63,6 +63,10 @@ a:hover {
 }
 
 .title {
+    margin: 0 auto;
+}
+
+.main .title {
     margin: 0;
 }
 
@@ -93,6 +97,16 @@ input {
 
 input:focus {
     border-color: #7E57C2;
+}
+
+input:invalid {
+    border-color: #E91E63;
+}
+
+form:has(input:invalid) [type=submit] {
+    pointer-events: none;
+
+    background-color: #E91E63;
 }
 
 button {

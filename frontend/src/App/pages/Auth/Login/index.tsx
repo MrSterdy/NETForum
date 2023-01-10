@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Error, Loader } from "../../../components";
 
-import "./index.css";
+import "../index.css";
 
 export default function Login() {
     const navigate = useNavigate();
