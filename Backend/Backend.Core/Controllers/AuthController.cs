@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("Login")]
-    public async Task<IActionResult> Login([FromBody] AuthUser user)
+    public async Task<ActionResult<User>> Login([FromBody] AuthUser user)
     {
         if (HttpContext.User.Identity!.IsAuthenticated)
             return NotFound();
@@ -56,7 +56,12 @@ public class AuthController : ControllerBase
             new ClaimsPrincipal(claimsIdentity)
         );
 
-        return Ok();
+        return new User
+        {
+            Id = found.Id,
+            Email = found.Email,
+            UserName = found.UserName!
+        };
     }
     
     [HttpPost("Logout")]
