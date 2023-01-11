@@ -1,32 +1,30 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { FormEvent } from "react";
+import { Navigate } from "react-router-dom";
 
 import { Error, Loader } from "../../../components";
 
 import "../index.css";
 
+import useAuth from "../../../hooks/useAuth";
+
 export default function Login() {
-    const navigate = useNavigate();
+    const { user, login, isLoading, error } = useAuth();
 
-    const [isInAuth, setInAuth] = useState(false);
-    const [error, setError] = useState(false);
+    if (user?.emailConfirmed)
+        return <Navigate to="/" />;
 
-    if (isInAuth)
+    if (isLoading)
         return <Loader />;
 
-    function submitForm(event: React.FormEvent<HTMLFormElement>) {
+    function submitForm(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        setInAuth(true);
+        const data = new FormData(event.currentTarget);
 
-        fetch(process.env.REACT_APP_AUTH_LOGIN_URL!, {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(Object.fromEntries(new FormData(event.currentTarget)))
-        })
-            .then(response => response.ok ? navigate("/") : setError(true))
-            .finally(() => setInAuth(false));
+        login({
+            username: data.get("username") as string,
+            password: data.get("password") as string
+        });
     }
 
     return (
@@ -46,7 +44,7 @@ export default function Login() {
                     <input type="password" name="password" />
                 </div>
 
-                { error && <Error message="Invalid username or password" /> }
+                { !!error && <Error message="Invalid username or password" /> }
 
                 <button type="submit">Continue</button>
             </form>

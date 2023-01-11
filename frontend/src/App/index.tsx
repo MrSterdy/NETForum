@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 
 import { Error, Navbar } from "./components";
-import { User, Home, Thread } from "./pages";
+import {User, Home, Thread, Account} from "./pages";
 
 import "./index.css";
 
@@ -23,6 +23,8 @@ export default function App() {
 
               <Route path="login" element={ <Login /> } />
               <Route path="register" element={ <Register /> } />
+
+              <Route path="account" element={ <Account /> } />
           </Routes>
       </>
   );

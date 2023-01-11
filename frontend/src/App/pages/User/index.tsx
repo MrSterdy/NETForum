@@ -1,21 +1,22 @@
 import { useParams } from "react-router-dom";
 
-import useFetch from "../../hooks/useFetch";
-import { IUser } from "../../models";
+import { IUser } from "../../api/models";
 import { Loader, Error } from "../../components";
+import { getUserById } from "../../api/user";
+import useFetch from "../../hooks/useFetch";
 
 export default function User() {
-    const { data, isLoading, error } = useFetch<IUser>(`${process.env.REACT_APP_USER_ID_URL}/${useParams().id}`);
+    const { data, isLoading, error } = useFetch<IUser>(getUserById, parseInt(useParams().id!));
 
     if (isLoading)
         return <Loader />;
 
     if (error)
-        return <Error message={ error } />;
+        return <Error message="User not found" />;
 
     return (
         <section className="main">
-            <h1 className="title">{ data!.username }</h1>
+            <h1 className="title">{ data.username }</h1>
 
             <article className="content">TODO...</article>
         </section>

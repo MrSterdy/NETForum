@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 
 import { Error, Loader } from "../../components";
-import { IPage, IThread } from "../../models";
+import { IPage, IThread } from "../../api/models";
+import { getThreadsByPage } from "../../api/thread";
 
 import "./index.css";
 
@@ -14,7 +14,7 @@ export default function Home() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        axios.get<IPage<IThread>>(`${process.env.REACT_APP_THREAD_PAGE_URL}/${pageNumber}`)
+        getThreadsByPage(pageNumber)
             .then(res => setPage(p => ({
                 items: p ? p.items.concat(res.data.items) : res.data.items,
                 isLast: res.data.isLast

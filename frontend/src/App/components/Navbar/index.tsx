@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import "./index.css";
 
 export default function Navbar() {
@@ -7,7 +9,7 @@ export default function Navbar() {
 
             <ul>
                 <li>
-                    <a>Account</a>
+                    <Link to="/account">Account</Link>
                 </li>
             </ul>
         </nav>
