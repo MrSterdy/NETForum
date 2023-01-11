@@ -1,4 +1,4 @@
-﻿namespace Backend.Core.Database;
+﻿namespace Backend.Core.Models;
 
 public class Page<T>
 {

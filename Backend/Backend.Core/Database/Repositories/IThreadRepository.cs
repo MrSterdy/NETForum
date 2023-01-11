@@ -1,4 +1,5 @@
-﻿using Thread = Backend.Core.Database.Entities.Thread;
+﻿using Backend.Core.Models;
+using Thread = Backend.Core.Database.Entities.Thread;
 
 namespace Backend.Core.Database.Repositories;
 

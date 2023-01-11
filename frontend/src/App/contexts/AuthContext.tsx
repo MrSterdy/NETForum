@@ -9,7 +9,7 @@ import { useLocation } from "react-router-dom";
 import { Response } from "redaxios";
 
 import { IUser } from "../api/models";
-import { LoginParams, RegisterParams } from "../api/auth";
+import { LoginParams, SignupParams } from "../api/auth";
 import * as userApi from "../api/user";
 import * as authApi from "../api/auth";
 
@@ -20,10 +20,10 @@ interface AuthContextType {
 
     error: number;
 
-    login: (params: LoginParams) => void;
-    logout: () => void;
+    logIn: (params: LoginParams) => void;
+    logOut: () => void;
 
-    register: (params: RegisterParams) => void;
+    signUp: (params: SignupParams) => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -45,23 +45,23 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
             .finally(() => setLoadingInitial(false));
     }, []);
 
-    function login(params: LoginParams) {
+    function logIn(params: LoginParams) {
         setLoading(true);
 
-        authApi.login(params)
+        authApi.logIn(params)
             .then(res => setUser(res.data))
             .catch(res => setError((res as Response<unknown>).status))
             .finally(() => setLoading(false));
     }
 
-    function logout() {
-        return authApi.logout().then(() => setUser(undefined));
+    function logOut() {
+        return authApi.logOut().then(() => setUser(undefined));
     }
 
-    function register(params: RegisterParams) {
+    function signUp(params: SignupParams) {
         setLoading(true);
 
-        authApi.register(params)
+        authApi.signUp(params)
             .then(res => setUser(res.data))
             .catch(res => setError((res as Response<unknown>).status))
             .finally(() => setLoading(false));
@@ -72,9 +72,9 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
             user,
             isLoading,
             error,
-            login,
-            register,
-            logout
+            logIn,
+            signUp,
+            logOut
         }),
         [user, isLoading, error]
     );

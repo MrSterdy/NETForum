@@ -1,5 +1,5 @@
 import { FormEvent } from "react";
-import { Navigate } from "react-router-dom";
+import {Link, Navigate } from "react-router-dom";
 
 import { Error, Loader } from "../../../components";
 
@@ -8,9 +8,9 @@ import "../index.css";
 import useAuth from "../../../hooks/useAuth";
 
 export default function Login() {
-    const { user, login, isLoading, error } = useAuth();
+    const { user, logIn, isLoading, error } = useAuth();
 
-    if (user?.emailConfirmed)
+    if (user?.confirmed)
         return <Navigate to="/" />;
 
     if (isLoading)
@@ -21,7 +21,7 @@ export default function Login() {
 
         const data = new FormData(event.currentTarget);
 
-        login({
+        logIn({
             username: data.get("username") as string,
             password: data.get("password") as string
         });
@@ -29,7 +29,7 @@ export default function Login() {
 
     return (
         <section className="auth main">
-            <h1 className="title">Login</h1>
+            <h1 className="title">Log in</h1>
 
             <form className="content" onSubmit={ submitForm }>
                 <div>
@@ -45,6 +45,8 @@ export default function Login() {
                 </div>
 
                 { !!error && <Error message="Invalid username or password" /> }
+
+                <Link to="/signup">Sign up</Link>
 
                 <button type="submit">Continue</button>
             </form>

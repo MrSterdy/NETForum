@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-using Thread = Backend.Core.Database.Entities.Thread;
+using Backend.Core.Models.Thread;
 
 using FluentAssertions;
 
@@ -27,10 +27,11 @@ public class GetByIdThreadControllerTest : ThreadControllerTest
         // Assert
         response.EnsureSuccessStatusCode();
 
-        var result = await ParseResponse<Thread>(response);
+        var result = await ParseResponse<ThreadResponse>(response);
         result.Title.Should().Be(thread.Title);
         result.Content.Should().Be(thread.Content);
-        result.UserId.Should().Be(thread.UserId);
+        result.User.Should().NotBeNull();
+        result.User.Id.Should().Be(thread.UserId);
     }
     
     [Fact]

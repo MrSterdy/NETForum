@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 
-using Backend.Core.Models.Auth;
+using Backend.Core.Models.User.Auth;
 
 using FluentAssertions;
 
@@ -20,7 +20,7 @@ public class LogoutAuthControllerTest : AuthControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new AuthUser { UserName = user.UserName!, Password = user.UserName! };
+        var loginUser = new LoginUserRequest { UserName = user.UserName!, Password = user.UserName! };
         
         // Act
         using var client = Factory.CreateClient();

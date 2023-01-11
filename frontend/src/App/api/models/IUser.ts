@@ -2,6 +2,6 @@
 
 export default interface IUser extends IEntity {
     email: string,
-    emailConfirmed: boolean,
-    username: string
+    userName: string,
+    confirmed: boolean
 }

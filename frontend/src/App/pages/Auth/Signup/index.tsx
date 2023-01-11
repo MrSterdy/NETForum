@@ -7,13 +7,13 @@ import "../index.css";
 
 import useAuth from "../../../hooks/useAuth";
 
-export default function Register() {
-    const { user, register, isLoading, error } = useAuth();
+export default function Signup() {
+    const { user, signUp, isLoading, error } = useAuth();
 
     if (user)
-        return user.emailConfirmed ?
+        return user.confirmed ?
             <Navigate to="/" /> :
-            <h1 className="title">Please verify your email address</h1>;
+            <h1 className="title">Please confirm your email address</h1>;
 
     if (isLoading)
         return <Loader />;
@@ -23,7 +23,7 @@ export default function Register() {
 
         const data = new FormData(event.currentTarget);
 
-        register({
+        signUp({
             email: data.get("email") as string,
             username: data.get("username") as string,
             password: data.get("password") as string
@@ -33,7 +33,7 @@ export default function Register() {
     return (
         <>
             <section className="auth main">
-                <h1 className="title">Register</h1>
+                <h1 className="title">Sign up</h1>
 
                 <form className="content" onSubmit={ submitForm }>
                     <div>

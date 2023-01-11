@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 
 using Backend.Core.Mail;
-using Backend.Core.Models;
-using Backend.Core.Models.Auth;
+using Backend.Core.Models.User;
+using Backend.Core.Models.User.Auth;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("Login")]
-    public async Task<ActionResult<User>> Login([FromBody] AuthUser user)
+    public async Task<ActionResult<UserResponse>> Login([FromBody] LoginUserRequest user)
     {
         if (HttpContext.User.Identity!.IsAuthenticated)
             return NotFound();
@@ -56,13 +56,7 @@ public class AuthController : ControllerBase
             new ClaimsPrincipal(claimsIdentity)
         );
 
-        return new User
-        {
-            Id = found.Id,
-            Email = found.Email,
-            EmailConfirmed = found.EmailConfirmed,
-            UserName = found.UserName!
-        };
+        return new UserResponse(found.Id, found.Email!, found.UserName!, found.EmailConfirmed);
     }
     
     [HttpPost("Logout")]
@@ -70,15 +64,15 @@ public class AuthController : ControllerBase
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
     [AllowAnonymous]
-    [HttpPost("Register")]
-    public async Task<ActionResult<User>> Register([FromBody] RegisterUser user)
+    [HttpPost("Signup")]
+    public async Task<ActionResult<UserResponse>> Signup([FromBody] SignupUserRequest user)
     {
         if (HttpContext.User.Identity!.IsAuthenticated)
             return NotFound();
         
         if (
             await _userManager.FindByNameAsync(user.UserName) is not null ||
-            await _userManager.FindByEmailAsync(user.Email!) is not null
+            await _userManager.FindByEmailAsync(user.Email) is not null
         )
             return Conflict();
         
@@ -96,18 +90,12 @@ public class AuthController : ControllerBase
                 protocol: HttpContext.Request.Scheme
             );
 
-            await _mailService.SendMailAsync(iUser.Email!, "Email Verification", url!);
+            await _mailService.SendMailAsync(iUser.Email, "Confirm email", url!);
         }
         else 
             return BadRequest(result.Errors);
 
-        return new User
-        {
-            Id = iUser.Id,
-            Email = iUser.Email,
-            EmailConfirmed = iUser.EmailConfirmed,
-            UserName = iUser.UserName
-        };
+        return new UserResponse(iUser.Id, iUser.Email, iUser.UserName, iUser.EmailConfirmed);
     }
     
     [AllowAnonymous]

@@ -2,8 +2,7 @@
 import IUser from "./IUser";
 
 export default interface IThread extends IEntity {
-    userId: number,
-    user?: IUser,
+    user: IUser,
     
     title: string,
     content: string

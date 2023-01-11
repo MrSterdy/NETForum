@@ -5,5 +5,5 @@ import useAuth from "../../hooks/useAuth";
 export default function Account() {
     const { user } = useAuth();
 
-    return <Navigate to={ user?.emailConfirmed ? `/user/${user.id}` : `/login` } />
+    return <Navigate to={ user?.confirmed ? `/user/${user.id}` : `/login` } />
 }

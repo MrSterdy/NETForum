@@ -8,7 +8,7 @@ import { getThreadsByPage } from "../../api/thread";
 import "./index.css";
 
 export default function Home() {
-    const [page, setPage] = useState<IPage<IThread>>();
+    const [page, setPage] = useState<IPage<IThread>>({} as IPage<IThread>);
     const [pageNumber, setPageNumber] = useState(1);
     const [isLoading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -16,7 +16,7 @@ export default function Home() {
     useEffect(() => {
         getThreadsByPage(pageNumber)
             .then(res => setPage(p => ({
-                items: p ? p.items.concat(res.data.items) : res.data.items,
+                items: p.items ? p.items.concat(res.data.items) : res.data.items,
                 isLast: res.data.isLast
             })))
             .catch(err => setError((err as Error).message))
@@ -36,19 +36,19 @@ export default function Home() {
             <h1 className="title">Recent threads</h1>
             
             <ul className="content thread-list">
-                { page!.items.map(thread => (
+                { page.items.map(thread => (
                     <li key={ thread.id }>
                         <h3 className="title">
                             <Link to={ `thread/${thread.id}` }>{ thread.title }</Link>
                         </h3>
                         <h4 className="description">
-                            <Link to={ `user/${thread.userId}` }>{ thread.user!.username }</Link>
+                            <Link to={ `user/${thread.user.id}` }>{ thread.user.userName }</Link>
                         </h4>
                     </li>
                 )) }
             </ul>
 
-            { !page!.isLast && <button type="button" onClick={ loadMore }>Load more</button> }
+            { !page.isLast && <button type="button" onClick={ loadMore }>Load more</button> }
         </section>
     );
 }

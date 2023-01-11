@@ -16,7 +16,7 @@ export default function User() {
 
     return (
         <section className="main">
-            <h1 className="title">{ data.username }</h1>
+            <h1 className="title">{ data.userName }</h1>
 
             <article className="content">TODO...</article>
         </section>

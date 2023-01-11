@@ -3,5 +3,4 @@
 [CollectionDefinition("Backend")]
 public class BackendFactoryFixtureCollection : ICollectionFixture<BackendFactory>
 {
-    
 }

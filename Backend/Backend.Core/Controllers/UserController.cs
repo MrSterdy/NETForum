@@ -1,4 +1,4 @@
-﻿using Backend.Core.Models;
+﻿using Backend.Core.Models.User;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,34 +16,22 @@ public class UserController : ControllerBase
         _manager = manager;
 
     [HttpGet("Id/{id:int}")]
-    public async Task<ActionResult<User>> GetByIdAsync(int id)
+    public async Task<ActionResult<UserResponse>> GetByIdAsync(int id)
     {
         var iUser = await _manager.FindByIdAsync(id.ToString());
 
         if (iUser is null)
             return NotFound();
 
-        return new User
-        {
-            Id = id,
-            Email = iUser.Email!,
-            EmailConfirmed = iUser.EmailConfirmed,
-            UserName = iUser.UserName!
-        };
+        return new UserResponse(iUser.Id, iUser.Email!, iUser.UserName!, iUser.EmailConfirmed);
     }
     
     [Authorize]
     [HttpGet("Current")]
-    public async Task<User> GetCurrentAsync()
+    public async Task<UserResponse> GetCurrentAsync()
     {
         var found = await _manager.FindByIdAsync(HttpContext.User.Claims.First().Value);
 
-        return new User
-        {
-            Id = found!.Id,
-            Email = found.Email!,
-            EmailConfirmed = found.EmailConfirmed,
-            UserName = found.UserName!
-        };
+        return new UserResponse(found!.Id, found.Email!, found.UserName!, found.EmailConfirmed);
     }
 }

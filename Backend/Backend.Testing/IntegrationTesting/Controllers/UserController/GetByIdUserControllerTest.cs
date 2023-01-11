@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-using Backend.Core.Models;
+using Backend.Core.Models.User;
 
 using FluentAssertions;
 
@@ -27,7 +27,7 @@ public class GetByIdUserControllerTest : UserControllerTest
         // Assert
         response.EnsureSuccessStatusCode();
         
-        var result = await ParseResponse<User>(response);
+        var result = await ParseResponse<UserResponse>(response);
         result.UserName.Should().Be(user.UserName);
         result.Email.Should().Be(user.Email);
     }

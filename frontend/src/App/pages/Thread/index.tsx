@@ -20,7 +20,7 @@ export default function Thread() {
                 <h1 className="title">{ data.title }</h1>
 
                 <h3 className="description">
-                    <Link to={ `user/${data.userId}` }>{ data.user!.username }</Link>
+                    <Link to={ `user/${data.user.id}` }>{ data.user.userName }</Link>
                 </h3>
             </div>
 

@@ -1,5 +1,5 @@
-﻿using Backend.Core.Database;
-using Thread = Backend.Core.Database.Entities.Thread;
+﻿using Backend.Core.Models;
+using Backend.Core.Models.Thread;
 
 using FluentAssertions;
 
@@ -26,7 +26,7 @@ public class GetByPageThreadControllerTest : ThreadControllerTest
         // Assert
         response.EnsureSuccessStatusCode();
 
-        var result = await ParseResponse<Page<Thread>>(response);
+        var result = await ParseResponse<Page<ThreadResponse>>(response);
         result.IsLast.Should().BeTrue();
         result.Items.Should().NotBeEmpty();
     }
@@ -43,7 +43,7 @@ public class GetByPageThreadControllerTest : ThreadControllerTest
         // Assert
         response.EnsureSuccessStatusCode();
 
-        var result = await ParseResponse<Page<Thread>>(response);
+        var result = await ParseResponse<Page<ThreadResponse>>(response);
         result.IsLast.Should().BeTrue();
         result.Items.Should().BeEmpty();
     }

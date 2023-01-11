@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 
-using Backend.Core.Models;
-using Backend.Core.Models.Auth;
+using Backend.Core.Models.User;
+using Backend.Core.Models.User.Auth;
 
 using FluentAssertions;
 
@@ -21,7 +21,7 @@ public class GetCurrentUserControllerTest : UserControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var authUser = new AuthUser { UserName = user.UserName!, Password = user.UserName! };
+        var authUser = new LoginUserRequest { UserName = user.UserName!, Password = user.UserName! };
         
         // Act
         using var client = Factory.CreateClient();
@@ -32,7 +32,7 @@ public class GetCurrentUserControllerTest : UserControllerTest
         firstResponse.EnsureSuccessStatusCode();
         secondResponse.EnsureSuccessStatusCode();
         
-        var result = await ParseResponse<User>(secondResponse);
+        var result = await ParseResponse<UserResponse>(secondResponse);
         result.UserName.Should().Be(user.UserName);
         result.Email.Should().Be(user.Email);
     }

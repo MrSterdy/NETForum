@@ -7,19 +7,19 @@ export interface LoginParams {
     password: string
 }
 
-export async function login(params: LoginParams) {
+export async function logIn(params: LoginParams) {
     return await axios.post<IUser>(process.env.REACT_APP_AUTH_LOGIN_URL!, params, { withCredentials: true });
 }
 
-export async function logout() {
+export async function logOut() {
     await axios.post(process.env.REACT_APP_AUTH_LOGOUT_URL!);
 }
 
-export interface RegisterParams extends LoginParams {
+export interface SignupParams extends LoginParams {
     email: string,
     password: string
 }
 
-export async function register(params: RegisterParams) {
-    return await axios.post<IUser>(process.env.REACT_APP_AUTH_REGISTER_URL!, params);
+export async function signUp(params: SignupParams) {
+    return await axios.post<IUser>(process.env.REACT_APP_AUTH_SIGNUP_URL!, params);
 }
