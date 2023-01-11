@@ -11,4 +11,6 @@ public class User
 
     [EmailAddress]
     public virtual string? Email { get; set; }
+    
+    public bool EmailConfirmed { get; set; }
 }

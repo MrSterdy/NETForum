@@ -26,8 +26,9 @@ public class UserController : ControllerBase
         return new User
         {
             Id = id,
-            UserName = iUser.UserName!,
-            Email = iUser.Email!
+            Email = iUser.Email!,
+            EmailConfirmed = iUser.EmailConfirmed,
+            UserName = iUser.UserName!
         };
     }
     
@@ -41,6 +42,7 @@ public class UserController : ControllerBase
         {
             Id = found!.Id,
             Email = found.Email!,
+            EmailConfirmed = found.EmailConfirmed,
             UserName = found.UserName!
         };
     }

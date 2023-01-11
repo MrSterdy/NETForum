@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Core.Controllers;
 
+// TODO: remove sensitive user data from response
+
 [ApiController]
 [Route("Api/[controller]")]
 public class ThreadController : ControllerBase

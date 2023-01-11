@@ -60,6 +60,7 @@ public class AuthController : ControllerBase
         {
             Id = found.Id,
             Email = found.Email,
+            EmailConfirmed = found.EmailConfirmed,
             UserName = found.UserName!
         };
     }
@@ -104,6 +105,7 @@ public class AuthController : ControllerBase
         {
             Id = iUser.Id,
             Email = iUser.Email,
+            EmailConfirmed = iUser.EmailConfirmed,
             UserName = iUser.UserName
         };
     }
