@@ -31,7 +31,7 @@ export default function Login() {
         <section className="auth main">
             <h1 className="title">Log in</h1>
 
-            <form className="content" onSubmit={ submitForm }>
+            <form className="column content" onSubmit={ submitForm }>
                 <div>
                     <h3 className="title">Username</h3>
 
@@ -46,9 +46,9 @@ export default function Login() {
 
                 { !!error && <Error message="Invalid username or password" /> }
 
-                <Link to="/signup">Sign up</Link>
-
                 <button type="submit">Continue</button>
+
+                <Link to="/signup" className="centered">Sign up</Link>
             </form>
         </section>
     );

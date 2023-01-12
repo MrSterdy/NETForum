@@ -1,21 +1,43 @@
-﻿@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Raleway:wght@300&display=swap");
+﻿:root {
+    --shadow: 5px 5px 5px 0 rgba(0, 0, 0, 0.25);
 
-#root {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    
-    padding-bottom: 100px;
+    --main-color: #7E57C2;
+    --secondary-color: #673AB7;
+    --error-color: #E91E63;
+
+    --border: 10px;
+
+    --transition: 200ms;
 }
 
 body {
     background-color: #EEEEEE;
 
     font-family: Poppins, sans-serif;
+}
 
-    margin: 0;
-    
-    height: 100%;
+.centered {
+    margin: 0 auto;
+}
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--border);
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    gap: var(--border);
+
+    padding-bottom: calc(var(--border) * var(--border));
 }
 
 .main {
@@ -25,7 +47,7 @@ body {
 
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--border);
 }
 
 .content {
@@ -34,11 +56,11 @@ body {
     width: 100%;
 
     margin: 0 auto;
-    padding: 10px;
+    padding: var(--border);
 
-    border-radius: 10px;
+    border-radius: var(--border);
 
-    box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow);
 
     box-sizing: border-box;
 }
@@ -55,11 +77,11 @@ a {
     
     text-decoration: none;
 
-    transition: 200ms;
+    transition: var(--transition);
 }
 
 a:hover {
-    color: #7E57C2;
+    color: var(--main-color);
 }
 
 .title {
@@ -78,14 +100,14 @@ a:hover {
 }
 
 input {
-    border: 3px solid #673AB7;
+    border: 3px solid var(--main-color);
     border-radius: 5px;
 
     min-height: 25px;
 
     outline: none;
 
-    transition: 200ms;
+    transition: var(--transition);
 
     font-family: Raleway, sans-serif;
     font-weight: bold;
@@ -96,17 +118,16 @@ input {
 }
 
 input:focus {
-    border-color: #7E57C2;
+    border-color: var(--secondary-color);
 }
-
 input:invalid {
-    border-color: #E91E63;
+    border-color: var(--error-color);
 }
 
 form:has(input:invalid) [type=submit] {
     pointer-events: none;
 
-    background-color: #E91E63;
+    background-color: var(--error-color);
 }
 
 button {
@@ -116,25 +137,24 @@ button {
 
     border: none;
 
-    box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow);
 
     font-family: inherit;
     font-size: inherit;
     color: #FFFFFF;
 
-    background-color: #673AB7;
+    background-color: var(--main-color);
 
     cursor: pointer;
 
     border-radius: 5px;
 
-    transition: 200ms;
+    transition: var(--transition);
+}
+button:hover {
+    background-color: var(--secondary-color);
 }
 
 .content button {
     box-shadow: none;
-}
-
-button:hover {
-    background-color: #7E57C2;
 }

@@ -35,7 +35,7 @@ export default function Signup() {
             <section className="auth main">
                 <h1 className="title">Sign up</h1>
 
-                <form className="content" onSubmit={ submitForm }>
+                <form className="column content" onSubmit={ submitForm }>
                     <div>
                         <h3 className="title">Email</h3>
 

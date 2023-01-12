@@ -21,7 +21,7 @@
 
 nav > ul {
     display: flex;
-    gap: 10px;
+    gap: var(--border);
     
     height: 100%;
 }

@@ -35,7 +35,7 @@ export default function Home() {
         <section className="main threads">
             <h1 className="title">Recent threads</h1>
             
-            <ul className="content thread-list">
+            <ul className="content column thread-list">
                 { page.items.map(thread => (
                     <li key={ thread.id }>
                         <h3 className="title">
@@ -48,7 +48,7 @@ export default function Home() {
                 )) }
             </ul>
 
-            { !page.isLast && <button type="button" onClick={ loadMore }>Load more</button> }
+            { !page.isLast && <button type="button" onClick={ loadMore } className="centered">Load more</button> }
         </section>
     );
 }
