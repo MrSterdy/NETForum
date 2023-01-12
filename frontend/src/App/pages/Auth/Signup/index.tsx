@@ -1,5 +1,5 @@
 import { FormEvent } from "react";
-import { Navigate } from "react-router-dom";
+import {Link, Navigate} from "react-router-dom";
 
 import { Error, Loader } from "../../../components";
 
@@ -57,6 +57,8 @@ export default function Signup() {
                     { !!error && <Error message="User with that email or username already exists" /> }
 
                     <button type="submit">Continue</button>
+
+                    <Link to="/login" className="centered">Log in</Link>
                 </form>
             </section>
         </>
