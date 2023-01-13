@@ -1,11 +1,7 @@
-﻿using System.Security.Claims;
-
-using Backend.Core.Mail;
+﻿using Backend.Core.Mail;
 using Backend.Core.Models.User;
 using Backend.Core.Models.User.Auth;
 
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +14,19 @@ namespace Backend.Core.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly UserManager<IdentityUser<int>> _userManager;
+    private readonly SignInManager<IdentityUser<int>> _signInManager;
 
     private readonly IMailService _mailService;
 
-    public AuthController(UserManager<IdentityUser<int>> userManager, IMailService mailService)
+    public AuthController(
+        UserManager<IdentityUser<int>> userManager, 
+        SignInManager<IdentityUser<int>> signInManager, 
+        IMailService mailService
+    )
     {
         _userManager = userManager;
+        _signInManager = signInManager;
+        
         _mailService = mailService;
     }
 
@@ -33,35 +36,25 @@ public class AuthController : ControllerBase
     {
         if (HttpContext.User.Identity!.IsAuthenticated)
             return NotFound();
-        
-        var found = await _userManager.FindByNameAsync(user.UserName);
-        if (
-            found is null || 
-            !found.EmailConfirmed ||
-            _userManager.PasswordHasher.VerifyHashedPassword(
-                found, 
-                found.PasswordHash!, 
-                user.Password
-            ) != PasswordVerificationResult.Success
-        ) 
+
+        var result = await _signInManager.PasswordSignInAsync(
+            user.UserName,
+            user.Password,
+            user.RememberMe,
+            false
+        );
+
+        if (!result.Succeeded)
             return BadRequest();
 
-        var claimsIdentity = new ClaimsIdentity(
-            new[] { new Claim("ID", found.Id.ToString()) }, 
-            CookieAuthenticationDefaults.AuthenticationScheme
-        );
+        var iUser = await _userManager.FindByNameAsync(user.UserName);
 
-        await HttpContext.SignInAsync(
-            CookieAuthenticationDefaults.AuthenticationScheme,
-            new ClaimsPrincipal(claimsIdentity)
-        );
-
-        return new UserResponse(found.Id, found.Email!, found.UserName!, found.EmailConfirmed);
+        return new UserResponse(iUser!.Id, iUser.Email!, iUser.UserName!, iUser.EmailConfirmed);
     }
     
     [HttpPost("Logout")]
     public async void Logout() =>
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await _signInManager.SignOutAsync();
 
     [AllowAnonymous]
     [HttpPost("Signup")]

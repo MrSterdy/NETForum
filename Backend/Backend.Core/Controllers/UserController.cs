@@ -30,7 +30,7 @@ public class UserController : ControllerBase
     [HttpGet("Current")]
     public async Task<UserResponse> GetCurrentAsync()
     {
-        var found = await _manager.FindByIdAsync(HttpContext.User.Claims.First().Value);
+        var found = await _manager.GetUserAsync(User);
 
         return new UserResponse(found!.Id, found.Email!, found.UserName!, found.EmailConfirmed);
     }

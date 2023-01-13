@@ -9,4 +9,7 @@ public class LoginUserRequest
     
     [Required]
     public string Password { get; set; } = default!;
+    
+    [Required]
+    public bool RememberMe { get; set; }
 }

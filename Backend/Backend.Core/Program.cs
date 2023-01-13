@@ -1,8 +1,8 @@
 using Backend.Core.Database;
 using Backend.Core.Database.Repositories;
+using Backend.Core.Identity;
 using Backend.Core.Mail;
 
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,19 +33,15 @@ builder.Services.AddIdentityCore<IdentityUser<int>>(options =>
 
         options.User.RequireUniqueEmail = true;
     })
+    .AddSignInManager<SignInManager>()
     .AddEntityFrameworkStores<Context>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
+    .AddCookie(IdentityConstants.ApplicationScheme, options =>
     {
-        options.Cookie.Name = "NETForumLogin";
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.None;
-        
-        options.SlidingExpiration = true;
-        
-        options.ExpireTimeSpan = TimeSpan.FromDays(1);
     });
 
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
