@@ -2,14 +2,4 @@
 
 namespace Backend.Core.Models.User.Auth;
 
-public class LoginUserRequest
-{
-    [Required] 
-    public string UserName { get; set; } = default!;
-    
-    [Required]
-    public string Password { get; set; } = default!;
-    
-    [Required]
-    public bool RememberMe { get; set; }
-}
+public record LoginUserRequest([Required] string UserName, [Required] string Password, [Required] bool RememberMe);

@@ -6,22 +6,20 @@ using Backend.Core.Models.User.Auth;
 
 using FluentAssertions;
 
-namespace Backend.Testing.IntegrationTesting.Controllers.UserController;
+namespace Backend.Testing.IntegrationTesting.Controllers.AccountController;
 
-public class GetCurrentUserControllerTest : UserControllerTest
+public class GetAccountControllerTest : AccountControllerTest
 {
-    protected override string Endpoint => base.Endpoint + "/Current";
-
-    public GetCurrentUserControllerTest(BackendFactory factory) : base(factory)
+    public GetAccountControllerTest(BackendFactory factory) : base(factory)
     {
     }
 
     [Fact]
-    public async void GetCurrent_Ok()
+    public async void Get_Ok()
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var authUser = new LoginUserRequest { UserName = user.UserName!, Password = user.UserName! };
+        var authUser = new LoginUserRequest(user.UserName!, user.UserName!, true);
         
         // Act
         using var client = Factory.CreateClient();
@@ -32,13 +30,13 @@ public class GetCurrentUserControllerTest : UserControllerTest
         firstResponse.EnsureSuccessStatusCode();
         secondResponse.EnsureSuccessStatusCode();
         
-        var result = await ParseResponse<UserResponse>(secondResponse);
+        var result = await ParseResponse<AccountResponse>(secondResponse);
         result.UserName.Should().Be(user.UserName);
         result.Email.Should().Be(user.Email);
     }
     
     [Fact]
-    public async void GetCurrent_NotFound()
+    public async void GetAccount_NotFound()
     {
         // Arrange
 

@@ -13,8 +13,11 @@ namespace Backend.Testing.IntegrationTesting.Controllers.AuthController;
 public class LoginAuthControllerTest : AuthControllerTest
 {
     private readonly Faker<LoginUserRequest> _userGenerator = new Faker<LoginUserRequest>()
-        .RuleFor(u => u.UserName, faker => faker.Internet.UserName().ClampLength(4, 16))
-        .RuleFor(u => u.Password, faker => faker.Internet.Password());
+        .CustomInstantiator(faker => new LoginUserRequest(
+            faker.Internet.UserName().ClampLength(4, 16),
+            faker.Internet.Password(),
+            true
+        ));
 
     protected override string Endpoint => base.Endpoint + "/Login";
 
@@ -27,7 +30,7 @@ public class LoginAuthControllerTest : AuthControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginUserRequest { UserName = user.UserName!, Password = user.UserName! };
+        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, true);
         
         // Act
         using var client = Factory.CreateClient();
@@ -56,7 +59,7 @@ public class LoginAuthControllerTest : AuthControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedUserAsync();
-        var loginUser = new LoginUserRequest { UserName = user.UserName!, Password = user.UserName! };
+        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, true);
 
         // Act
         using var client = Factory.CreateClient();
@@ -71,7 +74,7 @@ public class LoginAuthControllerTest : AuthControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginUserRequest { UserName = user.UserName!, Password = user.UserName! };
+        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, true);
         
         // Act
         using var client = Factory.CreateClient();

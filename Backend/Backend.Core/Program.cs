@@ -21,7 +21,7 @@ builder.Services.AddCors(options =>
         )
 );
 
-builder.Services.AddIdentityCore<IdentityUser<int>>(options =>
+builder.Services.AddIdentityCore<ApplicationUser>(options =>
     {
         options.SignIn.RequireConfirmedEmail = true;
 
@@ -33,13 +33,14 @@ builder.Services.AddIdentityCore<IdentityUser<int>>(options =>
 
         options.User.RequireUniqueEmail = true;
     })
+    .AddDefaultTokenProviders()
     .AddSignInManager<SignInManager>()
-    .AddEntityFrameworkStores<Context>()
-    .AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<Context>();
 
 builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
     .AddCookie(IdentityConstants.ApplicationScheme, options =>
     {
+        options.Cookie.Name = "NETForumIdentity";
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.None;
     });

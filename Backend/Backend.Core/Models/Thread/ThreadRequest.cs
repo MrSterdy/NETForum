@@ -2,11 +2,7 @@
 
 namespace Backend.Core.Models.Thread;
 
-public class ThreadRequest
-{
-    [Required, MinLength(4), MaxLength(sbyte.MaxValue)]
-    public string Title { get; set; } = default!;
-
-    [Required, MinLength(4), MaxLength(short.MaxValue)]
-    public string Content { get; set; } = default!;
-}
+public record ThreadRequest(
+    [Required, MinLength(4), MaxLength(sbyte.MaxValue)] string Title,
+    [Required, MinLength(4), MaxLength(short.MaxValue)] string Content
+);

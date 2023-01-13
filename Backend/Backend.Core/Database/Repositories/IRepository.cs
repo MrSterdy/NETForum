@@ -6,9 +6,9 @@ public interface IRepository<T>
 
     Task<T?> GetByIdAsync(int id);
 
-    void DeleteAsync(T entity);
+    Task DeleteAsync(T entity);
 
-    void UpdateAsync(T entity);
+    Task UpdateAsync(T entity);
 
-    void AddAsync(T entity);
+    Task AddAsync(T entity);
 }

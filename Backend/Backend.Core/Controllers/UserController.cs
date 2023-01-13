@@ -1,6 +1,6 @@
-﻿using Backend.Core.Models.User;
+﻿using Backend.Core.Identity;
+using Backend.Core.Models.User;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +10,9 @@ namespace Backend.Core.Controllers;
 [Route("Api/[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly UserManager<IdentityUser<int>> _manager;
+    private readonly UserManager<ApplicationUser> _manager;
 
-    public UserController(UserManager<IdentityUser<int>> manager) =>
+    public UserController(UserManager<ApplicationUser> manager) =>
         _manager = manager;
 
     [HttpGet("Id/{id:int}")]
@@ -23,15 +23,6 @@ public class UserController : ControllerBase
         if (iUser is null)
             return NotFound();
 
-        return new UserResponse(iUser.Id, iUser.Email!, iUser.UserName!, iUser.EmailConfirmed);
-    }
-    
-    [Authorize]
-    [HttpGet("Current")]
-    public async Task<UserResponse> GetCurrentAsync()
-    {
-        var found = await _manager.GetUserAsync(User);
-
-        return new UserResponse(found!.Id, found.Email!, found.UserName!, found.EmailConfirmed);
+        return new UserResponse(iUser.Id, iUser.Email!, iUser.UserName!);
     }
 }

@@ -14,13 +14,13 @@ public class LogoutAuthControllerTest : AuthControllerTest
     public LogoutAuthControllerTest(BackendFactory factory) : base(factory)
     {
     }
-
+    
     [Fact]
     public async void Logout_Ok()
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginUserRequest { UserName = user.UserName!, Password = user.UserName! };
+        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, true);
         
         // Act
         using var client = Factory.CreateClient();

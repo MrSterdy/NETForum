@@ -1,4 +1,5 @@
-﻿using Thread = Backend.Core.Database.Entities.Thread;
+﻿using Backend.Core.Identity;
+using Thread = Backend.Core.Database.Entities.Thread;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Backend.Core.Database;
 
-public class Context : IdentityUserContext<IdentityUser<int>, int>
+public class Context : IdentityUserContext<ApplicationUser, int>
 {
     public DbSet<Thread> Threads { get; set; } = default!;
 
@@ -18,7 +19,7 @@ public class Context : IdentityUserContext<IdentityUser<int>, int>
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<IdentityUser<int>>()
+        builder.Entity<ApplicationUser>()
             .Ignore(u => u.PhoneNumber)
             .Ignore(u => u.PhoneNumberConfirmed)
             .Ignore(u => u.TwoFactorEnabled)

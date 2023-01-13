@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-using Microsoft.AspNetCore.Identity;
+using Backend.Core.Identity;
 
 namespace Backend.Core.Database.Entities;
 
@@ -11,7 +11,7 @@ public class Thread
     
     [Required]
     public int UserId { get; set; }
-    public IdentityUser<int> User { get; set; } = default!;
+    public ApplicationUser User { get; set; } = default!;
 
     [Required, MinLength(4), MaxLength(sbyte.MaxValue)]
     public string Title { get; set; } = default!;
@@ -26,8 +26,5 @@ public class Thread
         Content = content;
     }
 
-    public Thread(IdentityUser<int> user, string title, string content) : this(user.Id, title, content) =>
-        User = user;
-    
     public Thread() { }
 }

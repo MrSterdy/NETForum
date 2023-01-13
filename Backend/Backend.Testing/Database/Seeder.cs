@@ -1,4 +1,5 @@
-﻿using Thread = Backend.Core.Database.Entities.Thread;
+﻿using Backend.Core.Identity;
+using Thread = Backend.Core.Database.Entities.Thread;
 
 using Bogus;
 using Bogus.Extensions;
@@ -9,14 +10,14 @@ namespace Backend.Testing.Database;
 
 public class Seeder
 {
-    private readonly Faker<IdentityUser<int>> _userGenerator = new Faker<IdentityUser<int>>()
+    private readonly Faker<ApplicationUser> _userGenerator = new Faker<ApplicationUser>()
         .RuleFor(u => u.UserName, faker => faker.Internet.UserName().ClampLength(4, 16))
         .RuleFor(u => u.NormalizedUserName, (_, u) => u.UserName!.ToUpper())
         .RuleFor(u => u.Email, faker => faker.Internet.Email())
         .RuleFor(u => u.NormalizedEmail, (_, u) => u.Email!.ToUpper())
         .RuleFor(u => u.SecurityStamp, () => Guid.NewGuid().ToString("D"))
         .RuleFor(u => u.PasswordHash,
-            (_, u) => new PasswordHasher<IdentityUser<int>>().HashPassword(u, u.UserName!));
+            (_, u) => new PasswordHasher<ApplicationUser>().HashPassword(u, u.UserName!));
 
     private readonly Faker<Thread> _threadGenerator = new Faker<Thread>()
         .RuleFor(t => t.UserId, faker => faker.Random.Int())
@@ -28,7 +29,7 @@ public class Seeder
     public Seeder(TestContext context) =>
         _dbContext = context;
     
-    public async Task<IdentityUser<int>> SeedUserAsync()
+    public async Task<ApplicationUser> SeedUserAsync()
     {
         var result = await _dbContext.Users.AddAsync(_userGenerator.Generate());
         
@@ -37,7 +38,7 @@ public class Seeder
         return result.Entity;
     }
 
-    public async Task<IdentityUser<int>> SeedVerifiedUserAsync()
+    public async Task<ApplicationUser> SeedVerifiedUserAsync()
     {
         var user = _userGenerator.Generate();
         user.EmailConfirmed = true;

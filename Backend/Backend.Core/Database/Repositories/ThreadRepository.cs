@@ -40,21 +40,21 @@ public class ThreadRepository : IThreadRepository
         return new Page<Thread>(await skipped.Take(10).Include("User").ToListAsync(), isLast);
     }
 
-    public async void DeleteAsync(Thread entity)
+    public async Task DeleteAsync(Thread entity)
     {
         _context.Threads.Remove(entity);
         
         await _context.SaveChangesAsync();
     }
     
-    public async void UpdateAsync(Thread entity)
+    public async Task UpdateAsync(Thread entity)
     {
         _context.Threads.Update(entity);
         
         await _context.SaveChangesAsync();
     }
 
-    public async void AddAsync(Thread entity)
+    public async Task AddAsync(Thread entity)
     {
         _context.Threads.Add(entity);
 

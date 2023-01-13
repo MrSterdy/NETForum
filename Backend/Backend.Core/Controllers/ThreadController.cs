@@ -1,8 +1,12 @@
 ﻿using Backend.Core.Database.Repositories;
+using Backend.Core.Identity;
 using Backend.Core.Models;
 using Backend.Core.Models.Thread;
 using Backend.Core.Models.User;
+using Thread = Backend.Core.Database.Entities.Thread;
 
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Core.Controllers;
@@ -13,8 +17,13 @@ public class ThreadController : ControllerBase
 {
     private readonly IThreadRepository _repository;
 
-    public ThreadController(IThreadRepository repository) =>
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public ThreadController(IThreadRepository repository, UserManager<ApplicationUser> userManager)
+    {
         _repository = repository;
+        _userManager = userManager;
+    }
 
     [HttpGet("Id/{id:int}")]
     public async Task<ActionResult<ThreadResponse>> GetByIdAsync(int id) 
@@ -28,13 +37,12 @@ public class ThreadController : ControllerBase
 
         return new ThreadResponse(
             id,
-            new UserResponse(user.Id, user.Email!, user.UserName!, user.EmailConfirmed),
+            new UserResponse(user.Id, user.Email!, user.UserName!),
             thread.Title,
             thread.Content
         );
     }
-
-
+    
     [HttpGet("Page/{page:int}")]
     public async Task<Page<ThreadResponse>> GetByPageAsync(int page)
     {
@@ -43,7 +51,7 @@ public class ThreadController : ControllerBase
         return new Page<ThreadResponse>(
             res.Items.Select(t => new ThreadResponse(
                 t.Id,
-                new UserResponse(t.UserId, t.User.Email!, t.User.UserName!, t.User.EmailConfirmed),
+                new UserResponse(t.UserId, t.User.Email!, t.User.UserName!),
                 t.Title,
                 t.Content
             )),
@@ -59,11 +67,20 @@ public class ThreadController : ControllerBase
         return new Page<ThreadResponse>(
             res.Items.Select(t => new ThreadResponse(
                 t.Id,
-                new UserResponse(t.UserId, t.User.Email!, t.User.UserName!, t.User.EmailConfirmed),
+                new UserResponse(t.UserId, t.User.Email!, t.User.UserName!),
                 t.Title,
                 t.Content
             )),
             res.IsLast
         );
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task Create([FromBody] ThreadRequest model) =>
+        await _repository.AddAsync(new Thread(
+            int.Parse(_userManager.GetUserId(User)!),
+            model.Title,
+            model.Content
+        ));
 }
