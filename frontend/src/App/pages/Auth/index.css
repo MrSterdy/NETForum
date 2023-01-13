@@ -2,8 +2,12 @@
     max-width: 300px;
 }
 
-.auth input {
+.auth input[type=text], .auth input[type=password] {
     width: 100%;
 
     height: 36px;
+}
+
+.auth .center {
+    justify-content: revert;
 }

@@ -1,5 +1,5 @@
 import { FormEvent } from "react";
-import {Link, Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 import { Error, Loader } from "../../../components";
 
@@ -23,7 +23,8 @@ export default function Login() {
 
         logIn({
             username: data.get("username") as string,
-            password: data.get("password") as string
+            password: data.get("password") as string,
+            rememberMe: data.has("rememberMe")
         });
     }
 
@@ -42,6 +43,12 @@ export default function Login() {
                     <h3 className="title">Password</h3>
 
                     <input type="password" name="password" />
+                </div>
+
+                <div className="center row">
+                    <input type="checkbox" name="rememberMe" />
+
+                    <span>Remember me</span>
                 </div>
 
                 { !!error && <Error message="Invalid username or password" /> }

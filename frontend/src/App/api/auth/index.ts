@@ -4,7 +4,8 @@ import { IUser } from "../models";
 
 export interface LoginParams {
     username: string,
-    password: string
+    password: string,
+    rememberMe: boolean
 }
 
 export async function logIn(params: LoginParams) {
@@ -15,8 +16,9 @@ export async function logOut() {
     await axios.post(process.env.REACT_APP_AUTH_LOGOUT_URL!);
 }
 
-export interface SignupParams extends LoginParams {
+export interface SignupParams {
     email: string,
+    username: string,
     password: string
 }
 

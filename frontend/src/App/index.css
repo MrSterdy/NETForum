@@ -32,6 +32,12 @@ body {
     gap: var(--border);
 }
 
+.row {
+    display: flex;
+    flex-direction: row;
+    gap: var(--border);
+}
+
 #root {
     display: flex;
     flex-direction: column;
@@ -122,6 +128,13 @@ input:focus {
 }
 input:invalid {
     border-color: var(--error-color);
+}
+
+input[type=checkbox] {
+    width: 20px;
+    height: 20px;
+
+    margin: 0;
 }
 
 form:has(input:invalid) [type=submit] {
