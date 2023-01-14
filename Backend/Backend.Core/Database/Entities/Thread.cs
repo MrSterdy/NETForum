@@ -7,7 +7,7 @@ namespace Backend.Core.Database.Entities;
 public class Thread
 {
     [Key]
-    public int Id { get; private set; }
+    public int Id { get; set; }
     
     [Required]
     public int UserId { get; set; }
@@ -18,13 +18,4 @@ public class Thread
 
     [Required, MinLength(4), MaxLength(short.MaxValue)]
     public string Content { get; set; } = default!;
-
-    public Thread(int userId, string title, string content)
-    {
-        UserId = userId;
-        Title = title;
-        Content = content;
-    }
-
-    public Thread() { }
 }

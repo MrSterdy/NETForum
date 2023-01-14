@@ -4,20 +4,12 @@ using System.Net.Http.Json;
 using Backend.Core.Models.Thread;
 using Backend.Core.Models.User.Auth;
 
-using Bogus;
-
 using FluentAssertions;
 
 namespace Backend.Testing.IntegrationTesting.Controllers.ThreadsController;
 
 public class CreateThreadsControllerTest : ThreadsControllerTest
 {
-    private readonly Faker<ThreadRequest> _threadGenerator = new Faker<ThreadRequest>()
-        .CustomInstantiator(faker => new ThreadRequest(
-            faker.Lorem.Sentence(),
-            faker.Lorem.Paragraph()
-        ));
-
     public CreateThreadsControllerTest(BackendFactory factory) : base(factory)
     {
     }
@@ -28,7 +20,7 @@ public class CreateThreadsControllerTest : ThreadsControllerTest
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
         var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, true);
-        var thread = _threadGenerator.Generate();
+        var thread = ThreadGenerator.Generate();
         
         // Act
         using var client = Factory.CreateClient();

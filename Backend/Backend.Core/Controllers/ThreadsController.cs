@@ -46,11 +46,37 @@ public class ThreadsController : ControllerBase
     [HttpPost]
     [Authorize]
     public async Task Create([FromBody] ThreadRequest model) =>
-        await _repository.AddAsync(new Thread(
-            int.Parse(_userManager.GetUserId(User)!),
-            model.Title,
-            model.Content
-        ));
+        await _repository.AddAsync(new Thread
+        {
+            UserId = int.Parse(_userManager.GetUserId(User)!),
+            Title = model.Title,
+            Content = model.Content
+        });
+
+    [Authorize]
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateById(int id, [FromBody] ThreadRequest model)
+    {
+        var thread = await _repository.GetByIdAsync(id);
+
+        if (thread is null)
+            return NotFound();
+
+        var user = int.Parse(_userManager.GetUserId(User)!);
+
+        if (thread.UserId != user)
+            return Forbid();
+
+        await _repository.UpdateAsync(new Thread
+        {
+            Id = id,
+            UserId = user,
+            Title = model.Title,
+            Content = model.Content
+        });
+
+        return Ok();
+    }
 
     [Authorize]
     [HttpDelete("{id:int}")]
