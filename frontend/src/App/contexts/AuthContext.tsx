@@ -62,7 +62,11 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
         setLoading(true);
 
         authApi.signUp(params)
-            .then(res => setUser(res.data))
+            .then(() => setUser({
+                userName: params.username,
+                email: params.email,
+                confirmed: false
+            }))
             .catch(res => setError((res as Response<unknown>).status))
             .finally(() => setLoading(false));
     }
