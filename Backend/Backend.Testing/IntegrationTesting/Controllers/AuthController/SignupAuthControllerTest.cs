@@ -70,7 +70,7 @@ public class SignupAuthControllerTest : AuthControllerTest
     }
     
     [Fact]
-    public async void Signup_AlreadyLoggedIn_NotFound()
+    public async void Signup_AlreadyLoggedIn_Forbidden()
     {
         // Arrange
         var createdUser = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
@@ -84,6 +84,6 @@ public class SignupAuthControllerTest : AuthControllerTest
         
         // Assert
         firstResponse.EnsureSuccessStatusCode();
-        secondResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        secondResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 }

@@ -33,7 +33,7 @@ public class LogoutAuthControllerTest : AuthControllerTest
     }
     
     [Fact]
-    public async void Logout_UserNotLoggedIn_NotFound()
+    public async void Logout_UserNotLoggedIn_Unauthorized()
     {
         // Arrange
 
@@ -42,6 +42,6 @@ public class LogoutAuthControllerTest : AuthControllerTest
         using var response = await client.PostAsync(Endpoint, null);
         
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 }

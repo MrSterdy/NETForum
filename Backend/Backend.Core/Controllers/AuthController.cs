@@ -34,7 +34,7 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<AccountResponse>> Login([FromBody] LoginUserRequest user)
     {
         if (HttpContext.User.Identity!.IsAuthenticated)
-            return NotFound();
+            return Forbid();
 
         var result = await _signInManager.PasswordSignInAsync(
             user.UserName,
@@ -53,14 +53,14 @@ public class AuthController : ControllerBase
     
     [Authorize]
     [HttpPost("Logout")]
-    public async void Logout() =>
+    public async Task Logout() =>
         await _signInManager.SignOutAsync();
 
     [HttpPost("Signup")]
     public async Task<IActionResult> Signup([FromBody] SignupUserRequest user)
     {
         if (HttpContext.User.Identity!.IsAuthenticated)
-            return NotFound();
+            return Forbid();
         
         if (
             await _userManager.FindByNameAsync(user.UserName) is not null ||
@@ -92,16 +92,14 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> ConfirmAsync(int userId, string code)
     {
         if (HttpContext.User.Identity!.IsAuthenticated)
-            return NotFound();
+            return Forbid();
         
         var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user is null)
             return NotFound();
 
         var result = await _userManager.ConfirmEmailAsync(user, code);
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
 
-        return Ok();
+        return result.Succeeded ? Ok() : BadRequest(result.Errors);
     }
 }

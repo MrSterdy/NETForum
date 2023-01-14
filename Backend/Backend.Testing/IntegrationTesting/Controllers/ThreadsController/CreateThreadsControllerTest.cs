@@ -8,9 +8,9 @@ using Bogus;
 
 using FluentAssertions;
 
-namespace Backend.Testing.IntegrationTesting.Controllers.ThreadController;
+namespace Backend.Testing.IntegrationTesting.Controllers.ThreadsController;
 
-public class CreateThreadControllerTest : ThreadControllerTest
+public class CreateThreadsControllerTest : ThreadsControllerTest
 {
     private readonly Faker<ThreadRequest> _threadGenerator = new Faker<ThreadRequest>()
         .CustomInstantiator(faker => new ThreadRequest(
@@ -18,7 +18,7 @@ public class CreateThreadControllerTest : ThreadControllerTest
             faker.Lorem.Paragraph()
         ));
 
-    public CreateThreadControllerTest(BackendFactory factory) : base(factory)
+    public CreateThreadsControllerTest(BackendFactory factory) : base(factory)
     {
     }
     

@@ -4,13 +4,11 @@ using Backend.Core.Models.Thread;
 
 using FluentAssertions;
 
-namespace Backend.Testing.IntegrationTesting.Controllers.ThreadController;
+namespace Backend.Testing.IntegrationTesting.Controllers.ThreadsController;
 
-public class GetByIdThreadControllerTest : ThreadControllerTest
+public class GetByIdThreadsControllerTest : ThreadsControllerTest
 {
-    protected override string Endpoint => base.Endpoint + "/Id";
-
-    public GetByIdThreadControllerTest(BackendFactory factory) : base(factory)
+    public GetByIdThreadsControllerTest(BackendFactory factory) : base(factory)
     {
     }
 

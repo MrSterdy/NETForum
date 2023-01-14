@@ -1,3 +1,4 @@
+using System.Net;
 using Backend.Core.Database;
 using Backend.Core.Database.Repositories;
 using Backend.Core.Identity;
@@ -43,6 +44,19 @@ builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
         options.Cookie.Name = "NETForumIdentity";
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.None;
+
+        options.Events.OnRedirectToLogin = ctx =>
+        {
+            ctx.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
+            
+            return Task.CompletedTask;
+        };
+        options.Events.OnRedirectToAccessDenied = ctx =>
+        {
+            ctx.Response.StatusCode = (int) HttpStatusCode.Forbidden;
+            
+            return Task.CompletedTask;
+        };
     });
 
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));

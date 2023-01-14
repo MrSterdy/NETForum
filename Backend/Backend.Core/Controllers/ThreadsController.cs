@@ -13,19 +13,19 @@ namespace Backend.Core.Controllers;
 
 [ApiController]
 [Route("Api/[controller]")]
-public class ThreadController : ControllerBase
+public class ThreadsController : ControllerBase
 {
     private readonly IThreadRepository _repository;
 
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public ThreadController(IThreadRepository repository, UserManager<ApplicationUser> userManager)
+    public ThreadsController(IThreadRepository repository, UserManager<ApplicationUser> userManager)
     {
         _repository = repository;
         _userManager = userManager;
     }
 
-    [HttpGet("Id/{id:int}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<ThreadResponse>> GetByIdAsync(int id) 
     {
         var thread = await _repository.GetByIdAsync(id);
@@ -43,38 +43,6 @@ public class ThreadController : ControllerBase
         );
     }
     
-    [HttpGet("Page/{page:int}")]
-    public async Task<Page<ThreadResponse>> GetByPageAsync(int page)
-    {
-        var res = await _repository.GetByPageAsync(page);
-
-        return new Page<ThreadResponse>(
-            res.Items.Select(t => new ThreadResponse(
-                t.Id,
-                new UserResponse(t.UserId, t.User.Email!, t.User.UserName!),
-                t.Title,
-                t.Content
-            )),
-            res.IsLast
-        );
-    }
-
-    [HttpGet("User/{userId:int}")]
-    public async Task<Page<ThreadResponse>> GetByUserIdAsync(int userId, [FromQuery] int page)
-    {
-        var res = await _repository.GetByUserIdAsync(userId, page);
-        
-        return new Page<ThreadResponse>(
-            res.Items.Select(t => new ThreadResponse(
-                t.Id,
-                new UserResponse(t.UserId, t.User.Email!, t.User.UserName!),
-                t.Title,
-                t.Content
-            )),
-            res.IsLast
-        );
-    }
-
     [HttpPost]
     [Authorize]
     public async Task Create([FromBody] ThreadRequest model) =>
@@ -83,4 +51,39 @@ public class ThreadController : ControllerBase
             model.Title,
             model.Content
         ));
+
+    [Authorize]
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteById(int id)
+    {
+        var thread = await _repository.GetByIdAsync(id);
+        
+        if (thread is null)
+            return NotFound();
+
+        if (thread.UserId != int.Parse(_userManager.GetUserId(User)!))
+            return Forbid();
+
+        await _repository.DeleteAsync(thread);
+
+        return Ok();
+    }
+    
+    [HttpGet]
+    public async Task<Page<ThreadResponse>> GetByPageAsync(int page, int? user)
+    {
+        var rawPage = user is null
+            ? await _repository.GetByPageAsync(page)
+            : await _repository.GetByUserIdAsync(user.Value, page);
+
+        return new Page<ThreadResponse>(
+            rawPage.Items.Select(t => new ThreadResponse(
+                t.Id,
+                new UserResponse(t.UserId, t.User.Email!, t.User.UserName!),
+                t.Title,
+                t.Content
+            )),
+            rawPage.IsLast
+        );
+    }
 }

@@ -8,21 +8,18 @@ namespace Backend.Core.Controllers;
 
 [ApiController]
 [Route("Api/[controller]")]
-public class UserController : ControllerBase
+public class UsersController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _manager;
 
-    public UserController(UserManager<ApplicationUser> manager) =>
+    public UsersController(UserManager<ApplicationUser> manager) =>
         _manager = manager;
 
-    [HttpGet("Id/{id:int}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<UserResponse>> GetByIdAsync(int id)
     {
         var iUser = await _manager.FindByIdAsync(id.ToString());
 
-        if (iUser is null)
-            return NotFound();
-
-        return new UserResponse(iUser.Id, iUser.Email!, iUser.UserName!);
+        return iUser is null ? NotFound() : new UserResponse(iUser.Id, iUser.Email!, iUser.UserName!);
     }
 }

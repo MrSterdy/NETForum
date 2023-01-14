@@ -36,7 +36,7 @@ public class GetAccountControllerTest : AccountControllerTest
     }
     
     [Fact]
-    public async void GetAccount_NotFound()
+    public async void GetAccount_Unauthorized()
     {
         // Arrange
 
@@ -45,6 +45,6 @@ public class GetAccountControllerTest : AccountControllerTest
         using var response = await client.GetAsync(Endpoint);
         
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 }

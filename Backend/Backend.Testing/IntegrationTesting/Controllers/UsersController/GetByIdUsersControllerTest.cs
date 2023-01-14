@@ -4,13 +4,11 @@ using Backend.Core.Models.User;
 
 using FluentAssertions;
 
-namespace Backend.Testing.IntegrationTesting.Controllers.UserController;
+namespace Backend.Testing.IntegrationTesting.Controllers.UsersController;
 
-public class GetByIdUserControllerTest : UserControllerTest
+public class GetByIdUsersControllerTest : UsersControllerTest
 {
-    protected override string Endpoint => base.Endpoint + "/Id";
-
-    public GetByIdUserControllerTest(BackendFactory factory) : base(factory)
+    public GetByIdUsersControllerTest(BackendFactory factory) : base(factory)
     {
     }
 

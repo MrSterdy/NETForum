@@ -48,7 +48,7 @@ public class LoginAuthControllerTest : AuthControllerTest
     }
     
     [Fact]
-    public async void Login_UserNotExists_BadRequest()
+    public async void Login_UserNotExist_BadRequest()
     {
         // Arrange
         var user = _userGenerator.Generate();
@@ -77,7 +77,7 @@ public class LoginAuthControllerTest : AuthControllerTest
     }
     
     [Fact]
-    public async void Login_AlreadyLoggedIn_NotFound()
+    public async void Login_AlreadyLoggedIn_Forbidden()
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
@@ -90,6 +90,6 @@ public class LoginAuthControllerTest : AuthControllerTest
         
         // Assert
         firstResponse.EnsureSuccessStatusCode();
-        secondResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        secondResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 }

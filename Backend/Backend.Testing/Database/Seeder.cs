@@ -20,7 +20,6 @@ public class Seeder
             (_, u) => new PasswordHasher<ApplicationUser>().HashPassword(u, u.UserName!));
 
     private readonly Faker<Thread> _threadGenerator = new Faker<Thread>()
-        .RuleFor(t => t.UserId, faker => faker.Random.Int())
         .RuleFor(t => t.Title, faker => faker.Lorem.Sentence())
         .RuleFor(t => t.Content, faker => faker.Lorem.Paragraph());
 
