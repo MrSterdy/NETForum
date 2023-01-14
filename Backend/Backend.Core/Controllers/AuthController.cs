@@ -1,6 +1,8 @@
 ﻿using Backend.Core.Identity;
 using Backend.Core.Mail;
+using Backend.Core.Models.User;
 using Backend.Core.Models.User.Auth;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +31,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("Login")]
-    public async Task<IActionResult> Login([FromBody] LoginUserRequest user)
+    public async Task<ActionResult<AccountResponse>> Login([FromBody] LoginUserRequest user)
     {
         if (HttpContext.User.Identity!.IsAuthenticated)
             return NotFound();
@@ -41,7 +43,12 @@ public class AuthController : ControllerBase
             false
         );
 
-        return result.Succeeded ? Ok() : BadRequest();
+        if (!result.Succeeded)
+            return BadRequest();
+
+        var account = await _userManager.FindByNameAsync(user.UserName);
+
+        return new AccountResponse(account!.Id, account.Email!, account.EmailConfirmed, account.UserName!);
     }
     
     [Authorize]

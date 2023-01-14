@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 
+using Backend.Core.Models.User;
 using Backend.Core.Models.User.Auth;
 
 using Bogus;
@@ -38,6 +39,12 @@ public class LoginAuthControllerTest : AuthControllerTest
         
         // Assert
         response.EnsureSuccessStatusCode();
+
+        var result = await ParseResponse<AccountResponse>(response);
+        result.Id.Should().Be(user.Id);
+        result.UserName.Should().Be(user.UserName);
+        result.Email.Should().Be(user.Email);
+        result.Confirmed.Should().BeTrue();
     }
     
     [Fact]
