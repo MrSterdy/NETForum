@@ -174,3 +174,20 @@ button:hover {
 .content button {
     box-shadow: none;
 }
+
+.clickable {
+    cursor: pointer;
+
+    transition: var(--transition);
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+
+    display: block;
+}
+
+.clickable.icon:hover {
+    fill: var(--main-color);
+}
