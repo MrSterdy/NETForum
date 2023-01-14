@@ -9,3 +9,12 @@ export async function getThreadById(id: number) {
 export async function getThreadsByPage(page: number) {
     return axios.get<IPage<IThread>>(`${process.env.REACT_APP_THREAD_PAGE_URL}/${page}`);
 }
+
+interface ThreadParams {
+    title: string,
+    content: string
+}
+
+export async function createThread(params: ThreadParams) {
+    return axios.post(process.env.REACT_APP_THREAD_URL!, params, { withCredentials: true });
+}

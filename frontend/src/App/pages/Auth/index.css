@@ -2,7 +2,7 @@
     max-width: 300px;
 }
 
-.auth input[type=text], .auth input[type=password] {
+.auth input[type=text], .auth input[type=password], .auth input[type=email] {
     width: 100%;
 
     height: 36px;
@@ -10,4 +10,8 @@
 
 .auth .center {
     justify-content: revert;
+}
+
+.auth .error {
+    font-size: 18px;
 }

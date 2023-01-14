@@ -10,7 +10,7 @@ import { Response } from "redaxios";
 
 import { IUser } from "../api/models";
 import { LoginParams, SignupParams } from "../api/auth";
-import * as userApi from "../api/user";
+import * as accountApi from "../api/account";
 import * as authApi from "../api/auth";
 
 interface AuthContextType {
@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
     useEffect(() => setError(0), [location.pathname]);
 
     useEffect(() => {
-        userApi.getCurrentUser()
+        accountApi.getAccount()
             .then(res => setUser(res.data))
             .catch(() => {})
             .finally(() => setLoadingInitial(false));

@@ -1,0 +1,9 @@
+.thread-create input[name=title] {
+    font-size: 1.5em;
+
+    font-family: inherit;
+}
+
+.thread-create textarea {
+    height: 350px;
+}

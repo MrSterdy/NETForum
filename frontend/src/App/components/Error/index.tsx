@@ -6,6 +6,6 @@ interface ErrorProps {
 
 export default function Error({ message }: ErrorProps) {
     return (
-        <p className="error">{ message }</p>
+        <span className="error">{ message }</span>
     );
 }

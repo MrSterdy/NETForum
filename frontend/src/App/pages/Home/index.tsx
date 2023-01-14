@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Error, Loader } from "../../components";
 import { IPage, IThread } from "../../api/models";
 import { getThreadsByPage } from "../../api/thread";
+import useAuth from "../../hooks/useAuth";
 
 import "./index.css";
 
@@ -12,6 +13,8 @@ export default function Home() {
     const [pageNumber, setPageNumber] = useState(1);
     const [isLoading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    const { user } = useAuth();
 
     useEffect(() => {
         getThreadsByPage(pageNumber)
@@ -33,8 +36,16 @@ export default function Home() {
     
     return (
         <section className="main threads">
-            <h1 className="title">Recent threads</h1>
-            
+            <div>
+                <h1 className="title">Recent threads</h1>
+
+                { user?.confirmed &&
+                    <h3 className="title">
+                        <Link className="description" to="/thread/create">Create new thread</Link>
+                    </h3>
+                }
+            </div>
+
             <ul className="content column thread-list">
                 { page.items.map(thread => (
                     <li key={ thread.id }>
