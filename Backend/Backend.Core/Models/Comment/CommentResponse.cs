@@ -1,8 +1,10 @@
-﻿namespace Backend.Core.Models.Comment;
+﻿using Backend.Core.Models.User;
+
+namespace Backend.Core.Models.Comment;
 
 public record CommentResponse(
     int Id,
-    int UserId,
+    UserResponse User,
     int ThreadId,
     string Content
 );

@@ -41,7 +41,12 @@ public class ThreadsController : ControllerBase
             new UserResponse(user.Id, user.Email!, user.UserName!),
             thread.Title,
             thread.Content,
-            thread.Comments.Select(c => new CommentResponse(c.Id, c.UserId, c.ThreadId, c.Content))
+            thread.Comments.Select(c => new CommentResponse(
+                c.Id, 
+                new UserResponse(c.UserId, c.User.Email!, c.User.UserName!), 
+                c.ThreadId, 
+                c.Content
+            ))
         );
     }
     
@@ -110,7 +115,12 @@ public class ThreadsController : ControllerBase
                 new UserResponse(t.UserId, t.User.Email!, t.User.UserName!),
                 t.Title,
                 t.Content,
-                t.Comments.Select(c => new CommentResponse(c.Id, c.UserId, c.ThreadId, c.Content))
+                t.Comments.Select(c => new CommentResponse(
+                    c.Id, 
+                    new UserResponse(c.UserId, c.User.Email!, c.User.UserName!), 
+                    c.ThreadId, 
+                    c.Content
+                ))
             )),
             rawPage.IsLast
         );

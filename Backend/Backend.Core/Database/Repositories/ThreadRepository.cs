@@ -13,10 +13,18 @@ public class ThreadRepository : IThreadRepository
         _context = context;
 
     public async Task<IEnumerable<Thread>> GetAllAsync() =>
-        await _context.Threads.Include("User").ToListAsync();
+        await _context.Threads
+            .Include(t => t.User)
+            .Include(t => t.Comments)
+                .ThenInclude(c => c.User)
+            .ToListAsync();
 
     public async Task<Thread?> GetByIdAsync(int id) =>
-        await _context.Threads.Include("User").SingleOrDefaultAsync(t => t.Id == id);
+        await _context.Threads
+            .Include(t => t.User)
+            .Include(t => t.Comments)
+                .ThenInclude(c => c.User)
+            .SingleOrDefaultAsync(t => t.Id == id);
 
     public async Task<Page<Thread>> GetByPageAsync(int page)
     {
@@ -26,7 +34,12 @@ public class ThreadRepository : IThreadRepository
         var skipped = _context.Threads.Skip((page - 1) * Constants.PageSize);
         var isLast = Math.Ceiling((skipped.Count() - Constants.PageSize) / (float) Constants.PageSize) < 1;
 
-        return new Page<Thread>(await skipped.Take(10).Include("User").ToListAsync(), isLast);
+        return new Page<Thread>(await skipped
+            .Take(Constants.PageSize)
+            .Include(t => t.User)
+            .Include(t => t.Comments)
+                .ThenInclude(c => c.User)
+            .ToListAsync(), isLast);
     }
 
     public async Task<Page<Thread>> GetByUserIdAsync(int userId, int page)
@@ -37,7 +50,12 @@ public class ThreadRepository : IThreadRepository
         var skipped = _context.Threads.Where(t => t.UserId == userId).Skip((page - 1) * Constants.PageSize);
         var isLast = Math.Ceiling((skipped.Count() - Constants.PageSize) / (float) Constants.PageSize) < 1;
 
-        return new Page<Thread>(await skipped.Take(10).Include("User").ToListAsync(), isLast);
+        return new Page<Thread>(await skipped
+            .Take(Constants.PageSize)
+            .Include(t => t.User)
+            .Include(t => t.Comments)
+                .ThenInclude(c => c.User)
+            .ToListAsync(), isLast);
     }
 
     public async Task<bool> Exists(int id) =>
