@@ -1,4 +1,5 @@
-﻿using Backend.Core.Identity;
+﻿using Backend.Core.Database.Entities;
+using Backend.Core.Identity;
 using Thread = Backend.Core.Database.Entities.Thread;
 
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +11,8 @@ namespace Backend.Core.Database;
 public class Context : IdentityUserContext<ApplicationUser, int>
 {
     public DbSet<Thread> Threads { get; set; } = default!;
+
+    public DbSet<Comment> Comments { get; set; } = default!;
 
     public Context(DbContextOptions<Context> options) : base(options)
     {

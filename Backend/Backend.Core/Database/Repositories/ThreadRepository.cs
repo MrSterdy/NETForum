@@ -40,6 +40,9 @@ public class ThreadRepository : IThreadRepository
         return new Page<Thread>(await skipped.Take(10).Include("User").ToListAsync(), isLast);
     }
 
+    public async Task<bool> Exists(int id) =>
+        await _context.Threads.AnyAsync(t => t.Id == id);
+
     public async Task DeleteAsync(Thread entity)
     {
         _context.Threads.Remove(entity);

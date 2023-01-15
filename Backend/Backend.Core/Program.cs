@@ -1,4 +1,5 @@
 using System.Net;
+
 using Backend.Core.Database;
 using Backend.Core.Database.Repositories;
 using Backend.Core.Identity;
@@ -67,6 +68,7 @@ builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof
 builder.Services.AddScoped<IMailService, MailService>();
 
 builder.Services.AddScoped<IThreadRepository, ThreadRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
 builder.Services.AddControllers();
 
