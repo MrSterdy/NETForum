@@ -1,4 +1,5 @@
-﻿using Backend.Core.Identity;
+﻿using Backend.Core.Database.Entities;
+using Backend.Core.Identity;
 using Thread = Backend.Core.Database.Entities.Thread;
 
 using Bogus;
@@ -21,6 +22,9 @@ public class Seeder
 
     private readonly Faker<Thread> _threadGenerator = new Faker<Thread>()
         .RuleFor(t => t.Title, faker => faker.Lorem.Sentence())
+        .RuleFor(t => t.Content, faker => faker.Lorem.Paragraph());
+    
+    private readonly Faker<Comment> _commentGenerator = new Faker<Comment>()
         .RuleFor(t => t.Content, faker => faker.Lorem.Paragraph());
 
     private readonly TestContext _dbContext;
