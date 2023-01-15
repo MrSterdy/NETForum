@@ -1,7 +1,7 @@
-import { MouseEvent as RMouseEvent, useState } from "react";
+import {MouseEvent as RMouseEvent, useEffect, useState} from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-import { IThread } from "../../api/models";
+import { IPage, IThread, IComment } from "../../api/models";
 import { Error, Loader } from "../../components";
 import { updateThreadById, deleteThread, getThreadById } from "../../api/thread";
 import useFetch from "../../hooks/useFetch";
@@ -13,90 +13,108 @@ import { ReactComponent as Confirm } from "../../assets/icons/check.svg";
 import { ReactComponent as Cancel } from "../../assets/icons/cross.svg";
 import { ReactComponent as Comment } from "../../assets/icons/comment.svg";
 import "./index.css";
-import createComment from "../../api/comment";
+import {getCommentsByPage, createComment, deleteCommentById} from "../../api/comment";
 
 export default function Thread() {
-    const [isSending, setSending] = useState(false);
+    const { user } = useAuth();
+
     const [isCommenting, setCommenting] = useState(false);
-    const [isEditing, setEditing] = useState(false);
-    const [isReady, setReady] = useState(false);
+    const [isReadyToDeleteComment, setReadyToDeleteComment] = useState(false);
+
+    const [isEditingThread, setEditingThread] = useState(false);
+    const [isReadyToDeleteThread, setReadyToDeleteThread] = useState(false);
+
+    const threadId = parseInt(useParams().id!);
+
+    const {
+        data: thread,
+        isLoading: isThreadLoading,
+        error: threadError
+    } = useFetch<IThread>(getThreadById, threadId);
+
+    const [comments, setComments] = useState<IPage<IComment>>({} as IPage<IComment>);
+    const [commentPage, setCommentPage] = useState(1);
 
     const navigate = useNavigate();
 
-    const { user } = useAuth();
+    useEffect(() => {
+        getCommentsByPage(commentPage, threadId)
+            .then(res => setComments({
+                items: comments.items ? comments.items.concat(res.data.items) : res.data.items,
+                isLast: res.data.isLast
+            }));
+    }, [commentPage]);
 
-    const id = parseInt(useParams().id!);
-
-    const { data, isLoading, error } = useFetch<IThread>(getThreadById, id);
-
-    if (isLoading)
-        return <Loader />;
-
-    if (error)
+    if (threadError)
         return <Error message="Thread not found" />;
 
-    async function onClickDeleteHandler() {
-        if (!isReady)
-            return setReady(true);
+    if (isThreadLoading)
+        return <Loader />;
 
-        await deleteThread(data.id!);
+    async function deleteThreadHandler() {
+        if (!isReadyToDeleteThread)
+            return setReadyToDeleteThread(true);
+
+        await deleteThread(threadId);
 
         navigate("/");
     }
 
-    function onClickEditHandler() {
-        setEditing(!isEditing);
+    async function deleteCommentHandler(id: number) {
+        if (!isReadyToDeleteComment)
+            return setReadyToDeleteComment(true);
+
+        await deleteCommentById(id);
+
+        window.location.reload();
     }
 
-    function onClickCommentHandler() {
+    function editThreadHandler() {
+        setEditingThread(!isEditingThread);
+    }
+
+    function commentHandler() {
         setCommenting(!isCommenting);
     }
 
-    function onClickConfirmHandler(event: RMouseEvent<SVGSVGElement, MouseEvent>) {
-        setSending(true);
-
+    function confirmThreadHandler(event: RMouseEvent<SVGSVGElement, MouseEvent>) {
         const data = new FormData(event.currentTarget.closest("form")!);
 
-        updateThreadById(id, {
+        updateThreadById(threadId, {
             title: data.get("title") as string,
             content: data.get("content") as string
         })
             .finally(() => window.location.reload());
     }
 
-    function onClickCommentConfirmHandler(event: RMouseEvent<SVGSVGElement, MouseEvent>) {
+    function loadMoreCommentsHandler() {
+        setCommentPage(commentPage + 1);
+    }
+
+    function confirmCommentHandler(event: RMouseEvent<SVGSVGElement, MouseEvent>) {
         const data = new FormData(event.currentTarget.closest("ul")!.previousElementSibling as HTMLFormElement);
 
         createComment({
-            threadId: id,
+            threadId: threadId,
             content: data.get("content") as string
         })
             .finally(() => window.location.reload());
     }
 
-    if (isSending)
-        return (
-            <section className="main">
-                <div className="content">
-                    <Loader />
-                </div>
-            </section>
-        );
-
-    if (isEditing)
+    if (isEditingThread)
         return (
             <form className="thread-create main">
-                <input type="text" name="title" minLength={4} maxLength={127} defaultValue={ data.title } required />
+                <input type="text" name="title" minLength={4} maxLength={127} defaultValue={ thread.title } required />
 
                 <article className="content">
-                    <textarea name="content" minLength={4} maxLength={32767} defaultValue={ data.content } required></textarea>
+                    <textarea name="content" minLength={4} maxLength={32767} defaultValue={ thread.content } required></textarea>
 
                     <ul className="row option-bar">
                         <li>
-                            <Confirm className="clickable icon" onClick={ onClickConfirmHandler } />
+                            <Confirm className="clickable icon" onClick={ confirmThreadHandler } />
                         </li>
                         <li>
-                            <Cancel className="clickable icon" onClick={ onClickEditHandler } />
+                            <Cancel className="clickable icon" onClick={ editThreadHandler } />
                         </li>
                     </ul>
                 </article>
@@ -106,29 +124,29 @@ export default function Thread() {
     return (
         <section className="main">
             <div>
-                <h1 className="title">{ data.title }</h1>
+                <h1 className="title">{thread.title}</h1>
 
                 <h3 className="description">
-                    <Link to={ `user/${data.user.id}` }>{ data.user.userName }</Link>
+                    <Link to={`user/${thread.user.id}`}>{thread.user.userName}</Link>
                 </h3>
             </div>
 
             <article className="content">
-                <article>{data.content}</article>
+                <article>{thread.content}</article>
 
-                { user?.confirmed && !isCommenting &&
+                {user?.confirmed && !isCommenting &&
                     <ul className="row option-bar">
                         <li>
-                            <Comment className="clickable icon" onClick={ onClickCommentHandler } />
+                            <Comment className="clickable icon" onClick={commentHandler} />
                         </li>
-                        { user?.id === data.user.id &&
+                        {user?.id === thread.user.id &&
                             <>
                                 <li>
-                                    <Edit className="clickable icon" onClick={ onClickEditHandler } />
+                                    <Edit className="clickable icon" onClick={editThreadHandler} />
                                 </li>
                                 <li className="center row">
-                                    { isReady && "Are you sure?" }
-                                    <Delete className="clickable icon" onClick={ onClickDeleteHandler } />
+                                    {isReadyToDeleteThread && "Are you sure?"}
+                                    <Delete className="clickable icon" onClick={deleteThreadHandler} />
                                 </li>
                             </>
                         }
@@ -136,12 +154,12 @@ export default function Thread() {
                 }
             </article>
 
-            { !!data.comments.length &&
+            {(!!comments.items?.length || isCommenting) &&
                 <section className="column comments">
                     <h2 className="title">Comments</h2>
 
                     <ul className="column">
-                        { isCommenting &&
+                        {isCommenting &&
                             <li className="column content">
                                 <form className="comment-create">
                                     <textarea name="content" minLength={4} maxLength={32767} required></textarea>
@@ -149,27 +167,38 @@ export default function Thread() {
 
                                 <ul className="row option-bar">
                                     <li>
-                                        <Confirm className="clickable icon" onClick={ onClickCommentConfirmHandler } />
+                                        <Confirm className="clickable icon" onClick={confirmCommentHandler} />
                                     </li>
                                     <li>
-                                        <Cancel className="clickable icon" onClick={ onClickCommentHandler } />
+                                        <Cancel className="clickable icon" onClick={commentHandler} />
                                     </li>
                                 </ul>
                             </li>
                         }
 
-                        { data.comments.map(c =>
+                        {comments.items?.map(c =>
                             <li className="column" key={c.id}>
                                 <h3 className="description">
-                                    <Link to={`/user/${c.user.id}`}>{ c.user.userName }</Link>
+                                    <Link to={`/user/${c.user.id}`}>{c.user.userName}</Link>
                                 </h3>
 
                                 <article className="content">
-                                    { c.content }
+                                    {c.content}
+
+                                    {c.user.id === user?.id &&
+                                        <ul className="row option-bar">
+                                            <li className="center row">
+                                                {isReadyToDeleteComment && "Are you sure?"}
+                                                <Delete className="clickable icon" onClick={() => deleteCommentHandler(c.id!)} />
+                                            </li>
+                                        </ul>
+                                    }
                                 </article>
                             </li>
-                        ) }
+                        )}
                     </ul>
+
+                    {!comments.isLast && <button onClick={loadMoreCommentsHandler}>Load more</button>}
                 </section>
             }
         </section>
