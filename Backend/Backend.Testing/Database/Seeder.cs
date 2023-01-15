@@ -62,4 +62,19 @@ public class Seeder
 
         return result.Entity;
     }
+
+    public async Task<Comment> SeedCommentAsync()
+    {
+        var thread = await SeedThreadAsync();
+
+        var comment = _commentGenerator.Generate();
+        comment.ThreadId = thread.Id;
+        comment.UserId = thread.UserId;
+
+        var result = await _dbContext.Comments.AddAsync(comment);
+
+        await _dbContext.SaveChangesAsync();
+
+        return result.Entity;
+    }
 }

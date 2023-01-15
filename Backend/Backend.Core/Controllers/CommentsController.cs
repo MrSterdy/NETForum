@@ -46,4 +46,20 @@ public class CommentsController : ControllerBase
 
         return Ok();
     }
+    
+    [Authorize]
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteById(int id)
+    {
+        var comment = await _commentRepository.GetByIdAsync(id);
+        if (comment is null)
+            return NotFound();
+
+        if (comment.UserId != int.Parse(_userManager.GetUserId(User)!))
+            return Forbid();
+
+        await _commentRepository.DeleteAsync(comment);
+
+        return Ok();
+    }
 }
