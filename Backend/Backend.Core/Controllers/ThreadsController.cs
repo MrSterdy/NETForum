@@ -1,6 +1,7 @@
 ﻿using Backend.Core.Database.Repositories;
 using Backend.Core.Identity;
 using Backend.Core.Models;
+using Backend.Core.Models.Comment;
 using Backend.Core.Models.Thread;
 using Backend.Core.Models.User;
 using Thread = Backend.Core.Database.Entities.Thread;
@@ -39,7 +40,8 @@ public class ThreadsController : ControllerBase
             id,
             new UserResponse(user.Id, user.Email!, user.UserName!),
             thread.Title,
-            thread.Content
+            thread.Content,
+            thread.Comments.Select(c => new CommentResponse(c.Id, c.UserId, c.ThreadId, c.Content))
         );
     }
     
@@ -107,7 +109,8 @@ public class ThreadsController : ControllerBase
                 t.Id,
                 new UserResponse(t.UserId, t.User.Email!, t.User.UserName!),
                 t.Title,
-                t.Content
+                t.Content,
+                t.Comments.Select(c => new CommentResponse(c.Id, c.UserId, c.ThreadId, c.Content))
             )),
             rawPage.IsLast
         );

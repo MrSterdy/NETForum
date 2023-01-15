@@ -19,5 +19,5 @@ public class Thread
     [Required, MinLength(4), MaxLength(short.MaxValue)]
     public string Content { get; set; } = default!;
 
-    public IEnumerable<Comment> Comments = default!;
+    public IEnumerable<Comment> Comments = new List<Comment>();
 }
