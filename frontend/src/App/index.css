@@ -14,6 +14,7 @@ body {
     background-color: #EEEEEE;
 
     font-family: Poppins, sans-serif;
+    font-size: 18px;
 }
 
 .centered {
@@ -98,8 +99,22 @@ a:hover {
     margin: 0;
 }
 
+h1 {
+    font-size: 2em;
+}
+h2 {
+    font-size: 1.5em;
+}
+h3 {
+    font-size: 1em;
+}
+h4 {
+    font-size: 0.5em;
+}
+
 .description {
     font-family: Raleway, sans-serif;
+    font-size: 16px;
     
     margin-top: 0;
     margin-bottom: 0;
