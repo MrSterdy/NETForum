@@ -1,8 +1,9 @@
 ﻿using Backend.Core.Database.Entities;
 using Backend.Core.Database.Repositories;
 using Backend.Core.Identity;
+using Backend.Core.Models;
 using Backend.Core.Models.Comment;
-
+using Backend.Core.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,21 @@ public class CommentsController : ControllerBase
         _threadRepository = threadRepository;
         
         _userManager = userManager;
+    }
+
+    public async Task<Page<CommentResponse>> GetByPage(int page, int thread)
+    {
+        var rawPage = await _commentRepository.GetByPageAsync(page, thread);
+
+        return new Page<CommentResponse>(
+            rawPage.Items.Select(c => new CommentResponse(
+                c.Id,
+                new UserResponse(c.UserId, c.User.Email!, c.User.UserName!),
+                c.ThreadId,
+                c.Content
+            )),
+            rawPage.IsLast
+        );
     }
 
     [HttpPost]

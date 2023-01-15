@@ -1,5 +1,5 @@
 ﻿using Backend.Core.Database.Entities;
-
+using Backend.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Core.Database.Repositories;
@@ -12,10 +12,30 @@ public class CommentRepository : ICommentRepository
         _context = context;
 
     public async Task<IEnumerable<Comment>> GetAllAsync() =>
-        await _context.Comments.Include("User").Include("Thread").ToListAsync();
+        await _context.Comments
+            .Include(c => c.User)
+            .ToListAsync();
 
     public async Task<Comment?> GetByIdAsync(int id) =>
-        await _context.Comments.Include("User").Include("Thread").SingleOrDefaultAsync(c => c.Id == id);
+        await _context.Comments
+            .Include(c => c.User)
+            .SingleOrDefaultAsync(c => c.Id == id);
+
+    public async Task<Page<Comment>> GetByPageAsync(int page, int threadId)
+    {
+        if (page <= 0)
+            return new Page<Comment>(new List<Comment>(), true);
+
+        var skipped = _context.Comments
+            .Where(c => c.ThreadId == threadId)
+            .Skip((page - 1) * Constants.PageSize);
+        var isLast = Math.Ceiling((await skipped.CountAsync() - Constants.PageSize) / (float) Constants.PageSize) < 1;
+
+        return new Page<Comment>(await skipped
+            .Take(Constants.PageSize)
+            .Include(c => c.User)
+            .ToListAsync(), isLast);
+    }
 
     public async Task<bool> Exists(int id) =>
         await _context.Comments.AnyAsync(c => c.Id == id);
