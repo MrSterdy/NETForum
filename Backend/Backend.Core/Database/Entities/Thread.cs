@@ -8,6 +8,9 @@ public class Thread
 {
     [Key]
     public int Id { get; set; }
+
+    [Required]
+    public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
     
     [Required]
     public int UserId { get; set; }

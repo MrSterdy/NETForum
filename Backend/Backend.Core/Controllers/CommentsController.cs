@@ -38,6 +38,7 @@ public class CommentsController : ControllerBase
         return new Page<CommentResponse>(
             rawPage.Items.Select(c => new CommentResponse(
                 c.Id,
+                c.CreatedDate,
                 new UserResponse(c.UserId, c.User.Email!, c.User.UserName!),
                 c.ThreadId,
                 c.Content

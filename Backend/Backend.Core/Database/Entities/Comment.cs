@@ -10,6 +10,9 @@ public class Comment
     public int Id { get; set; }
     
     [Required]
+    public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
+    
+    [Required]
     public int UserId { get; set; }
     public ApplicationUser User { get; set; } = default!;
     

@@ -37,6 +37,7 @@ public class ThreadsController : ControllerBase
 
         return new ThreadResponse(
             id,
+            thread.CreatedDate,
             new UserResponse(user.Id, user.Email!, user.UserName!),
             thread.Title,
             thread.Content
@@ -105,6 +106,7 @@ public class ThreadsController : ControllerBase
         return new Page<ThreadResponse>(
             rawPage.Items.Select(t => new ThreadResponse(
                 t.Id,
+                t.CreatedDate,
                 new UserResponse(t.UserId, t.User.Email!, t.User.UserName!),
                 t.Title,
                 t.Content
