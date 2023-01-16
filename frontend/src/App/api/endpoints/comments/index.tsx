@@ -1,6 +1,6 @@
 import axios from "redaxios";
 
-import { IPage, IComment } from "../models";
+import { IPage, IComment } from "../../models";
 
 interface CommentProps {
     threadId: number,
@@ -12,7 +12,12 @@ export function createComment(props: CommentProps) {
 }
 
 export function getCommentsByPage(page: number, threadId: number) {
-    return axios.get<IPage<IComment>>(`${process.env.REACT_APP_COMMENTS_URL}?page=${page}&thread=${threadId}`);
+    return axios.get<IPage<IComment>>(process.env.REACT_APP_COMMENTS_URL!, {
+        params: {
+            page,
+            thread: threadId
+        }
+    });
 }
 
 export function deleteCommentById(id: number) {

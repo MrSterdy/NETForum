@@ -1,9 +1,12 @@
 import { useParams } from "react-router-dom";
 
 import { IUser } from "../../api/models";
+
 import { Loader, Error } from "../../components";
-import { getUserById } from "../../api/user";
-import useFetch from "../../hooks/useFetch";
+
+import { getUserById } from "../../api/endpoints/users";
+
+import { useFetch } from "../../hooks";
 
 export default function User() {
     const { data, isLoading, error } = useFetch<IUser>(getUserById, parseInt(useParams().id!));

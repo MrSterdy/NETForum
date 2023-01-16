@@ -1,11 +1,11 @@
 import { FormEvent } from "react";
-import {Link, Navigate} from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 import { Error, Loader } from "../../../components";
 
-import "../index.css";
+import { useAuth } from "../../../hooks";
 
-import useAuth from "../../../hooks/useAuth";
+import "../index.css";
 
 export default function Signup() {
     const { user, signUp, isLoading, error } = useAuth();

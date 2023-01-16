@@ -1,19 +1,22 @@
-import {MouseEvent as RMouseEvent, useEffect, useState} from "react";
+import { MouseEvent as RMouseEvent, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { IPage, IThread, IComment } from "../../api/models";
+
 import { Error, Loader } from "../../components";
-import { updateThreadById, deleteThread, getThreadById } from "../../api/thread";
-import useFetch from "../../hooks/useFetch";
-import useAuth from "../../hooks/useAuth";
+
+import { updateThreadById, deleteThread, getThreadById } from "../../api/endpoints/threads";
+import { getCommentsByPage, createComment, deleteCommentById } from "../../api/endpoints/comments";
+
+import { useFetch, useAuth } from "../../hooks";
 
 import { ReactComponent as Delete } from "../../assets/icons/trash.svg";
 import { ReactComponent as Edit } from "../../assets/icons/pencil.svg";
 import { ReactComponent as Confirm } from "../../assets/icons/check.svg";
 import { ReactComponent as Cancel } from "../../assets/icons/cross.svg";
 import { ReactComponent as Comment } from "../../assets/icons/comment.svg";
+
 import "./index.css";
-import {getCommentsByPage, createComment, deleteCommentById} from "../../api/comment";
 
 export default function Thread() {
     const { user } = useAuth();

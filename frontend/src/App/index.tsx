@@ -1,14 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 
-import { Error, Navbar } from "./components";
-import { User, Home, Thread, Account } from "./pages";
+import { Error, Navbar, AuthRoute } from "./components";
+import { User, Home, Thread, Account, Login, Signup, ThreadCreate } from "./pages";
 
 import "./index.css";
-
-import Login from "./pages/Auth/Login";
-import Signup from "./pages/Auth/Signup";
-import ThreadCreate from "./pages/Thread/Create";
-import AuthenticatedRoute from "./components/AuthenticatedRoute";
 
 export default function App() {
   return (
@@ -22,9 +17,9 @@ export default function App() {
 
               <Route path="thread/:id" element={ <Thread /> } />
               <Route path="thread/create" element={
-                  <AuthenticatedRoute>
+                  <AuthRoute>
                       <ThreadCreate />
-                  </AuthenticatedRoute>
+                  </AuthRoute>
               } />
 
               <Route path="user/:id" element={ <User /> } />
@@ -33,9 +28,9 @@ export default function App() {
               <Route path="signup" element={ <Signup /> } />
 
               <Route path="account" element={
-                  <AuthenticatedRoute>
+                  <AuthRoute>
                       <Account />
-                  </AuthenticatedRoute>
+                  </AuthRoute>
               } />
           </Routes>
       </>

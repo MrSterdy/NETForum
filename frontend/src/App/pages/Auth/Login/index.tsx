@@ -3,9 +3,9 @@ import { Link, Navigate } from "react-router-dom";
 
 import { Error, Loader } from "../../../components";
 
-import "../index.css";
+import { useAuth } from "../../../hooks";
 
-import useAuth from "../../../hooks/useAuth";
+import "../index.css";
 
 export default function Login() {
     const { user, logIn, isLoading, error } = useAuth();

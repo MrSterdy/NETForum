@@ -1,6 +1,6 @@
 import axios from "redaxios";
 
-import { IUser } from "../models";
+import { IUser } from "../../models";
 
 export interface LoginParams {
     username: string,

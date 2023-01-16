@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Error, Loader } from "../../components";
+
 import { IPage, IThread } from "../../api/models";
-import { getThreadsByPage } from "../../api/thread";
-import useAuth from "../../hooks/useAuth";
+
+import { getThreadsByPage } from "../../api/endpoints/threads";
+
+import { useAuth } from "../../hooks";
 
 import "./index.css";
 

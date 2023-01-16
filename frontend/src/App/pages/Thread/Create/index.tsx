@@ -1,10 +1,11 @@
 import { FormEvent, useState } from "react";
 import { Navigate } from "react-router-dom";
 
-import { createThread } from "../../../api/thread";
+import { createThread } from "../../../api/endpoints/threads";
+
+import { Loader } from "../../../components";
 
 import "./index.css";
-import { Loader } from "../../../components";
 
 export default function ThreadCreate() {
     const [isSent, setSent] = useState(false);
