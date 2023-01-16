@@ -22,7 +22,7 @@ export default function Thread() {
     const { user } = useAuth();
 
     const [isCommenting, setCommenting] = useState(false);
-    const [isReadyToDeleteComment, setReadyToDeleteComment] = useState(false);
+    const [readyToDeleteComment, setReadyToDeleteComment] = useState<number>();
 
     const [isEditingThread, setEditingThread] = useState(false);
     const [isReadyToDeleteThread, setReadyToDeleteThread] = useState(false);
@@ -54,20 +54,22 @@ export default function Thread() {
     if (isThreadLoading)
         return <Loader />;
 
-    async function deleteThreadHandler() {
-        if (!isReadyToDeleteThread)
-            return setReadyToDeleteThread(true);
+    function deleteThreadHandler() {
+        setReadyToDeleteThread(!isReadyToDeleteThread);
+    }
 
+    async function confirmDeleteThreadHandler() {
         await deleteThread(threadId);
 
         navigate("/");
     }
 
-    async function deleteCommentHandler(id: number) {
-        if (!isReadyToDeleteComment)
-            return setReadyToDeleteComment(true);
+    function deleteCommentHandler(id?: number) {
+        setReadyToDeleteComment(id);
+    }
 
-        await deleteCommentById(id);
+    async function confirmDeleteCommentHandler() {
+        await deleteCommentById(readyToDeleteComment as number);
 
         window.location.reload();
     }
@@ -90,10 +92,6 @@ export default function Thread() {
             .finally(() => window.location.reload());
     }
 
-    function loadMoreCommentsHandler() {
-        setCommentPage(commentPage + 1);
-    }
-
     function confirmCommentHandler(event: RMouseEvent<SVGSVGElement, MouseEvent>) {
         const data = new FormData(event.currentTarget.closest("ul")!.previousElementSibling as HTMLFormElement);
 
@@ -102,6 +100,10 @@ export default function Thread() {
             content: data.get("content") as string
         })
             .finally(() => window.location.reload());
+    }
+
+    function loadMoreCommentsHandler() {
+        setCommentPage(commentPage + 1);
     }
 
     if (isEditingThread)
@@ -144,13 +146,28 @@ export default function Thread() {
                         </li>
                         {user?.id === thread.user.id &&
                             <>
-                                <li>
-                                    <Edit className="clickable icon" onClick={editThreadHandler} />
-                                </li>
-                                <li className="center row">
-                                    {isReadyToDeleteThread && "Are you sure?"}
-                                    <Delete className="clickable icon" onClick={deleteThreadHandler} />
-                                </li>
+                                {isReadyToDeleteThread &&
+                                    <>
+                                        <span>Are you sure?</span>
+
+                                        <li className="center row">
+                                            <Confirm className="clickable icon" onClick={confirmDeleteThreadHandler} />
+                                        </li>
+                                        <li className="center row">
+                                            <Cancel className="clickable icon" onClick={deleteThreadHandler} />
+                                        </li>
+                                    </>
+                                }
+                                {!isReadyToDeleteThread &&
+                                    <>
+                                        <li>
+                                            <Edit className="clickable icon" onClick={editThreadHandler} />
+                                        </li>
+                                        <li className="center row">
+                                            <Delete className="clickable icon" onClick={deleteThreadHandler} />
+                                        </li>
+                                    </>
+                                }
                             </>
                         }
                     </ul>
@@ -188,12 +205,26 @@ export default function Thread() {
                                 <article className="content">
                                     {c.content}
 
-                                    {c.user.id === user?.id &&
+                                    {c.user.id === user?.id && (readyToDeleteComment === c.id || readyToDeleteComment === undefined) &&
                                         <ul className="row option-bar">
-                                            <li className="center row">
-                                                {isReadyToDeleteComment && "Are you sure?"}
-                                                <Delete className="clickable icon" onClick={() => deleteCommentHandler(c.id!)} />
-                                            </li>
+                                            {readyToDeleteComment === c.id &&
+                                                <>
+                                                    <span>Are you sure?</span>
+
+                                                    <li className="center row">
+                                                        <Confirm className="clickable icon" onClick={confirmDeleteCommentHandler} />
+                                                    </li>
+                                                    <li className="center row">
+                                                        <Cancel className="clickable icon" onClick={() => deleteCommentHandler()} />
+                                                    </li>
+                                                </>
+                                            }
+
+                                            {readyToDeleteComment === undefined &&
+                                                <li className="center row">
+                                                    <Delete className="clickable icon" onClick={() => deleteCommentHandler(c.id)} />
+                                                </li>
+                                            }
                                         </ul>
                                     }
                                 </article>
