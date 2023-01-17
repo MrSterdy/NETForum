@@ -28,6 +28,7 @@ public class CommentRepository : ICommentRepository
 
         var skipped = _context.Comments
             .Where(c => c.ThreadId == threadId)
+            .OrderByDescending(c => c.CreatedDate)
             .Skip((page - 1) * Constants.PageSize);
         var isLast = Math.Ceiling((await skipped.CountAsync() - Constants.PageSize) / (float) Constants.PageSize) < 1;
 

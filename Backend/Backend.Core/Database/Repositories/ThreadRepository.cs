@@ -27,7 +27,9 @@ public class ThreadRepository : IThreadRepository
         if (page <= 0)
             return new Page<Thread>(new List<Thread>(), true);
 
-        var skipped = _context.Threads.Skip((page - 1) * Constants.PageSize);
+        var skipped = _context.Threads
+            .OrderByDescending(t => t.CreatedDate)
+            .Skip((page - 1) * Constants.PageSize);
         var isLast = Math.Ceiling((await skipped.CountAsync() - Constants.PageSize) / (float) Constants.PageSize) < 1;
 
         return new Page<Thread>(await skipped
@@ -41,7 +43,10 @@ public class ThreadRepository : IThreadRepository
         if (page <= 0)
             return new Page<Thread>(new List<Thread>(), true);
 
-        var skipped = _context.Threads.Where(t => t.UserId == userId).Skip((page - 1) * Constants.PageSize);
+        var skipped = _context.Threads
+            .Where(t => t.UserId == userId)
+            .OrderByDescending(t => t.CreatedDate)
+            .Skip((page - 1) * Constants.PageSize);
         var isLast = Math.Ceiling((await skipped.CountAsync() - Constants.PageSize) / (float) Constants.PageSize) < 1;
 
         return new Page<Thread>(await skipped
