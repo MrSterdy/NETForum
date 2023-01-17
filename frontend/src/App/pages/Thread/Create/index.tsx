@@ -15,7 +15,7 @@ export default function ThreadCreate() {
         return <Loader />;
 
     if (isSent)
-        return <Navigate to="/" />
+        return <Navigate to="/" />;
 
     function submitForm(event: FormEvent<HTMLFormElement>) {
         setLoading(true);
@@ -34,9 +34,17 @@ export default function ThreadCreate() {
 
     return (
         <form className="thread-create main" onSubmit={ submitForm }>
-            <input type="text" name="title" minLength={4} maxLength={127} required />
+            <div>
+                <h2 className="title">Title:</h2>
 
-            <textarea name="content" minLength={4} maxLength={32767} required></textarea>
+                <input type="text" name="title" minLength={4} maxLength={127} required />
+            </div>
+
+            <div>
+                <h2 className="title">Content:</h2>
+
+                <textarea name="content" minLength={4} maxLength={32767} required></textarea>
+            </div>
 
             <button type="submit" className="centered">Create new thread</button>
         </form>

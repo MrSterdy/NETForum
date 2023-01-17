@@ -50,7 +50,7 @@ body {
 .main {
     width: 80%;
 
-    margin: 0 auto;
+    margin: 0 auto var(--border);
 
     display: flex;
     flex-direction: column;
@@ -114,10 +114,8 @@ h4 {
 
 .description {
     font-family: Raleway, sans-serif;
-    font-size: 16px;
-    
-    margin-top: 0;
-    margin-bottom: 0;
+
+    margin: 0;
 }
 
 input, textarea {

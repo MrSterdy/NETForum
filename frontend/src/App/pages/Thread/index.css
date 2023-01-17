@@ -2,11 +2,8 @@
     justify-content: flex-end;
 }
 
-.comments ul {
+.comments > ul {
     gap: 20px;
-}
-.comments li {
-    gap: 5px;
 }
 
 .comment-create textarea {

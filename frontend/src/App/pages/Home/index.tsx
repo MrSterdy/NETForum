@@ -9,8 +9,6 @@ import { getThreadsByPage } from "../../api/endpoints/threads";
 
 import { useAuth } from "../../hooks";
 
-import "./index.css";
-
 export default function Home() {
     const [page, setPage] = useState<IPage<IThread>>({} as IPage<IThread>);
     const [pageNumber, setPageNumber] = useState(1);
@@ -43,8 +41,8 @@ export default function Home() {
                 <h1 className="title">Recent threads</h1>
 
                 { user?.confirmed &&
-                    <h3 className="title">
-                        <Link className="description" to="/thread/create">Create new thread</Link>
+                    <h3 className="description">
+                        <Link to="/thread/create">Create new thread</Link>
                     </h3>
                 }
             </div>
@@ -52,12 +50,12 @@ export default function Home() {
             <ul className="content column thread-list">
                 { page.items.map(thread => (
                     <li key={ thread.id }>
-                        <h3 className="title">
+                        <h2 className="title">
                             <Link to={ `thread/${thread.id}` }>{ thread.title }</Link>
-                        </h3>
-                        <h4 className="description">
+                        </h2>
+                        <h3 className="description">
                             <Link to={ `user/${thread.user.id}` }>{ thread.user.userName }</Link>
-                        </h4>
+                        </h3>
                     </li>
                 )) }
             </ul>
