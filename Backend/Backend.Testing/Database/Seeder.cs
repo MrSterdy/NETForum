@@ -1,4 +1,5 @@
-﻿using Backend.Core.Database.Entities;
+﻿using Backend.Core.Database;
+using Backend.Core.Database.Entities;
 using Backend.Core.Identity;
 using Thread = Backend.Core.Database.Entities.Thread;
 
@@ -11,6 +12,8 @@ namespace Backend.Testing.Database;
 
 public class Seeder
 {
+    private readonly Context _dbContext;
+    
     private readonly Faker<ApplicationUser> _userGenerator = new Faker<ApplicationUser>()
         .RuleFor(u => u.UserName, faker => faker.Internet.UserName().ClampLength(4, 16))
         .RuleFor(u => u.NormalizedUserName, (_, u) => u.UserName!.ToUpper())
@@ -27,10 +30,8 @@ public class Seeder
     private readonly Faker<Comment> _commentGenerator = new Faker<Comment>()
         .RuleFor(t => t.Content, faker => faker.Lorem.Paragraph());
 
-    private readonly TestContext _dbContext;
-
-    public Seeder(TestContext context) =>
-        _dbContext = context;
+    public Seeder(Context dbContext) =>
+        _dbContext = dbContext;
     
     public async Task<ApplicationUser> SeedUserAsync()
     {

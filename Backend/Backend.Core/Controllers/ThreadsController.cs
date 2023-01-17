@@ -71,6 +71,7 @@ public class ThreadsController : ControllerBase
         await _repository.UpdateAsync(new Thread
         {
             Id = id,
+            CreatedDate = thread.CreatedDate,
             UserId = user,
             Title = model.Title,
             Content = model.Content

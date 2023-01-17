@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Backend.Core.Database;
+
+using Microsoft.EntityFrameworkCore;
 
 using Respawn;
 
@@ -6,22 +8,30 @@ namespace Backend.Testing.Database;
 
 public class DbManager : IAsyncLifetime
 {
-    private TestContext Context { get; set; } = default!;
+    private readonly string _connectionString;
+    
+    private Context Context { get; set; } = default!;
     private Respawner Respawner { get; set; } = default!;
     
     public Seeder Seeder { get; private set; } = default!;
+
+    public DbManager(string connectionString) =>
+        _connectionString = connectionString;
 
     public async Task InitializeAsync()
     {
         await InitializeDbContextAsync();
         await InitializeRespawnerAsync();
-        
+
         Seeder = new Seeder(Context);
     }
-    
+
     private async Task InitializeDbContextAsync()
     {
-        Context = new TestContext();
+        Context = new Context(new DbContextOptionsBuilder<Context>()
+                .UseNpgsql(_connectionString)
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                .Options);
 
         await Context.Database.OpenConnectionAsync();
     }

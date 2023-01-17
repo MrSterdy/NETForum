@@ -4,20 +4,12 @@ using System.Net.Http.Json;
 using Backend.Core.Models.Comment;
 using Backend.Core.Models.User.Auth;
 
-using Bogus;
-
 using FluentAssertions;
 
 namespace Backend.Testing.IntegrationTesting.Controllers.CommentsController;
 
 public class CreateCommentsControllerTest : CommentsControllerTest
 {
-    private readonly Faker<CommentRequest> _commentGenerator = new Faker<CommentRequest>()
-        .CustomInstantiator(faker => new CommentRequest(
-            faker.Random.Int(),
-            faker.Lorem.Paragraph()
-        ));
-    
     public CreateCommentsControllerTest(BackendFactory factory) : base(factory)
     {
     }
@@ -47,7 +39,7 @@ public class CreateCommentsControllerTest : CommentsControllerTest
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
         var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, true);
-        var comment = _commentGenerator.Generate();
+        var comment = CommentGenerator.Generate();
         
         // Act
         using var client = Factory.CreateClient();

@@ -13,7 +13,7 @@ public class GetByIdUsersControllerTest : UsersControllerTest
     }
 
     [Fact]
-    public async void GetById_Ok()
+    public async Task GetById_Ok()
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();

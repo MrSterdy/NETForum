@@ -63,6 +63,32 @@ public class CommentsController : ControllerBase
 
         return Ok();
     }
+
+    [Authorize]
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateById(int id, [FromBody] CommentRequest model)
+    {
+        var comment = await _commentRepository.GetByIdAsync(id);
+
+        if (comment is null)
+            return NotFound();
+
+        var user = int.Parse(_userManager.GetUserId(User)!);
+
+        if (comment.UserId != user)
+            return Forbid();
+
+        await _commentRepository.UpdateAsync(new Comment
+        {
+            Id = id,
+            CreatedDate = comment.CreatedDate,
+            UserId = user,
+            ThreadId = comment.ThreadId,
+            Content = model.Content
+        });
+
+        return Ok();
+    }
     
     [Authorize]
     [HttpDelete("{id:int}")]
