@@ -1,9 +1,13 @@
 import { Routes, Route } from "react-router-dom";
+import dayjs from "dayjs";
+import Calendar from "dayjs/plugin/calendar";
 
 import { Error, Navbar, AuthRoute } from "./components";
 import { User, Home, Thread, Account, Login, Signup, ThreadCreate } from "./pages";
 
 import "./index.css";
+
+dayjs.extend(Calendar);
 
 export default function App() {
   return (

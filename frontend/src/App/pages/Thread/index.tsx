@@ -1,5 +1,6 @@
 import React, { MouseEvent as RMouseEvent, useEffect, useState, Fragment } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import dayjs from "dayjs";
 
 import { IPage, IThread, IComment } from "../../api/models";
 
@@ -151,16 +152,18 @@ export default function Thread() {
         );
 
     return (
-        <section className="main">
-            <div>
-                <h1 className="title">{thread.title}</h1>
+        <section className="thread main">
+            <h1 className="title">{thread.title}</h1>
 
-                <h3 className="description">
-                    <Link to={`user/${thread.user.id}`}>{thread.user.userName}</Link>
-                </h3>
-            </div>
+            <section className="content">
+                <div className="info-bar row">
+                    <h4 className="description">
+                        <Link to={`/user/${thread.user.id}`}>{thread.user.userName}</Link>
+                    </h4>
 
-            <article className="content">
+                    <h4 className="description calendar">{dayjs(thread.createdDate).calendar()}</h4>
+                </div>
+
                 <article>{thread.content}</article>
 
                 {user?.confirmed && !isCommenting &&
@@ -196,7 +199,7 @@ export default function Thread() {
                         }
                     </ul>
                 }
-            </article>
+            </section>
 
             {(!!comments.items?.length || isCommenting) &&
                 <section className="column comments">
@@ -241,11 +244,15 @@ export default function Thread() {
 
                                 {editingComment !== c.id &&
                                     <li className="column">
-                                        <h3 className="description">
-                                            <Link to={`/user/${c.user.id}`}>{c.user.userName}</Link>
-                                        </h3>
-
                                         <article className="content">
+                                            <div className="info-bar row">
+                                                <h4 className="description">
+                                                    <Link to={`/user/${c.user.id}`}>{c.user.userName}</Link>
+                                                </h4>
+
+                                                <h4 className="description calendar">{dayjs(c.createdDate).calendar()}</h4>
+                                            </div>
+
                                             {c.content}
 
                                             {c.user.id === user?.id && ((readyToDeleteComment === c.id || readyToDeleteComment === undefined) && editingComment === undefined) &&

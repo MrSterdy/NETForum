@@ -109,13 +109,15 @@ h3 {
     font-size: 1em;
 }
 h4 {
-    font-size: 0.5em;
+    font-size: 0.85em;
 }
 
 .description {
     font-family: Raleway, sans-serif;
 
     margin: 0;
+
+    color: #757575;
 }
 
 input, textarea {
@@ -203,4 +205,8 @@ button:hover {
 
 .clickable.icon:hover {
     fill: var(--main-color);
+}
+
+.info-bar {
+    justify-content: space-between;
 }

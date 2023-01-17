@@ -8,6 +8,7 @@ import { IPage, IThread } from "../../api/models";
 import { getThreadsByPage } from "../../api/endpoints/threads";
 
 import { useAuth } from "../../hooks";
+import dayjs from "dayjs";
 
 export default function Home() {
     const [page, setPage] = useState<IPage<IThread>>({} as IPage<IThread>);
@@ -53,9 +54,14 @@ export default function Home() {
                         <h2 className="title">
                             <Link to={ `thread/${thread.id}` }>{ thread.title }</Link>
                         </h2>
-                        <h3 className="description">
-                            <Link to={ `user/${thread.user.id}` }>{ thread.user.userName }</Link>
-                        </h3>
+
+                        <div className="info-bar row">
+                            <h3 className="description">
+                                <Link to={ `user/${thread.user.id}` }>{ thread.user.userName }</Link>
+                            </h3>
+
+                            <h3 className="description">{dayjs(thread.createdDate).calendar()}</h3>
+                        </div>
                     </li>
                 )) }
             </ul>
