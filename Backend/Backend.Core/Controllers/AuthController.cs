@@ -6,6 +6,7 @@ using Backend.Core.Models.User.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Backend.Core.Controllers;
 
@@ -74,16 +75,14 @@ public class AuthController : ControllerBase
 
         if (!result.Succeeded) 
             return BadRequest(result.Errors);
-        
-        var code = await _userManager.GenerateEmailConfirmationTokenAsync(iUser);
-        var url = Url.Action(
-            "Confirm",
-            "Auth",
-            new { userId = iUser.Id, code },
-            protocol: HttpContext.Request.Scheme
-        );
 
-        await _mailService.SendMailAsync(iUser.Email, "Confirm email", url!);
+        var url = QueryHelpers.AddQueryString(user.ClientUrl, new Dictionary<string, string?>
+        {
+            {"userId", iUser.Id.ToString()},
+            {"code", await _userManager.GenerateEmailConfirmationTokenAsync(iUser)}
+        });
+
+        await _mailService.SendMailAsync(iUser.Email, "Confirm email", url);
 
         return Ok();
     }
