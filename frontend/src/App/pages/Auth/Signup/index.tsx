@@ -26,7 +26,8 @@ export default function Signup() {
         signUp({
             email: data.get("email") as string,
             username: data.get("username") as string,
-            password: data.get("password") as string
+            password: data.get("password") as string,
+            clientUrl: `${window.location.origin}/confirm`
         });
     }
 

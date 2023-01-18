@@ -19,9 +19,21 @@ export async function logOut() {
 export interface SignupParams {
     email: string,
     username: string,
-    password: string
+    password: string,
+
+    clientUrl: string
 }
 
 export async function signUp(params: SignupParams) {
     return await axios.post<IUser>(process.env.REACT_APP_AUTH_SIGNUP_URL!, params);
+}
+
+interface ConfirmEmailParams {
+    userId: number,
+
+    code: string
+}
+
+export async function confirmEmail(params: ConfirmEmailParams) {
+    return await axios.get(process.env.REACT_APP_AUTH_CONFIRM_URL!, { params });
 }

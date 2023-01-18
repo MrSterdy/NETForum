@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import Calendar from "dayjs/plugin/calendar";
 
 import { Error, Navbar, AuthRoute } from "./components";
-import { User, Home, Thread, Account, Login, Signup, ThreadCreate } from "./pages";
+import { User, Home, Thread, Account, Login, Signup, Confirm, ThreadCreate } from "./pages";
 
 import "./index.css";
 
@@ -30,6 +30,7 @@ export default function App() {
 
               <Route path="login" element={ <Login /> } />
               <Route path="signup" element={ <Signup /> } />
+              <Route path="confirm" element={ <Confirm /> } />
 
               <Route path="account" element={
                   <AuthRoute>
