@@ -1,4 +1,4 @@
-﻿namespace Backend.Core.Models.User;
+﻿namespace Backend.Core.Models.User.Account;
 
 public record AccountResponse(
     int Id, 

@@ -16,8 +16,7 @@ public class SignupAuthControllerTest : AuthControllerTest
         .CustomInstantiator(faker => new SignupUserRequest(
             faker.Internet.Email(),
             faker.Internet.UserName().ClampLength(4, 16),
-            faker.Internet.Password(),
-            faker.Internet.Url()
+            faker.Internet.Password()
         ));
 
     protected override string Endpoint => base.Endpoint + "/Signup";
@@ -44,7 +43,7 @@ public class SignupAuthControllerTest : AuthControllerTest
     public async void Signup_InvalidModel_BadRequest()
     {
         // Arrange
-        var user = new SignupUserRequest("invalidemail", "verylonginvalidusername", "pw", "arbuz.pro");
+        var user = new SignupUserRequest("invalidemail", "verylonginvalidusername", "pw");
 
         // Act
         using var client = Factory.CreateClient();

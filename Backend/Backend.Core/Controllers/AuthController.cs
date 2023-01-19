@@ -1,6 +1,8 @@
-﻿using Backend.Core.Identity;
+﻿using System.ComponentModel.DataAnnotations;
+
+using Backend.Core.Identity;
 using Backend.Core.Mail;
-using Backend.Core.Models.User;
+using Backend.Core.Models.User.Account;
 using Backend.Core.Models.User.Auth;
 
 using Microsoft.AspNetCore.Authorization;
@@ -58,7 +60,7 @@ public class AuthController : ControllerBase
         await _signInManager.SignOutAsync();
 
     [HttpPost("Signup")]
-    public async Task<IActionResult> Signup([FromBody] SignupUserRequest user)
+    public async Task<IActionResult> Signup([Url] string clientUrl, [FromBody] SignupUserRequest user)
     {
         if (HttpContext.User.Identity!.IsAuthenticated)
             return Forbid();
@@ -76,7 +78,7 @@ public class AuthController : ControllerBase
         if (!result.Succeeded) 
             return BadRequest(result.Errors);
 
-        var url = QueryHelpers.AddQueryString(user.ClientUrl, new Dictionary<string, string?>
+        var url = QueryHelpers.AddQueryString(clientUrl, new Dictionary<string, string?>
         {
             {"userId", iUser.Id.ToString()},
             {"code", await _userManager.GenerateEmailConfirmationTokenAsync(iUser)}

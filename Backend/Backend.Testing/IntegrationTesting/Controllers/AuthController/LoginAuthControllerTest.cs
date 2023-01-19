@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 
-using Backend.Core.Models.User;
+using Backend.Core.Models.User.Account;
 using Backend.Core.Models.User.Auth;
 
 using Bogus;

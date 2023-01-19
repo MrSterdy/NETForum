@@ -1,11 +1,13 @@
 ﻿using Backend.Core.Database;
+using Backend.Core.Mail;
 using Backend.Testing.Database;
-
+using Backend.Testing.Mail;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Backend.Testing.IntegrationTesting;
 
@@ -25,13 +27,15 @@ public class BackendFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
         builder.ConfigureTestServices(services =>
         {
-            var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<Context>));
-            if (descriptor != null)
-                services.Remove(descriptor);
+            var dbDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<Context>));
+            services.Remove(dbDescriptor!);
 
             services.AddDbContext<Context>(options => options
                 .UseNpgsql(ConnectionString)
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+
+            var mailDescriptor = new ServiceDescriptor(typeof(IMailService), typeof(FakeMailService), ServiceLifetime.Scoped);
+            services.Replace(mailDescriptor);
         });
     }
 
