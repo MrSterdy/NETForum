@@ -10,6 +10,10 @@ export async function getThreadsByPage(page: number) {
     return axios.get<IPage<IThread>>(process.env.REACT_APP_THREADS_URL!, { params: { page } });
 }
 
+export async function getThreadsByUserId(userId: number, page: number) {
+    return await axios.get<IPage<IThread>>(process.env.REACT_APP_THREADS_URL!, { params: { userId, page } });
+}
+
 interface ThreadParams {
     title: string,
     content: string

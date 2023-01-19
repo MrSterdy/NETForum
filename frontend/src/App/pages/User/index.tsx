@@ -1,27 +1,94 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 
-import { IUser } from "../../api/models";
+import { IPage, IThread, IUser } from "../../api/models";
 
 import { Loader, Error } from "../../components";
 
 import { getUserById } from "../../api/endpoints/users";
+import { getThreadsByUserId } from "../../api/endpoints/threads";
 
 import { useFetch } from "../../hooks";
 
-export default function User() {
-    const { data, isLoading, error } = useFetch<IUser>(getUserById, parseInt(useParams().id!));
+import ProfilePic from "../../assets/icons/profile-pic.png";
 
-    if (isLoading)
+import "./index.css";
+
+export default function User() {
+    const { data: user, isLoading: userLoading, error: userError }
+        = useFetch<IUser>(getUserById, parseInt(useParams().id!));
+
+    const [page, setPage] = useState<IPage<IThread>>({} as IPage<IThread>);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [threadsLoading, setThreadsLoading] = useState(true);
+    const [threadsError, setThreadsError] = useState("");
+
+    useEffect(() => {
+        if (user.id === undefined)
+            return;
+
+        getThreadsByUserId(user.id, pageNumber)
+            .then(res => setPage(p => ({
+                items: p.items ? p.items.concat(res.data.items) : res.data.items,
+                isLast: res.data.isLast
+            })))
+            .catch(err => setThreadsError((err as Error).message))
+            .finally(() => setThreadsLoading(false));
+    }, [pageNumber, user.id]);
+
+    if (userLoading)
         return <Loader />;
 
-    if (error)
+    if (userError)
         return <Error message="User not found" />;
 
-    return (
-        <section className="main">
-            <h1 className="title">{ data.userName }</h1>
+    const loadMore = () => setPageNumber(pageNumber + 1);
 
-            <article className="content">TODO...</article>
+    return (
+        <section className="user-profile main">
+            <section className="user-header content row">
+                <div className="center column">
+                    <img src={ProfilePic} className="user-avatar" alt=""/>
+
+                    <h2 className="title">{user.userName}</h2>
+                </div>
+
+                <section className="user-description row">
+                    <div className="column">
+                        <h3 className="title">Email address:</h3>
+                        <h4 className="description">{user.email}</h4>
+                    </div>
+                </section>
+            </section>
+
+            {!threadsLoading &&
+                <section className="column">
+                    <h2 className="title">Recent user's threads</h2>
+
+                    <ul className="content column">
+                        {page.items.map(thread => (
+                            <li key={ thread.id }>
+                                <h2 className="title">
+                                    <Link to={ `thread/${thread.id}` }>{ thread.title }</Link>
+                                </h2>
+
+                                <div className="info-bar row">
+                                    <h3 className="description">
+                                        <Link to={ `user/${thread.user.id}` }>{ thread.user.userName }</Link>
+                                    </h3>
+
+                                    <h3 className="description">{dayjs(thread.createdDate).calendar()}</h3>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+
+                    {!page.isLast && <button type="button" onClick={ loadMore } className="centered">Load more</button>}
+                </section>
+            }
+
+            {threadsError && <Error message="Fetch failed" />}
         </section>
     );
 }

@@ -1,0 +1,15 @@
+.user-avatar {
+    width: 128px;
+    height: 128px;
+}
+
+.content.user-header {
+    gap: 25px;
+}
+.user-header .column {
+    gap: 0;
+}
+
+.main.user-profile {
+    gap: 25px;
+}
