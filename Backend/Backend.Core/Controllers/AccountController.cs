@@ -78,19 +78,4 @@ public class AccountController : ControllerBase
 
         return result.Succeeded ? Ok() : BadRequest(result.Errors);
     }
-
-    [HttpPost("Change/Password")]
-    public async Task<IActionResult> ChangePassword([Url] string clientUrl)
-    {
-        var user = await _userManager.GetUserAsync(User);
-
-        var url = QueryHelpers.AddQueryString(clientUrl, new Dictionary<string, string?>
-        {
-            {"code", await _userManager.GeneratePasswordResetTokenAsync(user!)}
-        });
-
-        await _mailService.SendMailAsync(user!.Email!, "Reset password", url);
-
-        return Ok();
-    }
 }
