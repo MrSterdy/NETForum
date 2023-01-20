@@ -2,10 +2,11 @@ import { Routes, Route } from "react-router-dom";
 import dayjs from "dayjs";
 import Calendar from "dayjs/plugin/calendar";
 
-import { Error, Navbar, AuthRoute } from "./components";
+import { Error, Navbar, AuthProvider } from "./components";
 import { User, Home, Thread, Account, Login, Signup, Confirm, ThreadCreate } from "./pages";
 
 import "./index.css";
+import ConfirmNewEmail from "./pages/Account/ConfirmNewEmail";
 
 dayjs.extend(Calendar);
 
@@ -21,9 +22,9 @@ export default function App() {
 
               <Route path="thread/:id" element={ <Thread /> } />
               <Route path="thread/create" element={
-                  <AuthRoute>
+                  <AuthProvider>
                       <ThreadCreate />
-                  </AuthRoute>
+                  </AuthProvider>
               } />
 
               <Route path="user/:id" element={ <User /> } />
@@ -33,9 +34,14 @@ export default function App() {
               <Route path="confirm" element={ <Confirm /> } />
 
               <Route path="account" element={
-                  <AuthRoute>
+                  <AuthProvider>
                       <Account />
-                  </AuthRoute>
+                  </AuthProvider>
+              } />
+              <Route path="account/confirmNewEmail" element={
+                  <AuthProvider>
+                      <ConfirmNewEmail />
+                  </AuthProvider>
               } />
           </Routes>
       </>

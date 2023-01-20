@@ -8,10 +8,6 @@
     height: 36px;
 }
 
-.auth .center {
-    justify-content: revert;
-}
-
 .auth .error {
     font-size: 18px;
 }

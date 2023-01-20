@@ -41,7 +41,7 @@ export default function Home() {
             <div>
                 <h1 className="title">Recent threads</h1>
 
-                { user?.confirmed &&
+                {user?.confirmed &&
                     <h3 className="description">
                         <Link to="/thread/create">Create new thread</Link>
                     </h3>
@@ -49,7 +49,7 @@ export default function Home() {
             </div>
 
             <ul className="content column thread-list">
-                { page.items.map(thread => (
+                {page.items.map(thread => (
                     <li key={ thread.id }>
                         <h2 className="title">
                             <Link to={ `thread/${thread.id}` }>{ thread.title }</Link>
@@ -63,10 +63,10 @@ export default function Home() {
                             <h3 className="description">{dayjs(thread.createdDate).calendar()}</h3>
                         </div>
                     </li>
-                )) }
+                ))}
             </ul>
 
-            { !page.isLast && <button type="button" onClick={ loadMore } className="centered">Load more</button> }
+            {!page.isLast && <button type="button" onClick={ loadMore } className="centered">Load more</button>}
         </section>
     );
 }

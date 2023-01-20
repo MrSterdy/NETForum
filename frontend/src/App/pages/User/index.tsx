@@ -52,6 +52,10 @@ export default function User() {
                     <img src={ProfilePic} className="user-avatar" alt=""/>
 
                     <h2 className="title">{user.userName}</h2>
+
+                    <h3 className="description">
+                        <Link to="/account">Edit Account</Link>
+                    </h3>
                 </div>
 
                 <section className="user-description row">

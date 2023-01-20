@@ -13,3 +13,10 @@
 .main.user-profile {
     gap: 25px;
 }
+
+.user-description {
+    justify-content: space-between;
+}
+.user-item {
+    align-items: center;
+}
