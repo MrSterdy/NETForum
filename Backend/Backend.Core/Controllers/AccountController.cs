@@ -52,7 +52,7 @@ public class AccountController : ControllerBase
         var url = QueryHelpers.AddQueryString(clientUrl, new Dictionary<string, string?>
         {
             {"code", await _userManager.GenerateChangeEmailTokenAsync(user!, model.Email)},
-            {"newEmail", model.Email}
+            {"email", model.Email}
         });
 
         await _mailService.SendMailAsync(user!.Email!, "Change email", url);
