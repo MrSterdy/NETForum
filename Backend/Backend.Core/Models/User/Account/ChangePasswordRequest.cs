@@ -3,5 +3,6 @@
 namespace Backend.Core.Models.User.Account;
 
 public record ChangePasswordRequest(
-    [Required, MinLength(4), MaxLength(16)] string Password
+    [Required] string Password,
+    [Required, MinLength(4), MaxLength(16)] string NewPassword
 );

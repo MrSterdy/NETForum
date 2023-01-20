@@ -70,11 +70,11 @@ public class AccountController : ControllerBase
     }
     
     [HttpPatch("Password")]
-    public async Task<IActionResult> ConfirmChangePassword(string code, [FromBody] ChangePasswordRequest model)
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest model)
     {
         var user = await _userManager.GetUserAsync(User);
 
-        var result = await _userManager.ResetPasswordAsync(user!, code, model.Password);
+        var result = await _userManager.ChangePasswordAsync(user!, model.Password, model.NewPassword);
 
         return result.Succeeded ? Ok() : BadRequest(result.Errors);
     }
