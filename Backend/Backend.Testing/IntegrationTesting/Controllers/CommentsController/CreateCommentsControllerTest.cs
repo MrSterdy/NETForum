@@ -21,12 +21,15 @@ public class CreateCommentsControllerTest : CommentsControllerTest
         var thread = await Factory.DbManager.Seeder.SeedThreadAsync();
         var user = thread.User;
         var loginUser = new LoginRequest(user.UserName!, user.UserName!, true);
-        var comment = new CommentRequest(thread.Id, thread.Content);
+        var comment = new CommentRequest(thread.Content);
         
         // Act
         using var client = Factory.CreateClient();
         using var firstResponse = await client.PostAsJsonAsync("Api/Account/Login", loginUser);
-        using var secondResponse = await client.PostAsJsonAsync(Endpoint, comment);
+        using var secondResponse = await client.PostAsJsonAsync(
+            Endpoint + $"?threadId={thread.Id}",
+            comment
+        );
         
         // Assert
         firstResponse.EnsureSuccessStatusCode();
@@ -44,7 +47,10 @@ public class CreateCommentsControllerTest : CommentsControllerTest
         // Act
         using var client = Factory.CreateClient();
         using var firstResponse = await client.PostAsJsonAsync("Api/Account/Login", loginUser);
-        using var secondResponse = await client.PostAsJsonAsync(Endpoint, comment);
+        using var secondResponse = await client.PostAsJsonAsync(
+            Endpoint + "?threadId=0",
+            comment
+        );
         
         // Assert
         firstResponse.EnsureSuccessStatusCode();
@@ -58,12 +64,15 @@ public class CreateCommentsControllerTest : CommentsControllerTest
         var thread = await Factory.DbManager.Seeder.SeedThreadAsync();
         var user = thread.User;
         var loginUser = new LoginRequest(user.UserName!, user.UserName!, true);
-        var comment = new CommentRequest(thread.Id, "");
+        var comment = new CommentRequest("");
         
         // Act
         using var client = Factory.CreateClient();
         using var firstResponse = await client.PostAsJsonAsync("Api/Account/Login", loginUser);
-        using var secondResponse = await client.PostAsJsonAsync(Endpoint, comment);
+        using var secondResponse = await client.PostAsJsonAsync(
+            Endpoint + $"?threadId={thread.Id}",
+            comment
+        );
         
         // Assert
         firstResponse.EnsureSuccessStatusCode();

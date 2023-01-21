@@ -8,7 +8,6 @@ public abstract class CommentsControllerTest : ControllerTest
 {
     protected readonly Faker<CommentRequest> CommentGenerator = new Faker<CommentRequest>()
         .CustomInstantiator(faker => new CommentRequest(
-            faker.Random.Int(),
             faker.Lorem.Paragraph()
         ));
     

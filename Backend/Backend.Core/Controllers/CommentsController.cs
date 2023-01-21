@@ -51,15 +51,15 @@ public class CommentsController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Create([FromBody] CommentRequest model)
+    public async Task<IActionResult> Create(int threadId, [FromBody] CommentRequest model)
     {
-        if (!await _threadRepository.Exists(model.ThreadId))
+        if (!await _threadRepository.Exists(threadId))
             return NotFound();
 
         await _commentRepository.AddAsync(new Comment
         {
             UserId = int.Parse(_userManager.GetUserId(User)!),
-            ThreadId = model.ThreadId,
+            ThreadId = threadId,
             Content = model.Content
         });
 
