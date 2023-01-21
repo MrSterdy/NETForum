@@ -5,4 +5,4 @@ public record AccountResponse(
     string Email, 
     bool Confirmed, 
     string UserName
-) : UserResponse(Id, Email, UserName);
+) : UserResponse(Id, UserName);
