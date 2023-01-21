@@ -117,8 +117,8 @@ public class AccountController : ControllerBase
 
         IdentityResult result;
         if (code is not null)
-            result = await _userManager.ResetPasswordAsync(user, code, model.Password);
-        else if (model.NewPassword is not null)
+            result = await _userManager.ResetPasswordAsync(user, code, model.NewPassword);
+        else if (model.Password is not null)
             result = await _userManager.ChangePasswordAsync(user, model.Password, model.NewPassword);
         else
             return BadRequest();
