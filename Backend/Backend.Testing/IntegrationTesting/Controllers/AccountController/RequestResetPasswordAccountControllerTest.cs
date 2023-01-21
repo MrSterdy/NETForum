@@ -8,7 +8,7 @@ namespace Backend.Testing.IntegrationTesting.Controllers.AccountController;
 
 public class RequestResetPasswordAccountControllerTest : AccountControllerTest
 {
-    protected override string Endpoint => base.Endpoint + "/Password";
+    protected override string Endpoint => base.Endpoint + "/ResetPassword";
 
     public RequestResetPasswordAccountControllerTest(BackendFactory factory) : base(factory)
     {
@@ -25,7 +25,10 @@ public class RequestResetPasswordAccountControllerTest : AccountControllerTest
         // Act
         using var client = Factory.CreateClient();
         using var firstResponse = await client.PostAsJsonAsync(base.Endpoint + "/Login", loginUser);
-        using var secondResponse = await client.PatchAsJsonAsync(Endpoint, changePassword);
+        using var secondResponse = await client.PostAsJsonAsync(
+            Endpoint + $"?callbackUrl={new Faker().Internet.Url()}",
+            changePassword
+        );
         
         // Assert
         firstResponse.EnsureSuccessStatusCode();

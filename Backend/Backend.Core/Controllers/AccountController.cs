@@ -57,7 +57,7 @@ public class AccountController : ControllerBase
         return result.Succeeded ? Ok() : BadRequest(result.Errors);
     }
     
-    [HttpPatch("Email")]
+    [HttpPut("Email")]
     public async Task<IActionResult> ChangeEmail(string code)
     {
         var user = await _userManager.GetUserAsync(User);
@@ -91,7 +91,7 @@ public class AccountController : ControllerBase
         return Ok();
     }
 
-    [HttpPatch("UserName")]
+    [HttpPut("UserName")]
     public async Task ChangeUserName([FromBody] ChangeUserNameRequest model)
     {
         var user = await _userManager.GetUserAsync(User);
@@ -101,7 +101,7 @@ public class AccountController : ControllerBase
     }
     
     [AllowAnonymous]
-    [HttpPatch("Password")]
+    [HttpPut("Password")]
     public async Task<IActionResult> ChangePassword(int? userId, string? code, [FromBody] ChangePasswordRequest model)
     {
         ApplicationUser? user;

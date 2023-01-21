@@ -29,7 +29,7 @@ public class ChangeUserNameAccountControllerTest : AccountControllerTest
         // Act
         using var client = Factory.CreateClient();
         using var firstResponse = await client.PostAsJsonAsync(base.Endpoint + "/Login", loginUser);
-        using var secondResponse = await client.PatchAsJsonAsync(Endpoint, userNameRequest);
+        using var secondResponse = await client.PutAsJsonAsync(Endpoint, userNameRequest);
         
         // Assert
         firstResponse.EnsureSuccessStatusCode();
