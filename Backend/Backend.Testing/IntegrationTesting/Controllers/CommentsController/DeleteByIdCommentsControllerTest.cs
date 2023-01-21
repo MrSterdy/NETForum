@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 
-using Backend.Core.Models.User.Auth;
+using Backend.Core.Models.User.Account;
 
 using FluentAssertions;
 
@@ -19,11 +19,11 @@ public class DeleteByIdCommentsControllerTest : CommentsControllerTest
         // Arrange
         var comment = await Factory.DbManager.Seeder.SeedCommentAsync();
         var user = comment.User;
-        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, false);
+        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
         
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync("/Api/Auth/Login", loginUser);
+        using var firstResponse = await client.PostAsJsonAsync("/Api/Account/Login", loginUser);
         using var secondResponse = await client.DeleteAsync(Endpoint + $"/{comment.Id}");
         
         // Assert
@@ -36,11 +36,11 @@ public class DeleteByIdCommentsControllerTest : CommentsControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, false);
+        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
         
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync("/Api/Auth/Login", loginUser);
+        using var firstResponse = await client.PostAsJsonAsync("/Api/Account/Login", loginUser);
         using var secondResponse = await client.DeleteAsync(Endpoint + "/0");
         
         // Assert
@@ -54,11 +54,11 @@ public class DeleteByIdCommentsControllerTest : CommentsControllerTest
         // Arrange
         var comment = await Factory.DbManager.Seeder.SeedCommentAsync();
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, false);
+        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
         
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync("/Api/Auth/Login", loginUser);
+        using var firstResponse = await client.PostAsJsonAsync("/Api/Account/Login", loginUser);
         using var secondResponse = await client.DeleteAsync(Endpoint + $"/{comment.Id}");
         
         // Assert

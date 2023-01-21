@@ -16,7 +16,7 @@ public class UsersController : ControllerBase
         _manager = manager;
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<UserResponse>> GetByIdAsync(int id)
+    public async Task<ActionResult<UserResponse>> GetById(int id)
     {
         var iUser = await _manager.FindByIdAsync(id.ToString());
 

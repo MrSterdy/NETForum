@@ -2,7 +2,7 @@
 using System.Net.Http.Json;
 
 using Backend.Core.Models.Comment;
-using Backend.Core.Models.User.Auth;
+using Backend.Core.Models.User.Account;
 
 using FluentAssertions;
 
@@ -20,12 +20,12 @@ public class CreateCommentsControllerTest : CommentsControllerTest
         // Arrange
         var thread = await Factory.DbManager.Seeder.SeedThreadAsync();
         var user = thread.User;
-        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, true);
+        var loginUser = new LoginRequest(user.UserName!, user.UserName!, true);
         var comment = new CommentRequest(thread.Id, thread.Content);
         
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync("Api/Auth/Login", loginUser);
+        using var firstResponse = await client.PostAsJsonAsync("Api/Account/Login", loginUser);
         using var secondResponse = await client.PostAsJsonAsync(Endpoint, comment);
         
         // Assert
@@ -38,12 +38,12 @@ public class CreateCommentsControllerTest : CommentsControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, true);
+        var loginUser = new LoginRequest(user.UserName!, user.UserName!, true);
         var comment = CommentGenerator.Generate();
         
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync("Api/Auth/Login", loginUser);
+        using var firstResponse = await client.PostAsJsonAsync("Api/Account/Login", loginUser);
         using var secondResponse = await client.PostAsJsonAsync(Endpoint, comment);
         
         // Assert
@@ -57,12 +57,12 @@ public class CreateCommentsControllerTest : CommentsControllerTest
         // Arrange
         var thread = await Factory.DbManager.Seeder.SeedThreadAsync();
         var user = thread.User;
-        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, true);
+        var loginUser = new LoginRequest(user.UserName!, user.UserName!, true);
         var comment = new CommentRequest(thread.Id, "");
         
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync("Api/Auth/Login", loginUser);
+        using var firstResponse = await client.PostAsJsonAsync("Api/Account/Login", loginUser);
         using var secondResponse = await client.PostAsJsonAsync(Endpoint, comment);
         
         // Assert

@@ -2,7 +2,6 @@
 using System.Net.Http.Json;
 
 using Backend.Core.Models.User.Account;
-using Backend.Core.Models.User.Auth;
 
 using FluentAssertions;
 
@@ -19,11 +18,11 @@ public class GetAccountControllerTest : AccountControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var authUser = new LoginUserRequest(user.UserName!, user.UserName!, true);
+        var authUser = new LoginRequest(user.UserName!, user.UserName!, true);
         
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync("Api/Auth/Login", authUser);
+        using var firstResponse = await client.PostAsJsonAsync(Endpoint + "/Login", authUser);
         using var secondResponse = await client.GetAsync(Endpoint);
         
         // Assert
@@ -36,7 +35,7 @@ public class GetAccountControllerTest : AccountControllerTest
     }
     
     [Fact]
-    public async void GetAccount_Unauthorized()
+    public async void Get_Unauthorized()
     {
         // Arrange
 

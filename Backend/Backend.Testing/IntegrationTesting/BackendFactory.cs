@@ -34,7 +34,11 @@ public class BackendFactory : WebApplicationFactory<Program>, IAsyncLifetime
                 .UseNpgsql(ConnectionString)
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
-            var mailDescriptor = new ServiceDescriptor(typeof(IMailService), typeof(FakeMailService), ServiceLifetime.Scoped);
+            var mailDescriptor = new ServiceDescriptor(
+                typeof(IMailService),
+                typeof(FakeMailService),
+                ServiceLifetime.Scoped
+            );
             services.Replace(mailDescriptor);
         });
     }

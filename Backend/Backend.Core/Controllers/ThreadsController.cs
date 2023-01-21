@@ -26,7 +26,7 @@ public class ThreadsController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<ThreadResponse>> GetByIdAsync(int id) 
+    public async Task<ActionResult<ThreadResponse>> GetById(int id) 
     {
         var thread = await _repository.GetByIdAsync(id);
         
@@ -98,7 +98,7 @@ public class ThreadsController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<Page<ThreadResponse>> GetByPageAsync(int page, int? user)
+    public async Task<Page<ThreadResponse>> GetByPage(int page, int? user)
     {
         var rawPage = user is null
             ? await _repository.GetByPageAsync(page)

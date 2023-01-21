@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Backend.Core.Models.Comment;
-using Backend.Core.Models.User.Auth;
+using Backend.Core.Models.User.Account;
 
 using FluentAssertions;
 
@@ -19,12 +19,12 @@ public class UpdateByIdCommentsControllerTest : CommentsControllerTest
         // Arrange
         var comment = await Factory.DbManager.Seeder.SeedCommentAsync();
         var user = comment.User;
-        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, false);
+        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
         var newComment = new CommentRequest(comment.ThreadId, comment.Thread.Content);
 
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync("/Api/Auth/Login", loginUser);
+        using var firstResponse = await client.PostAsJsonAsync("/Api/Account/Login", loginUser);
         using var secondResponse = await client.PutAsJsonAsync(Endpoint + $"/{comment.Id}", newComment);
         
         // Assert
@@ -37,12 +37,12 @@ public class UpdateByIdCommentsControllerTest : CommentsControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, false);
+        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
         var newComment = CommentGenerator.Generate();
         
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync("/Api/Auth/Login", loginUser);
+        using var firstResponse = await client.PostAsJsonAsync("/Api/Account/Login", loginUser);
         using var secondResponse = await client.PutAsJsonAsync(Endpoint + "/0", newComment);
         
         // Assert
@@ -56,12 +56,12 @@ public class UpdateByIdCommentsControllerTest : CommentsControllerTest
         // Arrange
         var comment = await Factory.DbManager.Seeder.SeedCommentAsync();
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, false);
+        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
         var newComment = new CommentRequest(comment.ThreadId, comment.Thread.Content);
         
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync("/Api/Auth/Login", loginUser);
+        using var firstResponse = await client.PostAsJsonAsync("/Api/Account/Login", loginUser);
         using var secondResponse = await client.PutAsJsonAsync(Endpoint + $"/{comment.Id}", newComment);
         
         // Assert

@@ -2,6 +2,6 @@
 
 namespace Backend.Core.Models.User.Account;
 
-public record ChangeEmailRequest(
+public record RequiredEmailRequest(
     [Required, EmailAddress] string Email
 );

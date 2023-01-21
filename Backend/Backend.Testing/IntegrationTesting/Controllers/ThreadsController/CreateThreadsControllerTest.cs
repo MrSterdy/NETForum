@@ -2,7 +2,7 @@
 using System.Net.Http.Json;
 
 using Backend.Core.Models.Thread;
-using Backend.Core.Models.User.Auth;
+using Backend.Core.Models.User.Account;
 
 using FluentAssertions;
 
@@ -19,12 +19,12 @@ public class CreateThreadsControllerTest : ThreadsControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, true);
+        var loginUser = new LoginRequest(user.UserName!, user.UserName!, true);
         var thread = ThreadGenerator.Generate();
         
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync("Api/Auth/Login", loginUser);
+        using var firstResponse = await client.PostAsJsonAsync("Api/Account/Login", loginUser);
         using var secondResponse = await client.PostAsJsonAsync(Endpoint, thread);
         
         // Assert
@@ -37,12 +37,12 @@ public class CreateThreadsControllerTest : ThreadsControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, true);
+        var loginUser = new LoginRequest(user.UserName!, user.UserName!, true);
         var thread = new ThreadRequest("", "");
         
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync("Api/Auth/Login", loginUser);
+        using var firstResponse = await client.PostAsJsonAsync("Api/Account/Login", loginUser);
         using var secondResponse = await client.PostAsJsonAsync(Endpoint, thread);
         
         // Assert

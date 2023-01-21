@@ -1,27 +1,27 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 
-using Backend.Core.Models.User.Auth;
+using Backend.Core.Models.User.Account;
 
 using Bogus;
 using Bogus.Extensions;
 
 using FluentAssertions;
 
-namespace Backend.Testing.IntegrationTesting.Controllers.AuthController;
+namespace Backend.Testing.IntegrationTesting.Controllers.AccountController;
 
-public class SignupAuthControllerTest : AuthControllerTest
+public class SignupAccountControllerTest : AccountControllerTest
 {
-    private readonly Faker<SignupUserRequest> _userGenerator = new Faker<SignupUserRequest>()
-        .CustomInstantiator(faker => new SignupUserRequest(
+    protected override string Endpoint => base.Endpoint + "/Signup";
+    
+    private readonly Faker<SignupRequest> _userGenerator = new Faker<SignupRequest>()
+        .CustomInstantiator(faker => new SignupRequest(
             faker.Internet.Email(),
             faker.Internet.UserName().ClampLength(4, 16),
             faker.Internet.Password()
         ));
 
-    protected override string Endpoint => base.Endpoint + "/Signup";
-
-    public SignupAuthControllerTest(BackendFactory factory) : base(factory)
+    public SignupAccountControllerTest(BackendFactory factory) : base(factory)
     {
     }
 
@@ -33,17 +33,26 @@ public class SignupAuthControllerTest : AuthControllerTest
         
         // Act
         using var client = Factory.CreateClient();
-        using var response = await client.PostAsJsonAsync(Endpoint, user);
+        using var response = await client.PostAsJsonAsync(
+            Endpoint + $"?callbackUrl={new Faker().Internet.Url()}",
+            user
+        );
         
         // Assert
         response.EnsureSuccessStatusCode();
+
+        var result = await ParseResponse<AccountResponse>(response);
+        result.Id.Should().BeGreaterThan(0);
+        result.Email.Should().Be(user.Email);
+        result.UserName.Should().Be(user.UserName);
+        result.Confirmed.Should().BeFalse();
     }
     
     [Fact]
     public async void Signup_InvalidModel_BadRequest()
     {
         // Arrange
-        var user = new SignupUserRequest("invalidemail", "verylonginvalidusername", "pw");
+        var user = new SignupRequest("invalidemail", "verylonginvalidusername", "pw");
 
         // Act
         using var client = Factory.CreateClient();
@@ -61,8 +70,14 @@ public class SignupAuthControllerTest : AuthControllerTest
 
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync(Endpoint, user);
-        using var secondResponse = await client.PostAsJsonAsync(Endpoint, user);
+        using var firstResponse = await client.PostAsJsonAsync(
+            Endpoint + $"?callbackUrl={new Faker().Internet.Url()}",
+            user
+        );
+        using var secondResponse = await client.PostAsJsonAsync(
+            Endpoint + $"?callbackUrl={new Faker().Internet.Url()}",
+            user
+        );
         
         // Assert
         firstResponse.EnsureSuccessStatusCode();
@@ -74,13 +89,16 @@ public class SignupAuthControllerTest : AuthControllerTest
     {
         // Arrange
         var createdUser = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginUserRequest(createdUser.UserName!, createdUser.UserName!, true);
+        var loginUser = new LoginRequest(createdUser.UserName!, createdUser.UserName!, true);
         var signupUser = _userGenerator.Generate();
         
         // Act
         using var client = Factory.CreateClient();
         using var firstResponse = await client.PostAsJsonAsync(base.Endpoint + "/Login", loginUser);
-        using var secondResponse = await client.PostAsJsonAsync(Endpoint, signupUser);
+        using var secondResponse = await client.PostAsJsonAsync(
+            Endpoint + $"?callbackUrl={new Faker().Internet.Url()}",
+            signupUser
+        );
         
         // Assert
         firstResponse.EnsureSuccessStatusCode();

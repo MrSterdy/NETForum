@@ -1,17 +1,17 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 
-using Backend.Core.Models.User.Auth;
+using Backend.Core.Models.User.Account;
 
 using FluentAssertions;
 
-namespace Backend.Testing.IntegrationTesting.Controllers.AuthController;
+namespace Backend.Testing.IntegrationTesting.Controllers.AccountController;
 
-public class LogoutAuthControllerTest : AuthControllerTest
+public class LogoutAccountControllerTest : AccountControllerTest
 {
     protected override string Endpoint => base.Endpoint + "/Logout";
 
-    public LogoutAuthControllerTest(BackendFactory factory) : base(factory)
+    public LogoutAccountControllerTest(BackendFactory factory) : base(factory)
     {
     }
     
@@ -20,7 +20,7 @@ public class LogoutAuthControllerTest : AuthControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginUserRequest(user.UserName!, user.UserName!, true);
+        var loginUser = new LoginRequest(user.UserName!, user.UserName!, true);
         
         // Act
         using var client = Factory.CreateClient();

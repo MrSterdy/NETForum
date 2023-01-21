@@ -4,4 +4,6 @@ namespace Backend.Core.Identity;
 
 public class ApplicationUser : IdentityUser<int>
 {
+    [ProtectedPersonalData]
+    public string? NewEmail { get; set; }
 }
