@@ -26,8 +26,8 @@ public class GetByIdUsersControllerTest : UsersControllerTest
         response.EnsureSuccessStatusCode();
         
         var result = await ParseResponse<UserResponse>(response);
+        result.Id.Should().Be(user.Id);
         result.UserName.Should().Be(user.UserName);
-        result.Email.Should().Be(user.Email);
     }
     
     [Fact]

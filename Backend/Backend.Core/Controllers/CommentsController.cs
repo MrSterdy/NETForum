@@ -41,7 +41,7 @@ public class CommentsController : ControllerBase
             rawPage.Items.Select(c => new CommentResponse(
                 c.Id,
                 c.CreatedDate,
-                new UserResponse(c.UserId, c.User.Email!, c.User.UserName!),
+                new UserResponse(c.UserId, c.User.UserName!),
                 c.ThreadId,
                 c.Content
             )),
