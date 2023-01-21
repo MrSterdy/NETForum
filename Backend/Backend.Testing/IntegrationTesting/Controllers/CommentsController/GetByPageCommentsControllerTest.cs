@@ -20,7 +20,7 @@ public class GetByPageCommentsControllerTest : CommentsControllerTest
         
         // Act
         using var client = Factory.CreateClient();
-        using var response = await client.GetAsync(Endpoint + $"?page=1&thread={comment.ThreadId}");
+        using var response = await client.GetAsync(Endpoint + $"?page=1&threadId={comment.ThreadId}");
         
         // Assert
         response.EnsureSuccessStatusCode();
@@ -37,7 +37,7 @@ public class GetByPageCommentsControllerTest : CommentsControllerTest
         
         // Act
         using var client = Factory.CreateClient();
-        using var response = await client.GetAsync(Endpoint + "?page=1&thread=0");
+        using var response = await client.GetAsync(Endpoint + "?page=1&threadId=0");
         
         // Assert
         response.EnsureSuccessStatusCode();

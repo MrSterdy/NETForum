@@ -33,9 +33,9 @@ public class CommentsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<Page<CommentResponse>> GetByPage(int page, int thread)
+    public async Task<Page<CommentResponse>> GetByPage(int page, int threadId)
     {
-        var rawPage = await _commentRepository.GetByPageAsync(page, thread);
+        var rawPage = await _commentRepository.GetByPageAsync(page, threadId);
 
         return new Page<CommentResponse>(
             rawPage.Items.Select(c => new CommentResponse(

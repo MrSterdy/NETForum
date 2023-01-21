@@ -38,7 +38,7 @@ public class GetByPageThreadsControllerTest : ThreadsControllerTest
         
         // Act
         using var client = Factory.CreateClient();
-        using var response = await client.GetAsync(Endpoint + $"?page=1&user={userId}");
+        using var response = await client.GetAsync(Endpoint + $"?page=1&userId={userId}");
         
         // Assert
         response.EnsureSuccessStatusCode();
@@ -55,7 +55,7 @@ public class GetByPageThreadsControllerTest : ThreadsControllerTest
         
         // Act
         using var client = Factory.CreateClient();
-        using var response = await client.GetAsync(Endpoint + "?page=1&user=0");
+        using var response = await client.GetAsync(Endpoint + "?page=1&userId=0");
         
         // Assert
         response.EnsureSuccessStatusCode();
