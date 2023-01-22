@@ -8,6 +8,7 @@ import { Loader } from "../../../components";
 import "./index.css";
 
 export default function ThreadCreate() {
+    const [error, setError] = useState(false);
     const [isSent, setSent] = useState(false);
     const [isLoading, setLoading] = useState(false);
 
@@ -26,6 +27,7 @@ export default function ThreadCreate() {
 
         createThread(data.get("title") as string, data.get("content") as string)
             .then(() => setSent(true))
+            .catch(() => setError(true))
             .finally(() => setLoading(false));
     }
 
@@ -42,6 +44,8 @@ export default function ThreadCreate() {
 
                 <textarea className="full-width" name="content" minLength={4} maxLength={32767} required></textarea>
             </div>
+
+            {error && <span className="centered error">An error occurred. Please try again later</span>}
 
             <button type="submit" className="centered">Create new thread</button>
         </form>

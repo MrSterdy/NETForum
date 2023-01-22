@@ -1,7 +1,7 @@
 import { FormEvent } from "react";
 import { Link, Navigate } from "react-router-dom";
 
-import { Error, Loader } from "../../../../components";
+import { Loader } from "../../../../components";
 
 import { useAuth } from "../../../../hooks";
 
@@ -49,7 +49,7 @@ export default function Signup() {
                     <input className="full-width" type="password" name="password" minLength={4} maxLength={16} required />
                 </div>
 
-                {!!error && <Error message="User with that email or username already exists" />}
+                {!!error && <span className="centered error">User with this email or username already exists</span>}
 
                 <button type="submit">Continue</button>
 

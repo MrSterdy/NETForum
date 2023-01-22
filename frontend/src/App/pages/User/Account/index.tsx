@@ -2,8 +2,10 @@ import { FormEvent, useState } from "react";
 
 import { useAuth } from "../../../hooks";
 
+import { Loader } from "../../../components";
+
 import ProfilePic from "../../../assets/icons/profile-pic.png";
-import { ReactComponent as Edit  } from "../../../assets/icons/pencil.svg";
+import { ReactComponent as Edit } from "../../../assets/icons/pencil.svg";
 
 import * as accountApi from "../../../api/endpoints/account";
 
@@ -13,57 +15,87 @@ import "../index.css";
 export default function Account() {
     const { account } = useAuth();
 
-    const [isEmailSubmitted, setEmailSubmitted] = useState(false);
+    const [isLoading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
+
     const [isChangingEmail, setChangingEmail] = useState(false);
+    const [isEmailSubmitted, setEmailSubmitted] = useState(false);
 
-    const [isChangingUserName, setChangingUserName] = useState(false);
+    const [isChangingUsername, setChangingUsername] = useState(false);
 
-    const [passwordError, setPasswordError] = useState(false);
     const [isChangingPassword, setChangingPassword] = useState(false);
     const [isResettingPassword, setResettingPassword] = useState(false);
 
-    if (isEmailSubmitted)
-        return <h1 className="title">Please check your Email</h1>;
+    if (isLoading)
+        return <Loader />;
+
+    if (isEmailSubmitted) {
+        if (!error)
+            return <h1 className="title">Please check your Email</h1>;
+
+        setEmailSubmitted(false);
+    }
 
     function changeEmail() {
+        setError(false);
+
         setChangingEmail(!isChangingEmail);
     }
     function submitNewEmail(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
+        setLoading(true);
+
         const data = new FormData(event.currentTarget);
 
         accountApi.requestChangeEmail(data.get("email") as string)
-            .then(() => setEmailSubmitted(true));
+            .then(() => setEmailSubmitted(true))
+            .catch(() => setError(true))
+            .finally(() => setLoading(false));
     }
 
-    function changeUserName() {
-        setChangingUserName(!isChangingUserName);
+    function changeUsername() {
+        setError(false);
+
+        setChangingUsername(!isChangingUsername);
     }
     function submitNewUserName(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
+        setLoading(true);
+
         const data = new FormData(event.currentTarget);
 
         accountApi.changeUsername(data.get("username") as string)
-            .then(() => window.location.reload());
+            .then(() => window.location.reload())
+            .catch(() => setError(true))
+            .finally(() => setLoading(false));
     }
 
     function changePassword() {
+        setError(false);
+
         setChangingPassword(!isChangingPassword);
     }
     function submitNewPassword(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
+        setLoading(true);
+
         const data = new FormData(event.currentTarget);
 
         accountApi.changePassword(data.get("password") as string, data.get("new-password") as string)
             .then(() => window.location.reload())
-            .catch(() => setPasswordError(true));
+            .catch(() => setError(true))
+            .finally(() => setLoading(false));
     }
     function resetPassword() {
+        setLoading(true);
+
         accountApi.requestResetPassword(account!.email)
-            .then(() => setResettingPassword(true));
+            .then(() => setResettingPassword(true))
+            .catch(() => setError(true))
+            .finally(() => setLoading(false));
     }
 
     if (isChangingEmail)
@@ -78,6 +110,8 @@ export default function Account() {
                         <input className="full-width" type="email" name="email" required />
                     </div>
 
+                    {error && <span className="centered error">An error occurred. Please try again later</span>}
+
                     <div className="centered row">
                         <button type="submit">Submit</button>
                         <button type="button" onClick={changeEmail}>Cancel</button>
@@ -86,7 +120,7 @@ export default function Account() {
             </section>
         );
 
-    if (isChangingUserName)
+    if (isChangingUsername)
         return (
             <section className="submit-section main">
                 <h2 className="title">Change Username</h2>
@@ -98,9 +132,11 @@ export default function Account() {
                         <input className="full-width" type="text" name="username" minLength={4} maxLength={16} pattern="[a-zA-Z0-9-._@+]+" required />
                     </div>
 
+                    {error && <span className="centered error">An error occurred. Please try again later</span>}
+
                     <div className="centered row">
                         <button type="submit">Submit</button>
-                        <button type="button" onClick={changeUserName}>Cancel</button>
+                        <button type="button" onClick={changeUsername}>Cancel</button>
                     </div>
                 </form>
             </section>
@@ -127,7 +163,7 @@ export default function Account() {
                         <input className="full-width" type="password" name="new-password" minLength={4} maxLength={16} required />
                     </div>
 
-                    {passwordError && <span className="centered error">Old password is incorrect</span>}
+                    {error && <span className="centered error">Old password is incorrect</span>}
 
                     <div className="centered row">
                         <button type="submit">Submit</button>
@@ -161,7 +197,7 @@ export default function Account() {
 
                         <div className="user-item row">
                             <h4 className="description">{account!.userName}</h4>
-                            <Edit className="clickable icon" onClick={changeUserName} />
+                            <Edit className="clickable icon" onClick={changeUsername} />
                         </div>
                     </div>
 

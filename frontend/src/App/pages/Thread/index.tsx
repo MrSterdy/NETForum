@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 
 import { IPage, IThread, IComment } from "../../api/models";
 
-import { Error, Loader } from "../../components";
+import { Loader } from "../../components";
 
 import { updateThreadById, deleteThread, getThreadById } from "../../api/endpoints/threads";
 import { getCommentsByPage, createComment, deleteCommentById, updateCommentById } from "../../api/endpoints/comments";
@@ -22,10 +22,14 @@ import "./index.css";
 export default function Thread() {
     const { account } = useAuth();
 
+    const [isSubmittingComment, setSubmittingComment] = useState(false);
+    const [submitCommentError, setSubmitCommentError] = useState(false);
     const [isCommenting, setCommenting] = useState(false);
     const [editingComment, setEditingComment] = useState<number>();
     const [readyToDeleteComment, setReadyToDeleteComment] = useState<number>();
 
+    const [isSubmittingThread, setSubmittingThread] = useState(false);
+    const [submitThreadError, setSubmitThreadError] = useState(false);
     const [isEditingThread, setEditingThread] = useState(false);
     const [isReadyToDeleteThread, setReadyToDeleteThread] = useState(false);
 
@@ -51,9 +55,9 @@ export default function Thread() {
     }, [commentPage, threadId]);
 
     if (threadError)
-        return <Error message="Thread not found" />;
+        return <h1 className="error title">Thread Not Found</h1>;
 
-    if (isThreadLoading)
+    if (isThreadLoading || isSubmittingThread)
         return <Loader />;
 
     function deleteThreadHandler() {
@@ -61,7 +65,12 @@ export default function Thread() {
     }
 
     async function confirmDeleteThreadHandler() {
-        await deleteThread(threadId);
+        setSubmittingThread(true);
+
+        deleteThread(threadId)
+            .then(() => window.location.reload())
+            .catch(() => setSubmitThreadError(true))
+            .finally(() => setSubmittingThread(false));
 
         navigate("/");
     }
@@ -71,42 +80,63 @@ export default function Thread() {
     }
 
     async function confirmDeleteCommentHandler() {
-        await deleteCommentById(readyToDeleteComment as number);
+        setSubmittingComment(true);
 
-        window.location.reload();
+        deleteCommentById(readyToDeleteComment as number)
+            .then(() => window.location.reload())
+            .catch(() => setSubmitCommentError(true))
+            .finally(() => setSubmittingComment(false));
     }
 
     function editThreadHandler() {
+        setSubmitThreadError(false);
+
         setEditingThread(!isEditingThread);
     }
 
     function confirmEditThreadHandler(event: RMouseEvent<SVGSVGElement, MouseEvent>) {
+        setSubmittingThread(true);
+
         const data = new FormData(event.currentTarget.closest("form")!);
 
         updateThreadById(threadId, data.get("title") as string, data.get("content") as string)
-            .finally(() => window.location.reload());
+            .then(() => window.location.reload())
+            .catch(() => setSubmitThreadError(true))
+            .finally(() => setSubmittingThread(false));
     }
 
     function editCommentHandler(id?: number) {
+        setSubmitCommentError(false);
+
         setEditingComment(id);
     }
 
     function confirmEditCommentHandler(event: RMouseEvent<SVGSVGElement, MouseEvent>) {
+        setSubmittingComment(true);
+
         const data = new FormData(event.currentTarget.closest("ul")!.previousElementSibling as HTMLFormElement);
 
         updateCommentById(editingComment!, data.get("content") as string)
-            .finally(() => window.location.reload());
+            .then(() => window.location.reload())
+            .catch(() => setSubmitCommentError(true))
+            .finally(() => setSubmittingComment(false));
     }
 
     function commentHandler() {
+        setSubmitCommentError(false);
+
         setCommenting(!isCommenting);
     }
 
     function confirmCommentHandler(event: RMouseEvent<SVGSVGElement, MouseEvent>) {
+        setSubmittingComment(true);
+
         const data = new FormData(event.currentTarget.closest("ul")!.previousElementSibling as HTMLFormElement);
 
         createComment(threadId, data.get("content") as string)
-            .finally(() => window.location.reload());
+            .then(() => window.location.reload())
+            .catch(() => setSubmitCommentError(true))
+            .finally(() => setSubmittingComment(false));
     }
 
     function loadMoreCommentsHandler() {
@@ -125,7 +155,7 @@ export default function Thread() {
                 <div>
                     <h2 className="title">Content:</h2>
 
-                    <article className="content">
+                    <article className="content column">
                         <textarea className="full-width" name="content" minLength={4} maxLength={32767} defaultValue={thread.content} required></textarea>
 
                         <ul className="row option-bar">
@@ -136,9 +166,10 @@ export default function Thread() {
                                 <Cancel className="clickable icon" onClick={editThreadHandler} />
                             </li>
                         </ul>
+
+                        {submitThreadError && <span className="centered error">An error occurred. Please try again later</span>}
                     </article>
                 </div>
-
             </form>
         );
 
@@ -192,7 +223,9 @@ export default function Thread() {
                 }
             </section>
 
-            {(!!comments.items?.length || isCommenting) &&
+            {isSubmittingComment && <Loader />}
+
+            {!isSubmittingComment && (!!comments.items?.length || isCommenting) &&
                 <section className="column comments">
                     <h2 className="title">Comments</h2>
 
@@ -200,7 +233,7 @@ export default function Thread() {
                         {isCommenting &&
                             <li className="column content">
                                 <form className="comment-create">
-                                    <textarea name="full-width content" minLength={4} maxLength={32767} required></textarea>
+                                    <textarea className="full-width" name="content" minLength={4} maxLength={32767} required></textarea>
                                 </form>
 
                                 <ul className="row option-bar">
@@ -211,6 +244,8 @@ export default function Thread() {
                                         <Cancel className="clickable icon" onClick={commentHandler} />
                                     </li>
                                 </ul>
+
+                                {submitCommentError && <span className="centered error">An error occurred. Please try again later</span>}
                             </li>
                         }
 
@@ -219,7 +254,7 @@ export default function Thread() {
                                 {editingComment === c.id &&
                                     <li className="column content">
                                         <form className="comment-create">
-                                            <textarea name="full-width content" minLength={4} maxLength={32767} defaultValue={c.content} required></textarea>
+                                            <textarea className="full-width" name="content" minLength={4} maxLength={32767} defaultValue={c.content} required></textarea>
                                         </form>
 
                                         <ul className="row option-bar">
@@ -230,6 +265,8 @@ export default function Thread() {
                                                 <Cancel className="clickable icon" onClick={() => editCommentHandler()} />
                                             </li>
                                         </ul>
+
+                                        {submitCommentError && <span className="centered error">An error occurred. Please try again later</span>}
                                     </li>
                                 }
 

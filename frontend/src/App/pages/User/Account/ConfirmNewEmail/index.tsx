@@ -4,7 +4,7 @@ import { useFetch } from "../../../../hooks";
 
 import { changeEmail } from "../../../../api/endpoints/account";
 
-import { Error, Loader } from "../../../../components";
+import { Loader } from "../../../../components";
 
 export default function ConfirmNewEmail() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -16,7 +16,7 @@ export default function ConfirmNewEmail() {
         return <Loader />;
 
     if (error)
-        return <Error message="An error occurred" />;
+        return <h1 className="error title">An error occurred. Please try again later</h1>;
 
     return <h1 className="title">Your new email has been confirmed</h1>;
 }

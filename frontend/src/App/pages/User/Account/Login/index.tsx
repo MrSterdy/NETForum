@@ -1,7 +1,7 @@
 import { FormEvent, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 
-import { Error, Loader } from "../../../../components";
+import { Loader } from "../../../../components";
 
 import { useAuth } from "../../../../hooks";
 
@@ -13,13 +13,14 @@ export default function Login() {
     const { account, logIn, isLoading, error } = useAuth();
 
     const [isResetSuccessful, setResetSuccessful] = useState(false);
+    const [resetPassword, setResetPassword] = useState(false);
     const [resetPasswordError, setResetPasswordError] = useState(false);
     const [isResettingPassword, setResettingPassword] = useState(false);
 
     if (account?.confirmed)
         return <Navigate to="/" />;
 
-    if (isLoading)
+    if (isLoading || isResettingPassword)
         return <Loader />;
 
     function submitLoginForm(event: FormEvent<HTMLFormElement>) {
@@ -33,21 +34,26 @@ export default function Login() {
     function submitResetPasswordForm(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
+        setResettingPassword(true);
+
         const data = new FormData(event.currentTarget);
 
         requestResetPassword(data.get("email") as string)
             .then(() => setResetSuccessful(true))
-            .catch(() => setResetPasswordError(true));
+            .catch(() => setResetPasswordError(true))
+            .finally(() => setResettingPassword(false));
     }
 
-    function resetPassword() {
-        setResettingPassword(!isResettingPassword);
+    function startResettingPassword() {
+        setResetPasswordError(false);
+
+        setResetPassword(!resetPassword);
     }
 
     if (isResetSuccessful)
         return <h1 className="title">Please check your email</h1>;
 
-    if (isResettingPassword)
+    if (resetPassword)
         return (
             <section className="submit-section main">
                 <h1 className="title">Reset password</h1>
@@ -59,11 +65,11 @@ export default function Login() {
                         <input className="full-width" type="email" name="email" required />
                     </div>
 
-                    {resetPasswordError && <Error message="User with that email doesn't exist" />}
+                    {resetPasswordError && <span className="centered error">User with this email doesn't exist</span>}
 
                     <div className="centered row">
                         <button type="submit">Submit</button>
-                        <button type="button" onClick={resetPassword}>Cancel</button>
+                        <button type="button" onClick={startResettingPassword}>Cancel</button>
                     </div>
                 </form>
             </section>
@@ -92,13 +98,13 @@ export default function Login() {
                     <span>Remember me</span>
                 </div>
 
-                { !!error && <Error message="Invalid username or password" /> }
+                {!!error && <span className="centered error">Invalid username or password</span>}
 
                 <button type="submit">Continue</button>
 
                 <Link to="/account/signup" className="centered">Sign up</Link>
 
-                <span className="centered clickable" onClick={resetPassword}>Forgot Password?</span>
+                <span className="centered clickable" onClick={startResettingPassword}>Forgot Password?</span>
             </form>
         </section>
     );

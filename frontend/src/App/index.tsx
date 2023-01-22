@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import dayjs from "dayjs";
 import Calendar from "dayjs/plugin/calendar";
 
-import { Error, Navbar, AuthProvider } from "./components";
+import { Navbar, AuthProvider } from "./components";
 import {
     User,
     Home,
@@ -64,7 +64,7 @@ export default function App() {
                   </Route>
               </Route>
 
-              <Route path="*" element={<Error message="Page not found" />} />
+              <Route path="*" element={<h1 className="error title">Page Not Found</h1>} />
           </Routes>
       </>
   );

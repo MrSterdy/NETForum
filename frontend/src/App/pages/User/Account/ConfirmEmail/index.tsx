@@ -4,7 +4,7 @@ import { useFetch } from "../../../../hooks";
 
 import { confirmEmail } from "../../../../api/endpoints/account";
 
-import { Error, Loader } from "../../../../components";
+import { Loader } from "../../../../components";
 
 export default function ConfirmEmail() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -16,7 +16,7 @@ export default function ConfirmEmail() {
         return <Loader />;
 
     if (error)
-        return <Error message="Not found" />;
+        return <h1 className="error title">An error occurred. Please try again later</h1>;
 
     return <h1 className="title">Your email address has been confirmed</h1>;
 }

@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 
 import { IPage, IThread, IUser } from "../../api/models";
 
-import { Loader, Error } from "../../components";
+import { Loader } from "../../components";
 
 import { getUserById } from "../../api/endpoints/users";
 import { getThreadsByUserId } from "../../api/endpoints/threads";
@@ -24,7 +24,7 @@ export default function User() {
     const [page, setPage] = useState<IPage<IThread>>({} as IPage<IThread>);
     const [pageNumber, setPageNumber] = useState(1);
     const [threadsLoading, setThreadsLoading] = useState(true);
-    const [threadsError, setThreadsError] = useState("");
+    const [threadsError, setThreadsError] = useState(false);
 
     useEffect(() => {
         if (user.id === undefined)
@@ -35,15 +35,15 @@ export default function User() {
                 items: p.items ? p.items.concat(res.data.items) : res.data.items,
                 isLast: res.data.isLast
             })))
-            .catch(err => setThreadsError((err as Error).message))
+            .catch(() => setThreadsError(true))
             .finally(() => setThreadsLoading(false));
     }, [pageNumber, user.id]);
 
     if (userLoading)
         return <Loader />;
 
-    if (userError)
-        return <Error message="User not found" />;
+    if (!!userError)
+        return <h1 className="centered error title">User Not Found</h1>;
 
     const loadMore = () => setPageNumber(pageNumber + 1);
 
@@ -63,7 +63,7 @@ export default function User() {
                 </div>
             </section>
 
-            {!threadsLoading &&
+            {!threadsLoading && !threadsError && !!page.items.length &&
                 <section className="column">
                     <h2 className="title">Recent user's threads</h2>
 
@@ -89,7 +89,7 @@ export default function User() {
                 </section>
             }
 
-            {threadsError && <Error message="Fetch failed" />}
+            {threadsError && <h2 className="centered error title">Couldn't fetch user's threads</h2>}
         </section>
     );
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { Error, Loader } from "../../components";
+import { Loader } from "../../components";
 
 import { IPage, IThread } from "../../api/models";
 
@@ -14,7 +14,7 @@ export default function Home() {
     const [page, setPage] = useState<IPage<IThread>>({} as IPage<IThread>);
     const [pageNumber, setPageNumber] = useState(1);
     const [isLoading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const [error, setError] = useState(false);
 
     const { account } = useAuth();
 
@@ -24,7 +24,7 @@ export default function Home() {
                 items: p.items ? p.items.concat(res.data.items) : res.data.items,
                 isLast: res.data.isLast
             })))
-            .catch(err => setError((err as Error).message))
+            .catch(() => setError(true))
             .finally(() => setLoading(false));
     }, [pageNumber]);
 
@@ -34,7 +34,7 @@ export default function Home() {
         return <Loader />;
     
     if (error)
-        return <Error message={ error } />;
+        return <h1 className="error title">Fetch Failed</h1>;
     
     return (
         <section className="main threads">
