@@ -1,19 +1,18 @@
 import { createContext } from "react";
 
-import { IUser } from "../../../api/models";
-import { LoginParams, SignupParams } from "../../../api/endpoints/auth";
+import { IAccount } from "../../../api/models";
 
 interface AuthContextType {
-    user?: IUser;
+    account?: IAccount;
 
     isLoading: boolean;
 
     error: number;
 
-    logIn: (params: LoginParams) => void;
+    logIn: (username: string, password: string, rememberMe: boolean) => void;
     logOut: () => void;
 
-    signUp: (params: SignupParams) => void;
+    signUp: (email: string, username: string, password: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);

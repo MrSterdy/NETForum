@@ -2,28 +2,20 @@ import axios from "redaxios";
 
 import { IPage, IComment } from "../../models";
 
-interface CommentProps {
-    threadId: number,
-    content: string
+const endpoint = process.env.REACT_APP_COMMENTS_URL!;
+
+export function createComment(threadId: number, content: string) {
+    return axios.post(endpoint, { threadId, content }, { withCredentials: true });
 }
 
-export function createComment(props: CommentProps) {
-    return axios.post(process.env.REACT_APP_COMMENTS_URL!, props, { withCredentials: true });
-}
-
-export function updateCommentById(id: number, props: CommentProps) {
-    return axios.put(`${process.env.REACT_APP_COMMENTS_URL}/${id}`, props, { withCredentials: true });
+export function updateCommentById(id: number, content: string) {
+    return axios.put(`${endpoint}/${id}`, { content }, { withCredentials: true });
 }
 
 export function getCommentsByPage(page: number, threadId: number) {
-    return axios.get<IPage<IComment>>(process.env.REACT_APP_COMMENTS_URL!, {
-        params: {
-            page,
-            thread: threadId
-        }
-    });
+    return axios.get<IPage<IComment>>(endpoint, { params: { page, threadId } });
 }
 
 export function deleteCommentById(id: number) {
-    return axios.delete(`${process.env.REACT_APP_COMMENTS_URL}/${id}`, { withCredentials: true });
+    return axios.delete(`${endpoint}/${id}`, { withCredentials: true });
 }

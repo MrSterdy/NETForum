@@ -3,10 +3,20 @@ import dayjs from "dayjs";
 import Calendar from "dayjs/plugin/calendar";
 
 import { Error, Navbar, AuthProvider } from "./components";
-import { User, Home, Thread, Account, Login, Signup, Confirm, ThreadCreate } from "./pages";
+import {
+    User,
+    Home,
+    Thread,
+    Account,
+    Login,
+    Signup,
+    ConfirmEmail,
+    ConfirmNewEmail,
+    ThreadCreate,
+    ResetPassword
+} from "./pages";
 
 import "./index.css";
-import ConfirmNewEmail from "./pages/Account/ConfirmNewEmail";
 
 dayjs.extend(Calendar);
 
@@ -16,33 +26,45 @@ export default function App() {
           <Navbar />
 
           <Routes>
-              <Route path="/" element={ <Home /> } />
+              <Route path="/">
+                  <Route index element={<Home />} />
 
-              <Route path="*" element={ <Error message="Page not found" /> } />
+                  <Route path="account">
+                      <Route index element={
+                          <AuthProvider>
+                              <Account />
+                          </AuthProvider>
+                      } />
 
-              <Route path="thread/:id" element={ <Thread /> } />
-              <Route path="thread/create" element={
-                  <AuthProvider>
-                      <ThreadCreate />
-                  </AuthProvider>
-              } />
+                      <Route path="login" element={<Login />} />
+                      <Route path="signup" element={<Signup />} />
 
-              <Route path="user/:id" element={ <User /> } />
+                      <Route path="confirm-email" element={<ConfirmEmail />} />
+                      <Route path="confirm-new-email" element={
+                          <AuthProvider>
+                              <ConfirmNewEmail />
+                          </AuthProvider>
+                      } />
 
-              <Route path="login" element={ <Login /> } />
-              <Route path="signup" element={ <Signup /> } />
-              <Route path="confirm" element={ <Confirm /> } />
+                      <Route path="reset-password" element={<ResetPassword />} />
+                  </Route>
 
-              <Route path="account" element={
-                  <AuthProvider>
-                      <Account />
-                  </AuthProvider>
-              } />
-              <Route path="account/confirmNewEmail" element={
-                  <AuthProvider>
-                      <ConfirmNewEmail />
-                  </AuthProvider>
-              } />
+                  <Route path="thread">
+                      <Route path=":id" element={<Thread />} />
+
+                      <Route path="create" element={
+                          <AuthProvider>
+                              <ThreadCreate />
+                          </AuthProvider>
+                      } />
+                  </Route>
+
+                  <Route path="user">
+                      <Route path=":id" element={<User />} />
+                  </Route>
+              </Route>
+
+              <Route path="*" element={<Error message="Page not found" />} />
           </Routes>
       </>
   );

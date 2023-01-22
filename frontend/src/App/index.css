@@ -87,7 +87,7 @@ a {
     transition: var(--transition);
 }
 
-a:hover {
+a:hover, .clickable:hover {
     color: var(--main-color);
 }
 
@@ -209,4 +209,8 @@ button:hover {
 
 .info-bar {
     justify-content: space-between;
+}
+
+.full-width {
+    width: 100%;
 }

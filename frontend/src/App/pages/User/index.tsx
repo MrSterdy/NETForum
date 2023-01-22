@@ -9,7 +9,7 @@ import { Loader, Error } from "../../components";
 import { getUserById } from "../../api/endpoints/users";
 import { getThreadsByUserId } from "../../api/endpoints/threads";
 
-import { useFetch } from "../../hooks";
+import { useAuth, useFetch } from "../../hooks";
 
 import ProfilePic from "../../assets/icons/profile-pic.png";
 
@@ -18,6 +18,8 @@ import "./index.css";
 export default function User() {
     const { data: user, isLoading: userLoading, error: userError }
         = useFetch<IUser>(getUserById, parseInt(useParams().id!));
+
+    const { account } = useAuth();
 
     const [page, setPage] = useState<IPage<IThread>>({} as IPage<IThread>);
     const [pageNumber, setPageNumber] = useState(1);
@@ -53,17 +55,12 @@ export default function User() {
 
                     <h2 className="title">{user.userName}</h2>
 
-                    <h3 className="description">
-                        <Link to="/account">Edit Account</Link>
-                    </h3>
+                    {user.id === account?.id &&
+                        <h3 className="description">
+                            <Link to="/account">Edit Account</Link>
+                        </h3>
+                    }
                 </div>
-
-                <section className="user-description row">
-                    <div className="column">
-                        <h3 className="title">Email address:</h3>
-                        <h4 className="description">{user.email}</h4>
-                    </div>
-                </section>
             </section>
 
             {!threadsLoading &&
@@ -74,12 +71,12 @@ export default function User() {
                         {page.items.map(thread => (
                             <li key={ thread.id }>
                                 <h2 className="title">
-                                    <Link to={ `thread/${thread.id}` }>{ thread.title }</Link>
+                                    <Link to={`/thread/${thread.id}`}>{ thread.title }</Link>
                                 </h2>
 
                                 <div className="info-bar row">
                                     <h3 className="description">
-                                        <Link to={ `user/${thread.user.id}` }>{ thread.user.userName }</Link>
+                                        <Link to={ `/user/${thread.user.id}` }>{ thread.user.userName }</Link>
                                     </h3>
 
                                     <h3 className="description">{dayjs(thread.createdDate).calendar()}</h3>

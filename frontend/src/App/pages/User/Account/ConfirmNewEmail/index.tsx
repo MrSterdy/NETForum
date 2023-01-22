@@ -1,15 +1,16 @@
 import { useSearchParams } from "react-router-dom";
 
-import { useFetch } from "../../../hooks";
+import { useFetch } from "../../../../hooks";
 
-import { confirmChangeEmail } from "../../../api/endpoints/account";
+import { changeEmail } from "../../../../api/endpoints/account";
 
-import { Error, Loader } from "../../../components";
+import { Error, Loader } from "../../../../components";
 
 export default function ConfirmNewEmail() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [params, _] = useSearchParams();
 
-    const { isLoading, error } = useFetch(confirmChangeEmail, params.get("code"), params.get("email"));
+    const { isLoading, error } = useFetch(changeEmail, params.get("code"));
 
     if (isLoading)
         return <Loader />;

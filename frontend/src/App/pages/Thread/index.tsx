@@ -20,7 +20,7 @@ import { ReactComponent as Comment } from "../../assets/icons/comment.svg";
 import "./index.css";
 
 export default function Thread() {
-    const { user } = useAuth();
+    const { account } = useAuth();
 
     const [isCommenting, setCommenting] = useState(false);
     const [editingComment, setEditingComment] = useState<number>();
@@ -83,10 +83,7 @@ export default function Thread() {
     function confirmEditThreadHandler(event: RMouseEvent<SVGSVGElement, MouseEvent>) {
         const data = new FormData(event.currentTarget.closest("form")!);
 
-        updateThreadById(threadId, {
-            title: data.get("title") as string,
-            content: data.get("content") as string
-        })
+        updateThreadById(threadId, data.get("title") as string, data.get("content") as string)
             .finally(() => window.location.reload());
     }
 
@@ -97,10 +94,7 @@ export default function Thread() {
     function confirmEditCommentHandler(event: RMouseEvent<SVGSVGElement, MouseEvent>) {
         const data = new FormData(event.currentTarget.closest("ul")!.previousElementSibling as HTMLFormElement);
 
-        updateCommentById(editingComment!, {
-            threadId: threadId,
-            content: data.get("content") as string
-        })
+        updateCommentById(editingComment!, data.get("content") as string)
             .finally(() => window.location.reload());
     }
 
@@ -111,10 +105,7 @@ export default function Thread() {
     function confirmCommentHandler(event: RMouseEvent<SVGSVGElement, MouseEvent>) {
         const data = new FormData(event.currentTarget.closest("ul")!.previousElementSibling as HTMLFormElement);
 
-        createComment({
-            threadId: threadId,
-            content: data.get("content") as string
-        })
+        createComment(threadId, data.get("content") as string)
             .finally(() => window.location.reload());
     }
 
@@ -128,14 +119,14 @@ export default function Thread() {
                 <div>
                     <h2 className="title">Title:</h2>
 
-                    <input type="text" name="title" minLength={4} maxLength={127} defaultValue={thread.title} required />
+                    <input className="full-width" type="text" name="title" minLength={4} maxLength={127} defaultValue={thread.title} required />
                 </div>
 
                 <div>
                     <h2 className="title">Content:</h2>
 
                     <article className="content">
-                        <textarea name="content" minLength={4} maxLength={32767} defaultValue={thread.content} required></textarea>
+                        <textarea className="full-width" name="content" minLength={4} maxLength={32767} defaultValue={thread.content} required></textarea>
 
                         <ul className="row option-bar">
                             <li>
@@ -166,12 +157,12 @@ export default function Thread() {
 
                 <article>{thread.content}</article>
 
-                {user?.confirmed && !isCommenting &&
+                {account?.confirmed && !isCommenting &&
                     <ul className="row option-bar">
                         <li>
                             <Comment className="clickable icon" onClick={commentHandler} />
                         </li>
-                        {user?.id === thread.user.id &&
+                        {account?.id === thread.user.id &&
                             <>
                                 {isReadyToDeleteThread &&
                                     <>
@@ -209,7 +200,7 @@ export default function Thread() {
                         {isCommenting &&
                             <li className="column content">
                                 <form className="comment-create">
-                                    <textarea name="content" minLength={4} maxLength={32767} required></textarea>
+                                    <textarea name="full-width content" minLength={4} maxLength={32767} required></textarea>
                                 </form>
 
                                 <ul className="row option-bar">
@@ -228,7 +219,7 @@ export default function Thread() {
                                 {editingComment === c.id &&
                                     <li className="column content">
                                         <form className="comment-create">
-                                            <textarea name="content" minLength={4} maxLength={32767} defaultValue={c.content} required></textarea>
+                                            <textarea name="full-width content" minLength={4} maxLength={32767} defaultValue={c.content} required></textarea>
                                         </form>
 
                                         <ul className="row option-bar">
@@ -255,7 +246,11 @@ export default function Thread() {
 
                                             {c.content}
 
-                                            {c.user.id === user?.id && ((readyToDeleteComment === c.id || readyToDeleteComment === undefined) && editingComment === undefined) &&
+                                            {c.user.id === account?.id &&
+                                                (
+                                                    (readyToDeleteComment === c.id || readyToDeleteComment === undefined)
+                                                    && editingComment === undefined
+                                                ) &&
                                                 <ul className="row option-bar">
                                                     {readyToDeleteComment === c.id &&
                                                         <>

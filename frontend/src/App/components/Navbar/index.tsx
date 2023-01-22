@@ -7,16 +7,16 @@ import { useAuth } from "../../hooks";
 import "./index.css";
 
 export default function Navbar() {
-    const { user } = useAuth();
+    const { account } = useAuth();
 
     return (
-        <nav>
+        <nav className="full-width">
             <Logo />
 
             <ul>
                 <li>
-                    {!user?.confirmed && <Link to="/login">Log in</Link>}
-                    {user?.confirmed && <Link to={`/user/${user.id}`}>{user.userName}</Link>}
+                    {!account?.confirmed && <Link to="/account/login">Log in</Link>}
+                    {account?.confirmed && <Link to={`/user/${account.id}`}>{account.userName}</Link>}
                 </li>
             </ul>
         </nav>

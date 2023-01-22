@@ -1,0 +1,7 @@
+.submit-section {
+    max-width: 300px;
+}
+
+.submit-section .error {
+    font-size: inherit;
+}

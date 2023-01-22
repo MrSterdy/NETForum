@@ -1,14 +1,17 @@
 import { FormEvent, useState } from "react";
 
-import { useAuth } from "../../hooks";
+import { useAuth } from "../../../hooks";
 
-import ProfilePic from "../../assets/icons/profile-pic.png";
-import { ReactComponent as Edit  } from "../../assets/icons/pencil.svg";
+import ProfilePic from "../../../assets/icons/profile-pic.png";
+import { ReactComponent as Edit  } from "../../../assets/icons/pencil.svg";
 
-import * as account from "../../api/endpoints/account";
+import * as accountApi from "../../../api/endpoints/account";
+
+import "./index.css";
+import "../index.css";
 
 export default function Account() {
-    const { user } = useAuth();
+    const { account } = useAuth();
 
     const [isEmailSubmitted, setEmailSubmitted] = useState(false);
     const [isChangingEmail, setChangingEmail] = useState(false);
@@ -17,6 +20,7 @@ export default function Account() {
 
     const [passwordError, setPasswordError] = useState(false);
     const [isChangingPassword, setChangingPassword] = useState(false);
+    const [isResettingPassword, setResettingPassword] = useState(false);
 
     if (isEmailSubmitted)
         return <h1 className="title">Please check your Email</h1>;
@@ -29,7 +33,7 @@ export default function Account() {
 
         const data = new FormData(event.currentTarget);
 
-        account.changeEmail(data.get("email") as string)
+        accountApi.requestChangeEmail(data.get("email") as string)
             .then(() => setEmailSubmitted(true));
     }
 
@@ -41,7 +45,7 @@ export default function Account() {
 
         const data = new FormData(event.currentTarget);
 
-        account.changeUsername(data.get("username") as string)
+        accountApi.changeUsername(data.get("username") as string)
             .then(() => window.location.reload());
     }
 
@@ -53,21 +57,25 @@ export default function Account() {
 
         const data = new FormData(event.currentTarget);
 
-        account.changePassword(data.get("password") as string, data.get("new-password") as string)
+        accountApi.changePassword(data.get("password") as string, data.get("new-password") as string)
             .then(() => window.location.reload())
             .catch(() => setPasswordError(true));
+    }
+    function resetPassword() {
+        accountApi.requestResetPassword(account!.email)
+            .then(() => setResettingPassword(true));
     }
 
     if (isChangingEmail)
         return (
-            <section className="main auth">
+            <section className="submit-section main">
                 <h2 className="title">Change Email</h2>
 
                 <form className="content column" onSubmit={submitNewEmail}>
                     <div>
                         <h3 className="title">New Email</h3>
 
-                        <input type="email" name="email" required />
+                        <input className="full-width" type="email" name="email" required />
                     </div>
 
                     <div className="centered row">
@@ -80,14 +88,14 @@ export default function Account() {
 
     if (isChangingUserName)
         return (
-            <section className="main auth">
+            <section className="submit-section main">
                 <h2 className="title">Change Username</h2>
 
                 <form className="content column" onSubmit={submitNewUserName}>
                     <div>
                         <h3 className="title">New Username</h3>
 
-                        <input type="text" name="username" minLength={4} maxLength={16} pattern="[a-zA-Z0-9-._@+]+" required />
+                        <input className="full-width" type="text" name="username" minLength={4} maxLength={16} pattern="[a-zA-Z0-9-._@+]+" required />
                     </div>
 
                     <div className="centered row">
@@ -98,22 +106,25 @@ export default function Account() {
             </section>
         );
 
+    if (isResettingPassword)
+        return <h1 className="title">Please check your email</h1>;
+
     if (isChangingPassword)
         return (
-            <section className="main auth">
+            <section className="submit-section main">
                 <h2 className="title">Change Password</h2>
 
                 <form className="content column" onSubmit={submitNewPassword}>
                     <div>
                         <h3 className="title">Password</h3>
 
-                        <input type="password" name="password" required />
+                        <input className="full-width" type="password" name="password" required />
                     </div>
 
                     <div>
                         <h3 className="title">New Password</h3>
 
-                        <input type="password" name="new-password" minLength={4} maxLength={16} required />
+                        <input className="full-width" type="password" name="new-password" minLength={4} maxLength={16} required />
                     </div>
 
                     {passwordError && <span className="centered error">Old password is incorrect</span>}
@@ -122,6 +133,8 @@ export default function Account() {
                         <button type="submit">Submit</button>
                         <button type="button" onClick={changePassword}>Cancel</button>
                     </div>
+
+                    <span className="clickable centered" onClick={resetPassword}>Forgot password?</span>
                 </form>
             </section>
         );
@@ -138,7 +151,7 @@ export default function Account() {
                         <h3 className="title">Email address:</h3>
 
                         <div className="user-item row">
-                            <h4 className="description">{user!.email}</h4>
+                            <h4 className="description">{account!.email}</h4>
                             <Edit className="clickable icon" onClick={changeEmail} />
                         </div>
                     </div>
@@ -147,7 +160,7 @@ export default function Account() {
                         <h3 className="title">Username:</h3>
 
                         <div className="user-item row">
-                            <h4 className="description">{user!.userName}</h4>
+                            <h4 className="description">{account!.userName}</h4>
                             <Edit className="clickable icon" onClick={changeUserName} />
                         </div>
                     </div>

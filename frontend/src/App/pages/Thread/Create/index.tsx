@@ -24,10 +24,7 @@ export default function ThreadCreate() {
 
         const data = new FormData(event.currentTarget);
 
-        createThread({
-            title: data.get("title") as string,
-            content: data.get("content") as string
-        })
+        createThread(data.get("title") as string, data.get("content") as string)
             .then(() => setSent(true))
             .finally(() => setLoading(false));
     }
@@ -37,13 +34,13 @@ export default function ThreadCreate() {
             <div>
                 <h2 className="title">Title:</h2>
 
-                <input type="text" name="title" minLength={4} maxLength={127} required />
+                <input className="full-width" type="text" name="title" minLength={4} maxLength={127} required />
             </div>
 
             <div>
                 <h2 className="title">Content:</h2>
 
-                <textarea name="content" minLength={4} maxLength={32767} required></textarea>
+                <textarea className="full-width" name="content" minLength={4} maxLength={32767} required></textarea>
             </div>
 
             <button type="submit" className="centered">Create new thread</button>

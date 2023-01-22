@@ -6,6 +6,7 @@ export default function useFetch<T>(func: (...args: any[]) => Promise<Response<T
     const [isLoading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const callback = useCallback(() => func(...params), params);
 
     useEffect(() => {

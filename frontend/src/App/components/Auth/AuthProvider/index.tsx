@@ -9,14 +9,12 @@ import { Response } from "redaxios";
 
 import AuthContext from "../AuthContext";
 
-import { IUser } from "../../../api/models";
+import { IAccount } from "../../../api/models";
 
-import { LoginParams, SignupParams } from "../../../api/endpoints/auth";
 import * as accountApi from "../../../api/endpoints/account";
-import * as authApi from "../../../api/endpoints/auth";
 
 export default function AuthProvider({ children }: { children: ReactNode }): JSX.Element {
-    const [user, setUser] = useState<IUser>();
+    const [account, setAccount] = useState<IAccount>();
     const [error, setError] = useState(0);
     const [isLoading, setLoading] = useState(true);
 
@@ -26,47 +24,43 @@ export default function AuthProvider({ children }: { children: ReactNode }): JSX
 
     useEffect(() => {
         accountApi.getAccount()
-            .then(res => setUser(res.data))
+            .then(res => setAccount(res.data))
             .catch(() => {})
             .finally(() => setLoading(false))
     }, []);
 
-    function logIn(params: LoginParams) {
+    function logIn(username: string, password: string, rememberMe: boolean) {
         setLoading(true);
 
-        authApi.logIn(params)
-            .then(res => setUser(res.data))
+        accountApi.login(username, password, rememberMe)
+            .then(res => setAccount(res.data))
             .catch(res => setError((res as Response<unknown>).status))
             .finally(() => setLoading(false));
     }
 
     function logOut() {
-        return authApi.logOut().then(() => setUser(undefined));
+        return accountApi.logout().then(() => setAccount(undefined));
     }
 
-    function signUp(params: SignupParams) {
+    function signUp(email: string, username: string, password: string) {
         setLoading(true);
 
-        authApi.signUp(params)
-            .then(() => setUser({
-                userName: params.username,
-                email: params.email,
-                confirmed: false
-            }))
+        accountApi.signup(email, username, password)
+            .then(res => setAccount(res.data))
             .catch(res => setError((res as Response<unknown>).status))
             .finally(() => setLoading(false));
     }
 
     const memo = useMemo(
         () => ({
-            user,
+            account,
             isLoading,
             error,
             logIn,
             signUp,
             logOut
         }),
-        [user, isLoading, error]
+        [account, isLoading, error]
     );
 
     return (
