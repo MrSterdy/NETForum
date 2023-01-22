@@ -50,7 +50,7 @@ public class AccountController : ControllerBase
         
         var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user is null)
-            return BadRequest();
+            return NotFound();
 
         var result = await _userManager.ConfirmEmailAsync(user, code);
 
@@ -113,7 +113,7 @@ public class AccountController : ControllerBase
             user = await _userManager.FindByIdAsync(userId.ToString()!);
 
         if (user is null)
-            return BadRequest();
+            return NotFound();
 
         IdentityResult result;
         if (code is not null)
@@ -135,7 +135,7 @@ public class AccountController : ControllerBase
             : await _userManager.FindByEmailAsync(model.Email);
 
         if (user is null)
-            return BadRequest();
+            return NotFound();
         
         var url = QueryHelpers.AddQueryString(callbackUrl, new Dictionary<string, string?>
         {
@@ -164,7 +164,6 @@ public class AccountController : ControllerBase
         var iUser = new ApplicationUser { UserName = user.UserName, Email = user.Email };
         
         var result = await _userManager.CreateAsync(iUser, user.Password);
-
         if (!result.Succeeded) 
             return BadRequest(result.Errors);
 
@@ -192,7 +191,6 @@ public class AccountController : ControllerBase
             user.RememberMe,
             false
         );
-
         if (!result.Succeeded)
             return BadRequest();
 
