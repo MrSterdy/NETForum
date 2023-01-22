@@ -6,7 +6,7 @@ import { changeEmail } from "../../../../api/endpoints/account";
 
 import { Loader } from "../../../../components";
 
-export default function ConfirmNewEmail() {
+export default function ChangeEmail() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [params, _] = useSearchParams();
 

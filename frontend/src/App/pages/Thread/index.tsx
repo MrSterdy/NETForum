@@ -114,7 +114,7 @@ export default function Thread() {
     function confirmEditCommentHandler(event: RMouseEvent<SVGSVGElement, MouseEvent>) {
         setSubmittingComment(true);
 
-        const data = new FormData(event.currentTarget.closest("ul")!.previousElementSibling as HTMLFormElement);
+        const data = new FormData(event.currentTarget.closest("form")!);
 
         updateCommentById(editingComment!, data.get("content") as string)
             .then(() => window.location.reload())
@@ -131,7 +131,7 @@ export default function Thread() {
     function confirmCommentHandler(event: RMouseEvent<SVGSVGElement, MouseEvent>) {
         setSubmittingComment(true);
 
-        const data = new FormData(event.currentTarget.closest("ul")!.previousElementSibling as HTMLFormElement);
+        const data = new FormData(event.currentTarget.closest("form")!);
 
         createComment(threadId, data.get("content") as string)
             .then(() => window.location.reload())
@@ -158,6 +158,8 @@ export default function Thread() {
                     <article className="content column">
                         <textarea className="full-width" name="content" minLength={4} maxLength={32767} defaultValue={thread.content} required></textarea>
 
+                        {submitThreadError && <span className="centered error">An error occurred. Please try again later</span>}
+
                         <ul className="row option-bar">
                             <li>
                                 <Confirm className="clickable icon" onClick={confirmEditThreadHandler} />
@@ -166,8 +168,6 @@ export default function Thread() {
                                 <Cancel className="clickable icon" onClick={editThreadHandler} />
                             </li>
                         </ul>
-
-                        {submitThreadError && <span className="centered error">An error occurred. Please try again later</span>}
                     </article>
                 </div>
             </form>
@@ -190,9 +190,6 @@ export default function Thread() {
 
                 {account?.confirmed && !isCommenting &&
                     <ul className="row option-bar">
-                        <li>
-                            <Comment className="clickable icon" onClick={commentHandler} />
-                        </li>
                         {account?.id === thread.user.id &&
                             <>
                                 {isReadyToDeleteThread &&
@@ -219,6 +216,10 @@ export default function Thread() {
                                 }
                             </>
                         }
+
+                        <li>
+                            <Comment className="clickable icon" onClick={commentHandler} />
+                        </li>
                     </ul>
                 }
             </section>
@@ -231,42 +232,42 @@ export default function Thread() {
 
                     <ul className="column">
                         {isCommenting &&
-                            <li className="column content">
-                                <form className="comment-create">
+                            <li>
+                                <form className="comment-create column content">
                                     <textarea className="full-width" name="content" minLength={4} maxLength={32767} required></textarea>
+
+                                    {submitCommentError && <span className="centered error">An error occurred. Please try again later</span>}
+
+                                    <ul className="row option-bar">
+                                        <li>
+                                            <Confirm className="clickable icon" onClick={confirmCommentHandler} />
+                                        </li>
+                                        <li>
+                                            <Cancel className="clickable icon" onClick={commentHandler} />
+                                        </li>
+                                    </ul>
                                 </form>
-
-                                <ul className="row option-bar">
-                                    <li>
-                                        <Confirm className="clickable icon" onClick={confirmCommentHandler} />
-                                    </li>
-                                    <li>
-                                        <Cancel className="clickable icon" onClick={commentHandler} />
-                                    </li>
-                                </ul>
-
-                                {submitCommentError && <span className="centered error">An error occurred. Please try again later</span>}
                             </li>
                         }
 
                         {comments.items?.map(c =>
                             <Fragment key={c.id}>
                                 {editingComment === c.id &&
-                                    <li className="column content">
-                                        <form className="comment-create">
+                                    <li>
+                                        <form className="comment-create column content">
                                             <textarea className="full-width" name="content" minLength={4} maxLength={32767} defaultValue={c.content} required></textarea>
+
+                                            {submitCommentError && <span className="centered error">An error occurred. Please try again later</span>}
+
+                                            <ul className="row option-bar">
+                                                <li>
+                                                    <Confirm className="clickable icon" onClick={confirmEditCommentHandler} />
+                                                </li>
+                                                <li>
+                                                    <Cancel className="clickable icon" onClick={() => editCommentHandler()} />
+                                                </li>
+                                            </ul>
                                         </form>
-
-                                        <ul className="row option-bar">
-                                            <li>
-                                                <Confirm className="clickable icon" onClick={confirmEditCommentHandler} />
-                                            </li>
-                                            <li>
-                                                <Cancel className="clickable icon" onClick={() => editCommentHandler()} />
-                                            </li>
-                                        </ul>
-
-                                        {submitCommentError && <span className="centered error">An error occurred. Please try again later</span>}
                                     </li>
                                 }
 

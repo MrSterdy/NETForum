@@ -5,7 +5,7 @@ import { IPage, IComment } from "../../models";
 const endpoint = process.env.REACT_APP_COMMENTS_URL!;
 
 export function createComment(threadId: number, content: string) {
-    return axios.post(endpoint, { threadId, content }, { withCredentials: true });
+    return axios.post(endpoint, { content }, { withCredentials: true, params: { threadId } });
 }
 
 export function updateCommentById(id: number, content: string) {

@@ -6,5 +6,5 @@ export { default as Account } from "./User/Account";
 export { default as Login } from "./User/Account/Login";
 export { default as Signup } from "./User/Account/Signup";
 export { default as ConfirmEmail } from "./User/Account/ConfirmEmail";
-export { default as ConfirmNewEmail } from "./User/Account/ConfirmNewEmail";
+export { default as ChangeEmail } from "./User/Account/ChangeEmail";
 export { default as ResetPassword } from "./User/Account/ResetPassword";

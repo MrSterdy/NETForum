@@ -13,7 +13,7 @@ import { IAccount } from "../../../api/models";
 
 import * as accountApi from "../../../api/endpoints/account";
 
-export default function AuthProvider({ children }: { children: ReactNode }): JSX.Element {
+export default function AuthProvider({ children }: { children: ReactNode }) {
     const [account, setAccount] = useState<IAccount>();
     const [error, setError] = useState(0);
     const [isLoading, setLoading] = useState(true);
