@@ -6,6 +6,7 @@ import { Loader } from "../../../components";
 
 import ProfilePic from "../../../assets/icons/profile-pic.png";
 import { ReactComponent as Edit } from "../../../assets/icons/pencil.svg";
+import { ReactComponent as Logout } from "../../../assets/icons/sign-out.svg";
 
 import * as accountApi from "../../../api/endpoints/account";
 
@@ -13,7 +14,7 @@ import "./index.css";
 import "../index.css";
 
 export default function Account() {
-    const { account } = useAuth();
+    const { account, logOut, isLoading: isAccountLoading } = useAuth();
 
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState(false);
@@ -26,7 +27,7 @@ export default function Account() {
     const [isChangingPassword, setChangingPassword] = useState(false);
     const [isResettingPassword, setResettingPassword] = useState(false);
 
-    if (isLoading)
+    if (isLoading || isAccountLoading)
         return <Loader />;
 
     if (isEmailSubmitted) {
@@ -209,6 +210,10 @@ export default function Account() {
                             <Edit className="clickable icon" onClick={changePassword} />
                         </div>
                     </div>
+                </section>
+
+                <section className="full-width option-bar row">
+                    <Logout className="clickable icon" onClick={logOut} />
                 </section>
             </section>
         </section>

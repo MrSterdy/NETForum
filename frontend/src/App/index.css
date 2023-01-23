@@ -218,3 +218,11 @@ button:hover {
 .full-width {
     width: 100%;
 }
+
+.option-bar {
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+.option-bar .icon {
+    fill: #757575;
+}

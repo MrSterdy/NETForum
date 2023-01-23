@@ -39,7 +39,12 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     function logOut() {
-        return accountApi.logout().then(() => setAccount(undefined));
+        setLoading(true);
+
+        accountApi.logout()
+            .then(() => setAccount(undefined))
+            .catch(res => setError((res as Response<unknown>).status))
+            .finally(() => setLoading(false));
     }
 
     function signUp(email: string, username: string, password: string) {

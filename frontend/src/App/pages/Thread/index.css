@@ -1,11 +1,3 @@
-.option-bar {
-    justify-content: flex-end;
-}
-
-.option-bar .icon {
-    fill: #757575;
-}
-
 .comments > ul {
     gap: 20px;
 }
