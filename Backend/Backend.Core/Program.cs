@@ -40,6 +40,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
         options.User.RequireUniqueEmail = true;
     })
     .AddDefaultTokenProviders()
+    .AddRoles<IdentityRole<int>>()
     .AddSignInManager<SignInManager>()
     .AddEntityFrameworkStores<Context>();
 

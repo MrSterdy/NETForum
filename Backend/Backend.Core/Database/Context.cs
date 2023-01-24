@@ -14,6 +14,9 @@ public class Context : IdentityUserContext<ApplicationUser, int>
 
     public DbSet<Comment> Comments { get; set; } = default!;
 
+    public DbSet<IdentityRole<int>> Roles { get; set; } = default!;
+    public DbSet<IdentityUserRole<int>> UserRoles { get; set; } = default!;
+
     public Context(DbContextOptions<Context> options) : base(options)
     {
     }
@@ -28,9 +31,13 @@ public class Context : IdentityUserContext<ApplicationUser, int>
             .Ignore(u => u.TwoFactorEnabled)
             .ToTable("Users");
 
-        builder.Entity<IdentityUserClaim<int>>()
-            .ToTable("Claims");
+        builder.Entity<IdentityRole<int>>()
+            .ToTable("Roles");
+        builder.Entity<IdentityUserRole<int>>()
+            .ToTable("UserRoles")
+            .HasKey(r => new { r.UserId, r.RoleId });
 
+        builder.Ignore<IdentityUserClaim<int>>();
         builder.Ignore<IdentityUserToken<int>>();
         builder.Ignore<IdentityUserLogin<int>>();
     }
