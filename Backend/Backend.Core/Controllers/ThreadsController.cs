@@ -89,7 +89,12 @@ public class ThreadsController : ControllerBase
         if (thread is null)
             return NotFound();
 
-        if (thread.UserId != int.Parse(_userManager.GetUserId(User)!))
+        var user = await _userManager.GetUserAsync(User);
+
+        if (
+            thread.UserId != user!.Id &&
+            !await _userManager.IsInRoleAsync(user, "Admin")
+        ) 
             return Forbid();
 
         await _repository.DeleteAsync(thread);

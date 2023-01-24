@@ -100,7 +100,12 @@ public class CommentsController : ControllerBase
         if (comment is null)
             return NotFound();
 
-        if (comment.UserId != int.Parse(_userManager.GetUserId(User)!))
+        var user = await _userManager.GetUserAsync(User);
+
+        if (
+            comment.UserId != user!.Id &&
+            !await _userManager.IsInRoleAsync(user, "Admin")
+        )
             return Forbid();
 
         await _commentRepository.DeleteAsync(comment);
