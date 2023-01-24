@@ -37,7 +37,9 @@ public class Context : IdentityUserContext<ApplicationUser, int>
             .ToTable("UserRoles")
             .HasKey(r => new { r.UserId, r.RoleId });
 
-        builder.Ignore<IdentityUserClaim<int>>();
+        builder.Entity<IdentityUserClaim<int>>()
+            .ToTable("Claims");
+
         builder.Ignore<IdentityUserToken<int>>();
         builder.Ignore<IdentityUserLogin<int>>();
     }
