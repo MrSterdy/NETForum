@@ -195,8 +195,12 @@ public class AccountController : ControllerBase
             user.UserName,
             user.Password,
             user.RememberMe,
-            false
+            lockoutOnFailure: true
         );
+        
+        if (result.IsLockedOut)
+            return new StatusCodeResult(429);
+        
         if (!result.Succeeded)
             return BadRequest();
 
