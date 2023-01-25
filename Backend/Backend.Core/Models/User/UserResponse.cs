@@ -2,5 +2,6 @@
 
 public record UserResponse(
     int Id,
-    string UserName
+    string UserName,
+    bool IsAdmin
 );

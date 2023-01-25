@@ -38,7 +38,7 @@ public class ThreadsController : ControllerBase
         return new ThreadResponse(
             id,
             thread.CreatedDate,
-            new UserResponse(user.Id, user.UserName!),
+            new UserResponse(user.Id, user.UserName!, await _userManager.IsInRoleAsync(user, "Admin")),
             thread.Title,
             thread.Content
         );
@@ -108,15 +108,14 @@ public class ThreadsController : ControllerBase
             ? await _repository.GetByPageAsync(page)
             : await _repository.GetByUserIdAsync(userId.Value, page);
 
-        return new Page<ThreadResponse>(
-            rawPage.Items.Select(t => new ThreadResponse(
-                t.Id,
-                t.CreatedDate,
-                new UserResponse(t.UserId, t.User.UserName!),
-                t.Title,
-                t.Content
-            )),
-            rawPage.IsLast
-        );
+        var threads = rawPage.Items.Select(async t => new ThreadResponse(
+            t.Id,
+            t.CreatedDate,
+            new UserResponse(t.UserId, t.User.UserName!, await _userManager.IsInRoleAsync(t.User, "Admin")),
+            t.Title,
+            t.Content
+        ));
+
+        return new Page<ThreadResponse>(await Task.WhenAll(threads), rawPage.IsLast);
     }
 }

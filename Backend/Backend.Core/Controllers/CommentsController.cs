@@ -37,16 +37,15 @@ public class CommentsController : ControllerBase
     {
         var rawPage = await _commentRepository.GetByPageAsync(page, threadId);
 
-        return new Page<CommentResponse>(
-            rawPage.Items.Select(c => new CommentResponse(
-                c.Id,
-                c.CreatedDate,
-                new UserResponse(c.UserId, c.User.UserName!),
-                c.ThreadId,
-                c.Content
-            )),
-            rawPage.IsLast
-        );
+        var commentTasks = rawPage.Items.Select(async c => new CommentResponse(
+            c.Id,
+            c.CreatedDate,
+            new UserResponse(c.UserId, c.User.UserName!, await _userManager.IsInRoleAsync(c.User, "Admin")),
+            c.ThreadId,
+            c.Content
+        ));
+
+        return new Page<CommentResponse>(await Task.WhenAll(commentTasks), rawPage.IsLast);
     }
 
     [HttpPost]

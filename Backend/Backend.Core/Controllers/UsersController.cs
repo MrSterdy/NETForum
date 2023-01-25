@@ -20,6 +20,10 @@ public class UsersController : ControllerBase
     {
         var iUser = await _manager.FindByIdAsync(id.ToString());
 
-        return iUser is null ? NotFound() : new UserResponse(iUser.Id, iUser.UserName!);
+        return iUser is null ? NotFound() : new UserResponse(
+            iUser.Id, 
+            iUser.UserName!,
+            await _manager.IsInRoleAsync(iUser, "Admin")
+        );
     }
 }

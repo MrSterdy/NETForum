@@ -38,7 +38,13 @@ public class AccountController : ControllerBase
     {
         var found = await _userManager.GetUserAsync(User);
 
-        return new AccountResponse(found!.Id, found.Email!, found.EmailConfirmed, found.UserName!);
+        return new AccountResponse(
+            found!.Id,
+            found.Email!,
+            found.EmailConfirmed,
+            found.UserName!,
+            await _userManager.IsInRoleAsync(found, "Admin")
+        );
     }
 
     [AllowAnonymous]
@@ -175,7 +181,7 @@ public class AccountController : ControllerBase
 
         await _mailService.SendMailAsync(iUser.Email, "Confirm email", url);
 
-        return new AccountResponse(iUser.Id, iUser.Email, iUser.EmailConfirmed, iUser.UserName);
+        return new AccountResponse(iUser.Id, iUser.Email, false, user.UserName, false);
     }
     
     [AllowAnonymous]
@@ -196,7 +202,13 @@ public class AccountController : ControllerBase
 
         var account = await _userManager.FindByNameAsync(user.UserName);
 
-        return new AccountResponse(account!.Id, account.Email!, account.EmailConfirmed, account.UserName!);
+        return new AccountResponse(
+            account!.Id,
+            account.Email!,
+            account.EmailConfirmed,
+            account.UserName!,
+            await _userManager.IsInRoleAsync(account, "Admin")
+        );
     }
     
     [HttpPost("Logout")]
