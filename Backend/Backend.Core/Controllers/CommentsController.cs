@@ -102,14 +102,13 @@ public class CommentsController : ControllerBase
 
         var user = await _userManager.GetUserAsync(User);
 
-        if (
-            comment.UserId != user!.Id &&
-            !await _userManager.IsInRoleAsync(user, "Admin")
-        )
-            return Forbid();
+        if (comment.UserId == user!.Id || await _userManager.IsInRoleAsync(user, "Admin"))
+        {
+            await _commentRepository.DeleteAsync(comment);
 
-        await _commentRepository.DeleteAsync(comment);
-
-        return Ok();
+            return Ok();
+        }
+        
+        return Forbid();
     }
 }

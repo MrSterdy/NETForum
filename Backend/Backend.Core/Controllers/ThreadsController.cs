@@ -91,15 +91,14 @@ public class ThreadsController : ControllerBase
 
         var user = await _userManager.GetUserAsync(User);
 
-        if (
-            thread.UserId != user!.Id &&
-            !await _userManager.IsInRoleAsync(user, "Admin")
-        ) 
-            return Forbid();
+        if (thread.UserId == user!.Id || await _userManager.IsInRoleAsync(user, "Admin"))
+        {
+            await _repository.DeleteAsync(thread);
 
-        await _repository.DeleteAsync(thread);
+            return Ok();
+        }
 
-        return Ok();
+        return Forbid();
     }
     
     [HttpGet]
