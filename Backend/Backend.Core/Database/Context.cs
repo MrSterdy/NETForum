@@ -33,6 +33,10 @@ public class Context : IdentityUserContext<ApplicationUser, int>
 
         builder.Entity<IdentityRole<int>>()
             .ToTable("Roles");
+        
+        builder.Entity<IdentityRoleClaim<int>>()
+            .ToTable("RoleClaims");
+        
         builder.Entity<IdentityUserRole<int>>()
             .ToTable("UserRoles")
             .HasKey(r => new { r.UserId, r.RoleId });
