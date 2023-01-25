@@ -4,6 +4,7 @@ using Backend.Core.Database;
 using Backend.Core.Database.Repositories;
 using Backend.Core.Identity;
 using Backend.Core.Mail;
+using Backend.Core.Middlewares;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -79,6 +80,8 @@ app.UseCors("CORS");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<DisabledUserMiddleware>();
 
 app.MapControllers();
 

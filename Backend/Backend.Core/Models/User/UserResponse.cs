@@ -3,5 +3,6 @@
 public record UserResponse(
     int Id,
     string UserName,
-    bool IsAdmin
+    bool Enabled,
+    bool Admin
 );

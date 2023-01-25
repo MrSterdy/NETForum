@@ -43,6 +43,7 @@ public class AccountController : ControllerBase
             found.Email!,
             found.EmailConfirmed,
             found.UserName!,
+            found.Enabled,
             await _userManager.IsInRoleAsync(found, "Admin")
         );
     }
@@ -181,7 +182,14 @@ public class AccountController : ControllerBase
 
         await _mailService.SendMailAsync(iUser.Email, "Confirm email", url);
 
-        return new AccountResponse(iUser.Id, iUser.Email, false, user.UserName, false);
+        return new AccountResponse(
+            iUser.Id,
+            iUser.Email,
+            Confirmed: false,
+            user.UserName,
+            Enabled: true,
+            Admin: false
+        );
     }
     
     [AllowAnonymous]
@@ -190,6 +198,11 @@ public class AccountController : ControllerBase
     {
         if (User.Identity!.IsAuthenticated)
             return Forbid();
+
+        var iUser = await _userManager.FindByNameAsync(user.UserName);
+
+        if (iUser is null || !iUser.Enabled)
+            return BadRequest();
 
         var result = await _signInManager.PasswordSignInAsync(
             user.UserName,
@@ -211,6 +224,7 @@ public class AccountController : ControllerBase
             account.Email!,
             account.EmailConfirmed,
             account.UserName!,
+            account.Enabled,
             await _userManager.IsInRoleAsync(account, "Admin")
         );
     }

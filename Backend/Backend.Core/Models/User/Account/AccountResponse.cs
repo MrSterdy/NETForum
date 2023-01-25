@@ -5,5 +5,6 @@ public record AccountResponse(
     string Email, 
     bool Confirmed, 
     string UserName,
-    bool IsAdmin
-) : UserResponse(Id, UserName, IsAdmin);
+    bool Enabled,
+    bool Admin
+) : UserResponse(Id, UserName, Enabled, Admin);

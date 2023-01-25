@@ -23,6 +23,7 @@ public class UsersController : ControllerBase
         return iUser is null ? NotFound() : new UserResponse(
             iUser.Id, 
             iUser.UserName!,
+            iUser.Enabled,
             await _manager.IsInRoleAsync(iUser, "Admin")
         );
     }

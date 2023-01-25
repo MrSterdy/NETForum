@@ -38,7 +38,12 @@ public class ThreadsController : ControllerBase
         return new ThreadResponse(
             id,
             thread.CreatedDate,
-            new UserResponse(user.Id, user.UserName!, await _userManager.IsInRoleAsync(user, "Admin")),
+            new UserResponse(
+                user.Id, 
+                user.UserName!, 
+                user.Enabled,
+                await _userManager.IsInRoleAsync(user, "Admin")
+            ),
             thread.Title,
             thread.Content
         );
@@ -111,7 +116,12 @@ public class ThreadsController : ControllerBase
         var threads = rawPage.Items.Select(async t => new ThreadResponse(
             t.Id,
             t.CreatedDate,
-            new UserResponse(t.UserId, t.User.UserName!, await _userManager.IsInRoleAsync(t.User, "Admin")),
+            new UserResponse(
+                t.UserId, 
+                t.User.UserName!,
+                t.User.Enabled,
+                await _userManager.IsInRoleAsync(t.User, "Admin")
+            ),
             t.Title,
             t.Content
         ));

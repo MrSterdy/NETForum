@@ -40,7 +40,12 @@ public class CommentsController : ControllerBase
         var commentTasks = rawPage.Items.Select(async c => new CommentResponse(
             c.Id,
             c.CreatedDate,
-            new UserResponse(c.UserId, c.User.UserName!, await _userManager.IsInRoleAsync(c.User, "Admin")),
+            new UserResponse(
+                c.UserId, 
+                c.User.UserName!, 
+                c.User.Enabled,
+                await _userManager.IsInRoleAsync(c.User, "Admin")
+            ),
             c.ThreadId,
             c.Content
         ));
