@@ -7,14 +7,13 @@ using Bogus;
 using Bogus.Extensions;
 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Testing.Database;
 
 public class Seeder
 {
     private readonly Context _dbContext;
-    
+
     private readonly Faker<ApplicationUser> _userGenerator = new Faker<ApplicationUser>()
         .RuleFor(u => u.UserName, faker => faker.Internet.UserName().ClampLength(4, 16))
         .RuleFor(u => u.NormalizedUserName, (_, u) => u.UserName!.ToUpper())
@@ -22,7 +21,8 @@ public class Seeder
         .RuleFor(u => u.NormalizedEmail, (_, u) => u.Email!.ToUpper())
         .RuleFor(u => u.SecurityStamp, () => Guid.NewGuid().ToString("D"))
         .RuleFor(u => u.PasswordHash,
-            (_, u) => new PasswordHasher<ApplicationUser>().HashPassword(u, u.UserName!));
+            (_, u) => new PasswordHasher<ApplicationUser>().HashPassword(u, u.UserName!))
+        .RuleFor(u => u.Enabled, true);
 
     private readonly Faker<Thread> _threadGenerator = new Faker<Thread>()
         .RuleFor(t => t.Title, faker => faker.Lorem.Sentence())

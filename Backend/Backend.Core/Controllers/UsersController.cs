@@ -1,6 +1,7 @@
 ﻿using Backend.Core.Identity;
 using Backend.Core.Models.User;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,5 +27,21 @@ public class UsersController : ControllerBase
             iUser.Enabled,
             await _manager.IsInRoleAsync(iUser, "Admin")
         );
+    }
+
+    [HttpPost("Block/{id:int}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> BlockById(int id)
+    {
+        var iUser = await _manager.FindByIdAsync(id.ToString());
+
+        if (iUser is null)
+            return NotFound();
+
+        iUser.Enabled = !iUser.Enabled;
+
+        await _manager.UpdateAsync(iUser);
+
+        return Ok();
     }
 }
