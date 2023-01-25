@@ -190,7 +190,7 @@ export default function Thread() {
 
                 {account?.confirmed && !isCommenting &&
                     <ul className="row option-bar">
-                        {account?.id === thread.user.id &&
+                        {(account?.isAdmin || account?.id === thread.user.id) &&
                             <>
                                 {isReadyToDeleteThread &&
                                     <>
@@ -206,9 +206,11 @@ export default function Thread() {
                                 }
                                 {!isReadyToDeleteThread &&
                                     <>
-                                        <li>
-                                            <Edit className="clickable icon" onClick={editThreadHandler} />
-                                        </li>
+                                        {account.id === thread.user.id &&
+                                            <li>
+                                                <Edit className="clickable icon" onClick={editThreadHandler} />
+                                            </li>
+                                        }
                                         <li className="center row">
                                             <Delete className="clickable icon" onClick={deleteThreadHandler} />
                                         </li>
@@ -284,10 +286,10 @@ export default function Thread() {
 
                                             {c.content}
 
-                                            {c.user.id === account?.id &&
+                                            {(account?.isAdmin || c.user.id === account?.id) &&
                                                 (
-                                                    (readyToDeleteComment === c.id || readyToDeleteComment === undefined)
-                                                    && editingComment === undefined
+                                                    (readyToDeleteComment === c.id || readyToDeleteComment === undefined) &&
+                                                    editingComment === undefined
                                                 ) &&
                                                 <ul className="row option-bar">
                                                     {readyToDeleteComment === c.id &&
@@ -304,9 +306,11 @@ export default function Thread() {
                                                     }
                                                     {readyToDeleteComment === undefined &&
                                                         <>
-                                                            <li>
-                                                                <Edit className="clickable icon" onClick={() => editCommentHandler(c.id)} />
-                                                            </li>
+                                                            {account!.id === c.user.id &&
+                                                                <li>
+                                                                    <Edit className="clickable icon" onClick={() => editCommentHandler(c.id)} />
+                                                                </li>
+                                                            }
                                                             <li>
                                                                 <Delete className="clickable icon" onClick={() => deleteCommentHandler(c.id)} />
                                                             </li>
