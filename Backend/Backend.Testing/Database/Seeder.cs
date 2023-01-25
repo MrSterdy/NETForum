@@ -7,6 +7,7 @@ using Bogus;
 using Bogus.Extensions;
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Testing.Database;
 
@@ -52,6 +53,25 @@ public class Seeder
         await _dbContext.SaveChangesAsync();
 
         return result.Entity;
+    }
+
+    public async Task<ApplicationUser> SeedAdminUserAsync()
+    {
+        var user = await SeedVerifiedUserAsync();
+
+        var role = await _dbContext.Roles.AddAsync(new IdentityRole<int>("Admin") { NormalizedName = "ADMIN"});
+        
+        await _dbContext.SaveChangesAsync();
+
+        await _dbContext.UserRoles.AddAsync(new IdentityUserRole<int>
+        {
+            UserId = user.Id, 
+            RoleId = role.Entity.Id
+        });
+        
+        await _dbContext.SaveChangesAsync();
+
+        return user;
     }
     
     public async Task<Thread> SeedThreadAsync()
