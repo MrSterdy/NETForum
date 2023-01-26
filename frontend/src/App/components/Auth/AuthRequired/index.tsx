@@ -8,8 +8,11 @@ import Loader from "../../Loader";
 export default function AuthRequired({ children }: { children: ReactNode }) {
     const { account, isLoading } = useAuth();
 
-    if (account === undefined)
+    if (isLoading)
+        return <Loader />;
+
+    if (!account?.confirmed)
         return <Navigate to="/account/login" />;
 
-    return <>{isLoading ? <Loader /> : children}</>;
+    return <>{children}</>;
 }
