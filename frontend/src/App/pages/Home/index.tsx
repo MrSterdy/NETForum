@@ -52,12 +52,14 @@ export default function Home() {
                 {page.items.map(thread => (
                     <li key={ thread.id }>
                         <h2 className="title">
-                            <Link to={ `/thread/${thread.id}` }>{ thread.title }</Link>
+                            <Link to={`/thread/${thread.id}`}>{thread.title}</Link>
                         </h2>
 
                         <div className="info-bar row">
                             <h3 className="description">
-                                <Link to={ `/user/${thread.user.id}` }>{ thread.user.userName }</Link>
+                                <Link to={`/user/${thread.user.id}`}>
+                                    {thread.user.enabled ? thread.user.userName : <s>{thread.user.userName}</s>}
+                                </Link>
                             </h3>
 
                             <h3 className="description">{dayjs(thread.createdDate).calendar()}</h3>

@@ -6,12 +6,14 @@ import { IPage, IThread, IUser } from "../../api/models";
 
 import { Loader } from "../../components";
 
-import { getUserById } from "../../api/endpoints/users";
+import { blockById, getUserById } from "../../api/endpoints/users";
 import { getThreadsByUserId } from "../../api/endpoints/threads";
 
 import { useAuth, useFetch } from "../../hooks";
 
 import ProfilePic from "../../assets/icons/profile-pic.png";
+import { ReactComponent as Lock } from "../../assets/icons/lock.svg";
+import { ReactComponent as Unlock } from "../../assets/icons/unlock.svg";
 
 import "./index.css";
 
@@ -26,6 +28,8 @@ export default function User() {
     const [threadsLoading, setThreadsLoading] = useState(true);
     const [threadsError, setThreadsError] = useState(false);
 
+    const [isBanning, setBanning] = useState(false);
+
     useEffect(() => {
         if (user.id === undefined)
             return;
@@ -39,21 +43,33 @@ export default function User() {
             .finally(() => setThreadsLoading(false));
     }, [pageNumber, user.id]);
 
-    if (userLoading)
+    if (userLoading || isBanning)
         return <Loader />;
 
     if (!!userError)
         return <h1 className="centered error title">User Not Found</h1>;
+
+    function ban() {
+        setBanning(true);
+
+        blockById(user.id!)
+            .then(() => window.location.reload())
+            .finally(() => setBanning(false));
+    }
 
     const loadMore = () => setPageNumber(pageNumber + 1);
 
     return (
         <section className="user-profile main">
             <section className="user-header content row">
-                <div className="center column">
+                <div className="column">
                     <img src={ProfilePic} className="user-avatar" alt=""/>
 
-                    <h2 className="title">{user.userName}</h2>
+                    <div>
+                        <h2 className="title">{user.userName}</h2>
+
+                        {!user.enabled && <h3 className="description">Banned</h3>}
+                    </div>
 
                     {user.id === account?.id &&
                         <h3 className="description">
@@ -61,6 +77,15 @@ export default function User() {
                         </h3>
                     }
                 </div>
+
+                {account?.admin && account.id !== user.id &&
+                    <section className="full-width option-bar row">
+                        {user.enabled ?
+                            <Lock className="clickable icon" onClick={ban} /> :
+                            <Unlock className="clickable icon" onClick={ban} />
+                        }
+                    </section>
+                }
             </section>
 
             {!threadsLoading && !threadsError && !!page.items.length &&
@@ -71,12 +96,12 @@ export default function User() {
                         {page.items.map(thread => (
                             <li key={ thread.id }>
                                 <h2 className="title">
-                                    <Link to={`/thread/${thread.id}`}>{ thread.title }</Link>
+                                    <Link to={`/thread/${thread.id}`}>{thread.title}</Link>
                                 </h2>
 
                                 <div className="info-bar row">
                                     <h3 className="description">
-                                        <Link to={ `/user/${thread.user.id}` }>{ thread.user.userName }</Link>
+                                        <Link to={`/user/${thread.user.id}`}>{thread.user.userName}</Link>
                                     </h3>
 
                                     <h3 className="description">{dayjs(thread.createdDate).calendar()}</h3>
@@ -85,7 +110,7 @@ export default function User() {
                         ))}
                     </ul>
 
-                    {!page.isLast && <button type="button" onClick={ loadMore } className="centered">Load more</button>}
+                    {!page.isLast && <button type="button" onClick={loadMore} className="centered">Load more</button>}
                 </section>
             }
 

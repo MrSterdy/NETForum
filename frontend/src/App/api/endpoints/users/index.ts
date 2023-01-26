@@ -4,6 +4,10 @@ import { IUser } from "../../models";
 
 const endpoint = process.env.REACT_APP_USERS_URL!;
 
-export async function getUserById(id: number) {
-    return await axios.get<IUser>(`${endpoint}/${id}`);
+export function getUserById(id: number) {
+    return axios.get<IUser>(`${endpoint}/${id}`);
+}
+
+export async function blockById(id: number) {
+    return axios.post(`${endpoint}/block/${id}`, {}, { withCredentials: true });
 }

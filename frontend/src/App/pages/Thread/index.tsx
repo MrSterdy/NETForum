@@ -180,7 +180,9 @@ export default function Thread() {
             <section className="content">
                 <div className="info-bar row">
                     <h4 className="description">
-                        <Link to={`/user/${thread.user.id}`}>{thread.user.userName}</Link>
+                        <Link to={`/user/${thread.user.id}`}>
+                            {thread.user.enabled ? thread.user.userName : <s>{thread.user.userName}</s>}
+                        </Link>
                     </h4>
 
                     <h4 className="description calendar">{dayjs(thread.createdDate).calendar()}</h4>
@@ -190,7 +192,7 @@ export default function Thread() {
 
                 {account?.confirmed && !isCommenting &&
                     <ul className="row option-bar">
-                        {(account?.isAdmin || account?.id === thread.user.id) &&
+                        {(account?.admin || account?.id === thread.user.id) &&
                             <>
                                 {isReadyToDeleteThread &&
                                     <>
@@ -278,7 +280,9 @@ export default function Thread() {
                                         <article className="content">
                                             <div className="info-bar row">
                                                 <h4 className="description">
-                                                    <Link to={`/user/${c.user.id}`}>{c.user.userName}</Link>
+                                                    <Link to={`/user/${c.user.id}`}>
+                                                        {c.user.enabled ? c.user.userName : <s>{c.user.userName}</s>}
+                                                    </Link>
                                                 </h4>
 
                                                 <h4 className="description calendar">{dayjs(c.createdDate).calendar()}</h4>
@@ -286,7 +290,7 @@ export default function Thread() {
 
                                             {c.content}
 
-                                            {(account?.isAdmin || c.user.id === account?.id) &&
+                                            {(account?.admin || c.user.id === account?.id) &&
                                                 (
                                                     (readyToDeleteComment === c.id || readyToDeleteComment === undefined) &&
                                                     editingComment === undefined

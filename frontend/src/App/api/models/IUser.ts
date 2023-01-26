@@ -2,5 +2,6 @@
 
 export default interface IUser extends IEntity {
     userName: string,
-    isAdmin: boolean
+    enabled: boolean,
+    admin: boolean
 }
