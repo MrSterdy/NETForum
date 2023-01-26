@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 import { ReactComponent as Logo } from "../../assets/icons/logo.svg";
 
@@ -9,9 +9,15 @@ import "./index.css";
 export default function Navbar() {
     const { account } = useAuth();
 
+    const navigate = useNavigate();
+
+    function navigateToHome() {
+        navigate("/");
+    }
+
     return (
         <nav className="full-width">
-            <Logo />
+            <Logo className="clickable" onClick={navigateToHome} />
 
             <ul>
                 <li>
