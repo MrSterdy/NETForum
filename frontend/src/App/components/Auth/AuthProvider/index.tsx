@@ -70,7 +70,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     return (
         <AuthContext.Provider value={memo}>
-            {!isLoading && children}
+            {children}
         </AuthContext.Provider>
     );
 }
