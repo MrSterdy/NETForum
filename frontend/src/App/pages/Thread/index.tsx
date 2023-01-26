@@ -23,6 +23,7 @@ export default function Thread() {
     const { account } = useAuth();
 
     const [isSubmittingComment, setSubmittingComment] = useState(false);
+    const [isLoadingComments, setLoadingComments] = useState(false);
     const [submitCommentError, setSubmitCommentError] = useState(false);
     const [isCommenting, setCommenting] = useState(false);
     const [editingComment, setEditingComment] = useState<number>();
@@ -47,11 +48,14 @@ export default function Thread() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        setLoadingComments(true);
+
         getCommentsByPage(commentPage, threadId)
             .then(res => setComments(comments => ({
                 items: comments.items ? comments.items.concat(res.data.items) : res.data.items,
                 isLast: res.data.isLast
-            })));
+            })))
+            .finally(() => setLoadingComments(false));
     }, [commentPage, threadId]);
 
     if (threadError)
@@ -329,7 +333,12 @@ export default function Thread() {
                         )}
                     </ul>
 
-                    {!comments.isLast && <button onClick={loadMoreCommentsHandler}>Load more</button>}
+                    {isLoadingComments ?
+                        <Loader /> :
+                        (!comments.isLast &&
+                            <button className="centered" onClick={loadMoreCommentsHandler}>Load more</button>
+                        )
+                    }
                 </section>
             }
         </section>

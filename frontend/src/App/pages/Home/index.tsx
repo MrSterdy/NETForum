@@ -13,12 +13,16 @@ import dayjs from "dayjs";
 export default function Home() {
     const [page, setPage] = useState<IPage<IThread>>({} as IPage<IThread>);
     const [pageNumber, setPageNumber] = useState(1);
+
     const [isLoading, setLoading] = useState(true);
+
     const [error, setError] = useState(false);
 
     const { account } = useAuth();
 
     useEffect(() => {
+        setLoading(true);
+
         getThreadsByPage(pageNumber)
             .then(res => setPage(p => ({
                 items: p.items ? p.items.concat(res.data.items) : res.data.items,
@@ -28,9 +32,11 @@ export default function Home() {
             .finally(() => setLoading(false));
     }, [pageNumber]);
 
-    const loadMore = () => setPageNumber(pageNumber + 1);
+    function loadMore() {
+        setPageNumber(pageNumber + 1);
+    }
     
-    if (isLoading) 
+    if (isLoading && pageNumber === 1)
         return <Loader />;
     
     if (error)
@@ -68,7 +74,12 @@ export default function Home() {
                 ))}
             </ul>
 
-            {!page.isLast && <button type="button" onClick={ loadMore } className="centered">Load more</button>}
+            {isLoading ?
+                <Loader /> :
+                (!page.isLast &&
+                    <button type="button" onClick={loadMore} className="centered">Load more</button>
+                )
+            }
         </section>
     );
 }
