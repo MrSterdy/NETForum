@@ -61,22 +61,24 @@ export default function User() {
 
     return (
         <section className="user-profile main">
-            <section className="user-header content row">
-                <div className="column">
-                    <img src={ProfilePic} className="user-avatar" alt=""/>
+            <section className="content column">
+                <section className="user-header row">
+                    <div className="center column">
+                        <img src={ProfilePic} className="user-avatar" alt=""/>
 
-                    <div>
-                        <h2 className="title">{user.userName}</h2>
+                        <div>
+                            <h2 className="title">{user.userName}</h2>
 
-                        {!user.enabled && <h3 className="description">Banned</h3>}
+                            {!user.enabled && <h3 className="description">Banned</h3>}
+                        </div>
+
+                        {user.id === account?.id &&
+                            <h3 className="description">
+                                <Link to="/account">Edit Account</Link>
+                            </h3>
+                        }
                     </div>
-
-                    {user.id === account?.id &&
-                        <h3 className="description">
-                            <Link to="/account">Edit Account</Link>
-                        </h3>
-                    }
-                </div>
+                </section>
 
                 {account?.admin && account.id !== user.id &&
                     <section className="full-width option-bar row">

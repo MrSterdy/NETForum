@@ -14,14 +14,14 @@ export default function Home() {
     const [page, setPage] = useState<IPage<IThread>>({} as IPage<IThread>);
     const [pageNumber, setPageNumber] = useState(1);
 
-    const [isLoading, setLoading] = useState(true);
+    const [isPageLoading, setPageLoading] = useState(true);
 
     const [error, setError] = useState(false);
 
     const { account } = useAuth();
 
     useEffect(() => {
-        setLoading(true);
+        setPageLoading(true);
 
         getThreadsByPage(pageNumber)
             .then(res => setPage(p => ({
@@ -29,18 +29,18 @@ export default function Home() {
                 isLast: res.data.isLast
             })))
             .catch(() => setError(true))
-            .finally(() => setLoading(false));
+            .finally(() => setPageLoading(false));
     }, [pageNumber]);
 
-    function loadMore() {
-        setPageNumber(pageNumber + 1);
-    }
-    
-    if (isLoading && pageNumber === 1)
+    if (isPageLoading && pageNumber === 1)
         return <Loader />;
     
     if (error)
         return <h1 className="error title">Fetch Failed</h1>;
+
+    function loadMore() {
+        setPageNumber(pageNumber + 1);
+    }
     
     return (
         <section className="main threads">
@@ -74,10 +74,10 @@ export default function Home() {
                 ))}
             </ul>
 
-            {isLoading ?
+            {isPageLoading ?
                 <Loader /> :
                 (!page.isLast &&
-                    <button type="button" onClick={loadMore} className="centered">Load more</button>
+                    <button type="button" onClick={loadMore}>Load more</button>
                 )
             }
         </section>

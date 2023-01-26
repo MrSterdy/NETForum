@@ -178,38 +178,40 @@ export default function Account() {
 
     return (
         <section className="user-profile main">
-            <section className="user-header content row">
-                <div className="center">
-                    <img src={ProfilePic} className="user-avatar" alt=""/>
-                </div>
-
-                <section className="user-description column">
-                    <div className="column">
-                        <h3 className="title">Email address:</h3>
-
-                        <div className="user-item row">
-                            <h4 className="description">{account!.email}</h4>
-                            <Edit className="clickable icon" onClick={changeEmail} />
-                        </div>
+            <section className="content column">
+                <section className="user-header row">
+                    <div className="center">
+                        <img src={ProfilePic} className="user-avatar" alt=""/>
                     </div>
 
-                    <div className="column">
-                        <h3 className="title">Username:</h3>
+                    <section className="user-description column">
+                        <div className="column">
+                            <h3 className="title">Email address:</h3>
 
-                        <div className="user-item row">
-                            <h4 className="description">{account!.userName}</h4>
-                            <Edit className="clickable icon" onClick={changeUsername} />
+                            <div className="user-item row">
+                                <h3 className="description">{account!.email}</h3>
+                                <Edit className="clickable icon" onClick={changeEmail} />
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="column">
-                        <h3 className="title">Password:</h3>
+                        <div className="column">
+                            <h3 className="title">Username:</h3>
 
-                        <div className="user-item row">
-                            <h4 className="description">****************</h4>
-                            <Edit className="clickable icon" onClick={changePassword} />
+                            <div className="user-item row">
+                                <h3 className="description">{account!.userName}</h3>
+                                <Edit className="clickable icon" onClick={changeUsername} />
+                            </div>
                         </div>
-                    </div>
+
+                        <div className="column">
+                            <h3 className="title">Password:</h3>
+
+                            <div className="user-item row">
+                                <h3 className="description">****************</h3>
+                                <Edit className="clickable icon" onClick={changePassword} />
+                            </div>
+                        </div>
+                    </section>
                 </section>
 
                 <section className="full-width option-bar row">
