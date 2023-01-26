@@ -113,19 +113,21 @@ public class ThreadsController : ControllerBase
             ? await _repository.GetByPageAsync(page)
             : await _repository.GetByUserIdAsync(userId.Value, page);
 
-        var threads = rawPage.Items.Select(async t => new ThreadResponse(
-            t.Id,
-            t.CreatedDate,
-            new UserResponse(
-                t.UserId, 
-                t.User.UserName!,
-                t.User.Enabled,
-                await _userManager.IsInRoleAsync(t.User, "Admin")
-            ),
-            t.Title,
-            t.Content
-        ));
+        var threads = new List<ThreadResponse>();
+        foreach (var thread in rawPage.Items)
+            threads.Add(new ThreadResponse(
+                thread.Id,
+                thread.CreatedDate,
+                new UserResponse(
+                    thread.UserId,
+                    thread.User.UserName!,
+                    thread.User.Enabled,
+                    await _userManager.IsInRoleAsync(thread.User, "Admin")
+                ),
+                thread.Title,
+                thread.Content
+            ));
 
-        return new Page<ThreadResponse>(await Task.WhenAll(threads), rawPage.IsLast);
+        return new Page<ThreadResponse>(threads, rawPage.IsLast);
     }
 }
