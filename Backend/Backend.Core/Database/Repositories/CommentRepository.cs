@@ -38,6 +38,9 @@ public class CommentRepository : ICommentRepository
             .ToListAsync(), isLast);
     }
 
+    public async Task<int> GetCountByThreadIdAsync(int threadId) =>
+        await _context.Comments.Where(c => c.ThreadId == threadId).CountAsync();
+
     public async Task<bool> Exists(int id) =>
         await _context.Comments.AnyAsync(c => c.Id == id);
 

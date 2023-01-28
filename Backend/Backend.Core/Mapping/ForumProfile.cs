@@ -16,12 +16,13 @@ public class ForumProfile : Profile
     public ForumProfile()
     {
         CreateMap<ApplicationUser, UserResponse>()
-            .AfterMap<AdminResolverAction<UserResponse>>();
+            .ForMember(r => r.Admin, opt => opt.MapFrom<AdminResolver<UserResponse>>());
         CreateMap<ApplicationUser, AccountResponse>()
             .ForMember(r => r.Confirmed, cfg => cfg.MapFrom(src => src.EmailConfirmed))
-            .AfterMap<AdminResolverAction<AccountResponse>>();
+            .ForMember(r => r.Admin, opt => opt.MapFrom<AdminResolver<AccountResponse>>());
 
-        CreateMap<Thread, ThreadResponse>();
+        CreateMap<Thread, ThreadResponse>()
+            .ForMember(r => r.CommentCount, opt => opt.MapFrom<CommentCountResolver>());
         CreateMap<Comment, CommentResponse>();
 
         CreateMap(typeof(Page<>), typeof(Page<>));

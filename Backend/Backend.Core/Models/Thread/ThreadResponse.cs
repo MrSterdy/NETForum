@@ -15,4 +15,6 @@ public class ThreadResponse
     public string? Content { get; set; }
     
     public int Views { get; set; }
+
+    public int CommentCount { get; set; }
 }
