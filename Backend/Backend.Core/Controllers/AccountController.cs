@@ -190,7 +190,7 @@ public class AccountController : ControllerBase
 
         var iUser = await _userManager.FindByNameAsync(user.UserName);
 
-        if (iUser is null || !iUser.Enabled)
+        if (iUser is null || iUser.Banned)
             return BadRequest();
 
         var result = await _signInManager.PasswordSignInAsync(

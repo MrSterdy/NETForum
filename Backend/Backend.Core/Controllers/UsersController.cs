@@ -40,7 +40,7 @@ public class UsersController : ControllerBase
         if (iUser is null)
             return NotFound();
 
-        iUser.Enabled = !iUser.Enabled;
+        iUser.Banned = !iUser.Banned;
 
         await _manager.UpdateAsync(iUser);
 

@@ -6,7 +6,7 @@ public class UserResponse
     
     public string? UserName { get; set; }
     
-    public bool Enabled { get; set; }
+    public bool Banned { get; set; }
     
     public bool Admin { get; set; }
 }

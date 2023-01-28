@@ -75,7 +75,7 @@ builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
 builder.Services.AddAutoMapper(typeof(ForumProfile));
 
-builder.Services.AddControllers(options => options.Filters.Add<DisabledUserFilter>());
+builder.Services.AddControllers(options => options.Filters.Add<BannedUserFilter>());
 
 var app = builder.Build();
 

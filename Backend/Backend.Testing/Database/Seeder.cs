@@ -21,8 +21,7 @@ public class Seeder
         .RuleFor(u => u.NormalizedEmail, (_, u) => u.Email!.ToUpper())
         .RuleFor(u => u.SecurityStamp, () => Guid.NewGuid().ToString("D"))
         .RuleFor(u => u.PasswordHash,
-            (_, u) => new PasswordHasher<ApplicationUser>().HashPassword(u, u.UserName!))
-        .RuleFor(u => u.Enabled, true);
+            (_, u) => new PasswordHasher<ApplicationUser>().HashPassword(u, u.UserName!));
 
     private readonly Faker<Thread> _threadGenerator = new Faker<Thread>()
         .RuleFor(t => t.Title, faker => faker.Lorem.Sentence())
