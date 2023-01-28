@@ -18,7 +18,7 @@ public class GetAccountControllerTest : AccountControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var authUser = new LoginRequest(user.UserName!, user.UserName!, true);
+        var authUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
         
         // Act
         using var client = Factory.CreateClient();

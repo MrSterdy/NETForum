@@ -20,8 +20,8 @@ public class BlockByIdUsersControllerTest : UsersControllerTest
     {
         // Arrange
         var target = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var admin = await Factory.DbManager.Seeder.SeedAdminUserAsync();
-        var login = new LoginRequest(admin.UserName!, admin.UserName!, false);
+        var user = await Factory.DbManager.Seeder.SeedAdminUserAsync();
+        var login = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
         
         // Act
         using var client = Factory.CreateClient();
@@ -37,8 +37,8 @@ public class BlockByIdUsersControllerTest : UsersControllerTest
     public async Task BlockById_NotFound()
     {
         // Arrange
-        var admin = await Factory.DbManager.Seeder.SeedAdminUserAsync();
-        var login = new LoginRequest(admin.UserName!, admin.UserName!, false);
+        var user = await Factory.DbManager.Seeder.SeedAdminUserAsync();
+        var login = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
         
         // Act
         using var client = Factory.CreateClient();

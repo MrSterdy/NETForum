@@ -2,8 +2,14 @@
 
 namespace Backend.Core.Models.User.Account;
 
-public record SignupRequest(
-    [Required, EmailAddress] string Email,
-    [Required, MinLength(4), MaxLength(16)] string UserName,
-    [Required, MinLength(4), MaxLength(16)] string Password
-);
+public class SignupRequest
+{
+    [Required, EmailAddress]
+    public string Email { get; set; } = default!;
+    
+    [Required, MinLength(4), MaxLength(16)]
+    public string UserName { get; set; } = default!;
+    
+    [Required, MinLength(4), MaxLength(16)]
+    public string Password { get; set; } = default!;
+}

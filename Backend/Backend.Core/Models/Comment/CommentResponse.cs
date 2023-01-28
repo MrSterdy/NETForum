@@ -2,10 +2,15 @@
 
 namespace Backend.Core.Models.Comment;
 
-public record CommentResponse(
-    int Id,
-    DateTimeOffset CreatedDate,
-    UserResponse User,
-    int ThreadId,
-    string Content
-);
+public class CommentResponse
+{
+    public int Id { get; set; }
+    
+    public DateTimeOffset CreatedDate { get; set; }
+    
+    public UserResponse? User { get; set; }
+    
+    public int ThreadId { get; set; }
+    
+    public string? Content { get; set; }
+}

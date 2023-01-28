@@ -15,11 +15,9 @@ public class SignupAccountControllerTest : AccountControllerTest
     protected override string Endpoint => base.Endpoint + "/Signup";
     
     private readonly Faker<SignupRequest> _userGenerator = new Faker<SignupRequest>()
-        .CustomInstantiator(faker => new SignupRequest(
-            faker.Internet.Email(),
-            faker.Internet.UserName().ClampLength(4, 16),
-            faker.Internet.Password()
-        ));
+        .RuleFor(r => r.Email, faker => faker.Internet.Email())
+        .RuleFor(r => r.UserName, faker => faker.Internet.UserName().ClampLength(4, 16))
+        .RuleFor(r => r.Password, faker => faker.Internet.Password());
 
     public SignupAccountControllerTest(BackendFactory factory) : base(factory)
     {
@@ -52,7 +50,7 @@ public class SignupAccountControllerTest : AccountControllerTest
     public async void Signup_InvalidModel_BadRequest()
     {
         // Arrange
-        var user = new SignupRequest("invalidemail", "verylonginvalidusername", "pw");
+        var user = new SignupRequest();
 
         // Act
         using var client = Factory.CreateClient();
@@ -88,8 +86,8 @@ public class SignupAccountControllerTest : AccountControllerTest
     public async void Signup_AlreadyLoggedIn_Forbidden()
     {
         // Arrange
-        var createdUser = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginRequest(createdUser.UserName!, createdUser.UserName!, true);
+        var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
         var signupUser = _userGenerator.Generate();
         
         // Act

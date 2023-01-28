@@ -1,6 +1,14 @@
 ﻿namespace Backend.Core.Models;
 
-public record Page<T>(
-    IEnumerable<T> Items, 
-    bool IsLast
-);
+public class Page<T>
+{
+    public IEnumerable<T> Items { get; set; }
+    
+    public bool IsLast { get; set; }
+
+    public Page(IEnumerable<T> items, bool isLast)
+    {
+        Items = items;
+        IsLast = isLast;
+    }
+}

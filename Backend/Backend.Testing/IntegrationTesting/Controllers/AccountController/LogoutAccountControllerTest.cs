@@ -20,7 +20,7 @@ public class LogoutAccountControllerTest : AccountControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, true);
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
         
         // Act
         using var client = Factory.CreateClient();

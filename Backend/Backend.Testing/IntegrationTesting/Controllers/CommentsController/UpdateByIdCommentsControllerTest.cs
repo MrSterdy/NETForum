@@ -19,8 +19,8 @@ public class UpdateByIdCommentsControllerTest : CommentsControllerTest
         // Arrange
         var comment = await Factory.DbManager.Seeder.SeedCommentAsync();
         var user = comment.User;
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
-        var newComment = new CommentRequest(comment.Thread.Content);
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
+        var newComment = CommentGenerator.Generate();
 
         // Act
         using var client = Factory.CreateClient();
@@ -37,7 +37,7 @@ public class UpdateByIdCommentsControllerTest : CommentsControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
         var newComment = CommentGenerator.Generate();
         
         // Act
@@ -56,8 +56,8 @@ public class UpdateByIdCommentsControllerTest : CommentsControllerTest
         // Arrange
         var comment = await Factory.DbManager.Seeder.SeedCommentAsync();
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
-        var newComment = new CommentRequest(comment.Thread.Content);
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
+        var newComment = CommentGenerator.Generate();
         
         // Act
         using var client = Factory.CreateClient();

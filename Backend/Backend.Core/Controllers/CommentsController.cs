@@ -1,9 +1,10 @@
-﻿using Backend.Core.Database.Entities;
+﻿using AutoMapper;
+
+using Backend.Core.Database.Entities;
 using Backend.Core.Database.Repositories;
 using Backend.Core.Identity;
 using Backend.Core.Models;
 using Backend.Core.Models.Comment;
-using Backend.Core.Models.User;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -20,40 +21,26 @@ public class CommentsController : ControllerBase
 
     private readonly UserManager<ApplicationUser> _userManager;
 
+    private readonly IMapper _mapper;
+
     public CommentsController(
         ICommentRepository commentRepository, 
         IThreadRepository threadRepository, 
-        UserManager<ApplicationUser> userManager
+        UserManager<ApplicationUser> userManager,
+        IMapper mapper
     )
     {
         _commentRepository = commentRepository;
         _threadRepository = threadRepository;
         
         _userManager = userManager;
+
+        _mapper = mapper;
     }
 
     [HttpGet]
-    public async Task<Page<CommentResponse>> GetByPage(int page, int threadId)
-    {
-        var rawPage = await _commentRepository.GetByPageAsync(page, threadId);
-
-        var comments = new List<CommentResponse>();
-        foreach (var comment in rawPage.Items)
-            comments.Add(new CommentResponse(
-                comment.Id,
-                comment.CreatedDate,
-                new UserResponse(
-                    comment.UserId,
-                    comment.User.UserName!,
-                    comment.User.Enabled,
-                    await _userManager.IsInRoleAsync(comment.User, "Admin")
-                ),
-                comment.ThreadId,
-                comment.Content
-            ));
-
-        return new Page<CommentResponse>(comments, rawPage.IsLast);
-    }
+    public async Task<Page<CommentResponse>> GetByPage(int page, int threadId) =>
+        _mapper.Map<Page<CommentResponse>>(await _commentRepository.GetByPageAsync(page, threadId));
 
     [HttpPost]
     [Authorize]

@@ -1,8 +1,12 @@
 ﻿namespace Backend.Core.Models.User;
 
-public record UserResponse(
-    int Id,
-    string UserName,
-    bool Enabled,
-    bool Admin
-);
+public class UserResponse
+{
+    public int Id { get; set; }
+    
+    public string? UserName { get; set; }
+    
+    public bool Enabled { get; set; }
+    
+    public bool Admin { get; set; }
+}

@@ -19,7 +19,7 @@ public class DeleteByIdCommentsControllerTest : CommentsControllerTest
         // Arrange
         var comment = await Factory.DbManager.Seeder.SeedCommentAsync();
         var user = comment.User;
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
         
         // Act
         using var client = Factory.CreateClient();
@@ -37,7 +37,7 @@ public class DeleteByIdCommentsControllerTest : CommentsControllerTest
         // Arrange
         var comment = await Factory.DbManager.Seeder.SeedCommentAsync();
         var user = await Factory.DbManager.Seeder.SeedAdminUserAsync();
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
         
         // Act
         using var client = Factory.CreateClient();
@@ -54,7 +54,7 @@ public class DeleteByIdCommentsControllerTest : CommentsControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
         
         // Act
         using var client = Factory.CreateClient();
@@ -72,7 +72,7 @@ public class DeleteByIdCommentsControllerTest : CommentsControllerTest
         // Arrange
         var comment = await Factory.DbManager.Seeder.SeedCommentAsync();
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
         
         // Act
         using var client = Factory.CreateClient();

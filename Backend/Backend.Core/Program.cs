@@ -5,7 +5,7 @@ using Backend.Core.Database.Repositories;
 using Backend.Core.Filters;
 using Backend.Core.Identity;
 using Backend.Core.Mail;
-using Backend.Core.Middlewares;
+using Backend.Core.Mapping;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -72,6 +72,8 @@ builder.Services.AddScoped<IMailService, MailService>();
 
 builder.Services.AddScoped<IThreadRepository, ThreadRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+
+builder.Services.AddAutoMapper(typeof(ForumProfile));
 
 builder.Services.AddControllers(options => options.Filters.Add<DisabledUserFilter>());
 

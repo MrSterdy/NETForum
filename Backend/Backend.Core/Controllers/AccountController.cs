@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+using AutoMapper;
+
 using Backend.Core.Identity;
 using Backend.Core.Mail;
 using Backend.Core.Models.User.Account;
@@ -21,32 +23,26 @@ public class AccountController : ControllerBase
 
     private readonly IMailService _mailService;
 
+    private readonly IMapper _mapper;
+
     public AccountController(
         UserManager<ApplicationUser> userManager, 
         SignInManager<ApplicationUser> signInManager,
-        IMailService mailService
+        IMailService mailService,
+        IMapper mapper
     )
     {
         _userManager = userManager;
         _signInManager = signInManager;
         
         _mailService = mailService;
+
+        _mapper = mapper;
     }
 
     [HttpGet]
-    public async Task<AccountResponse> Get()
-    {
-        var found = await _userManager.GetUserAsync(User);
-
-        return new AccountResponse(
-            found!.Id,
-            found.Email!,
-            found.EmailConfirmed,
-            found.UserName!,
-            found.Enabled,
-            await _userManager.IsInRoleAsync(found, "Admin")
-        );
-    }
+    public async Task<AccountResponse> Get() =>
+        _mapper.Map<AccountResponse>(await _userManager.GetUserAsync(User));
 
     [AllowAnonymous]
     [HttpPost("ConfirmEmail")]
@@ -182,14 +178,7 @@ public class AccountController : ControllerBase
 
         await _mailService.SendMailAsync(iUser.Email, "Confirm email", url);
 
-        return new AccountResponse(
-            iUser.Id,
-            iUser.Email,
-            Confirmed: false,
-            user.UserName,
-            Enabled: true,
-            Admin: false
-        );
+        return _mapper.Map<AccountResponse>(iUser);
     }
     
     [AllowAnonymous]
@@ -217,16 +206,7 @@ public class AccountController : ControllerBase
         if (!result.Succeeded)
             return BadRequest();
 
-        var account = await _userManager.FindByNameAsync(user.UserName);
-
-        return new AccountResponse(
-            account!.Id,
-            account.Email!,
-            account.EmailConfirmed,
-            account.UserName!,
-            account.Enabled,
-            await _userManager.IsInRoleAsync(account, "Admin")
-        );
+        return _mapper.Map<AccountResponse>(await _userManager.FindByNameAsync(user.UserName));
     }
     
     [HttpPost("Logout")]

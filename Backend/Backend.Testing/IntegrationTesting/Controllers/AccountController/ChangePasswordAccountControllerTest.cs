@@ -6,32 +6,30 @@ using Bogus;
 
 namespace Backend.Testing.IntegrationTesting.Controllers.AccountController;
 
-public class RequestChangeEmailAccountControllerTest : AccountControllerTest
+public class ChangePasswordAccountControllerTest : AccountControllerTest
 {
-    protected override string Endpoint => base.Endpoint + "/ChangeEmail";
+    protected override string Endpoint => base.Endpoint + "/Password";
 
-    private readonly Faker<RequiredEmailRequest> _generator = new Faker<RequiredEmailRequest>()
-        .RuleFor(r => r.Email, faker => faker.Internet.Email());
-
-    public RequestChangeEmailAccountControllerTest(BackendFactory factory) : base(factory)
+    public ChangePasswordAccountControllerTest(BackendFactory factory) : base(factory)
     {
     }
-
+    
     [Fact]
-    public async void RequestChangeEmail_Ok()
+    public async void ChangePassword_Ok()
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
         var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
-        var emailRequest = _generator.Generate();
+        var changePassword = new ChangePasswordRequest
+        {
+            Password = user.UserName,
+            NewPassword = new Faker().Internet.Password()
+        };
 
         // Act
         using var client = Factory.CreateClient();
         using var firstResponse = await client.PostAsJsonAsync(base.Endpoint + "/Login", loginUser);
-        using var secondResponse = await client.PostAsJsonAsync(
-            Endpoint + $"?callbackUrl={new Faker().Internet.Url()}",
-            emailRequest
-        );
+        using var secondResponse = await client.PutAsJsonAsync(Endpoint, changePassword);
         
         // Assert
         firstResponse.EnsureSuccessStatusCode();

@@ -20,8 +20,8 @@ public class CreateCommentsControllerTest : CommentsControllerTest
         // Arrange
         var thread = await Factory.DbManager.Seeder.SeedThreadAsync();
         var user = thread.User;
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, true);
-        var comment = new CommentRequest(thread.Content);
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
+        var comment = CommentGenerator.Generate();
         
         // Act
         using var client = Factory.CreateClient();
@@ -41,7 +41,7 @@ public class CreateCommentsControllerTest : CommentsControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, true);
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
         var comment = CommentGenerator.Generate();
         
         // Act
@@ -63,8 +63,8 @@ public class CreateCommentsControllerTest : CommentsControllerTest
         // Arrange
         var thread = await Factory.DbManager.Seeder.SeedThreadAsync();
         var user = thread.User;
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, true);
-        var comment = new CommentRequest("");
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
+        var comment = new CommentRequest();
         
         // Act
         using var client = Factory.CreateClient();

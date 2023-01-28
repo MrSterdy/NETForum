@@ -2,6 +2,8 @@
 
 namespace Backend.Core.Models.User.Account;
 
-public record RequiredEmailRequest(
-    [Required, EmailAddress] string Email
-);
+public class RequiredEmailRequest
+{
+    [Required, EmailAddress]
+    public string Email { get; set; } = default!;
+}

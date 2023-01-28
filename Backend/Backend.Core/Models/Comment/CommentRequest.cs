@@ -2,6 +2,8 @@
 
 namespace Backend.Core.Models.Comment;
 
-public record CommentRequest(
-    [Required, MinLength(4), MaxLength(short.MaxValue)] string Content
-);
+public class CommentRequest
+{
+    [Required, MinLength(4), MaxLength(short.MaxValue)]
+    public string Content { get; set; } = default!;
+}

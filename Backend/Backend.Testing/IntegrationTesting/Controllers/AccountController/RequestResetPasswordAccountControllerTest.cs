@@ -19,19 +19,16 @@ public class RequestResetPasswordAccountControllerTest : AccountControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, true);
-        var changePassword = new ChangePasswordRequest(user.UserName!, new Faker().Internet.Password());
+        var emailRequest = new RequiredEmailRequest { Email = user.Email! };
 
         // Act
         using var client = Factory.CreateClient();
-        using var firstResponse = await client.PostAsJsonAsync(base.Endpoint + "/Login", loginUser);
-        using var secondResponse = await client.PostAsJsonAsync(
+        using var response = await client.PostAsJsonAsync(
             Endpoint + $"?callbackUrl={new Faker().Internet.Url()}",
-            changePassword
+            emailRequest
         );
         
         // Assert
-        firstResponse.EnsureSuccessStatusCode();
-        secondResponse.EnsureSuccessStatusCode();
+        response.EnsureSuccessStatusCode();
     }
 }

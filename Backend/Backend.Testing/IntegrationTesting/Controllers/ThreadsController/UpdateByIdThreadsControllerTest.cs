@@ -19,7 +19,7 @@ public class UpdateByIdThreadsControllerTest : ThreadsControllerTest
         // Arrange
         var thread = await Factory.DbManager.Seeder.SeedThreadAsync();
         var user = thread.User;
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
         var newThread = ThreadGenerator.Generate();
 
         // Act
@@ -37,7 +37,7 @@ public class UpdateByIdThreadsControllerTest : ThreadsControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
         var newThread = ThreadGenerator.Generate();
         
         // Act
@@ -56,7 +56,7 @@ public class UpdateByIdThreadsControllerTest : ThreadsControllerTest
         // Arrange
         var thread = await Factory.DbManager.Seeder.SeedThreadAsync();
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, false);
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
         var newThread = ThreadGenerator.Generate();
         
         // Act

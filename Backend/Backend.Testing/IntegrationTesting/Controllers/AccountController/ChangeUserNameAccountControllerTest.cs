@@ -12,7 +12,7 @@ public class ChangeUserNameAccountControllerTest : AccountControllerTest
     protected override string Endpoint => base.Endpoint + "/UserName";
 
     private readonly Faker<ChangeUserNameRequest> _generator = new Faker<ChangeUserNameRequest>()
-        .CustomInstantiator(faker => new ChangeUserNameRequest(faker.Internet.UserName().ClampLength(4, 16)));
+        .RuleFor(r => r.UserName, faker => faker.Internet.UserName().ClampLength(4, 16));
 
     public ChangeUserNameAccountControllerTest(BackendFactory factory) : base(factory)
     {
@@ -23,7 +23,7 @@ public class ChangeUserNameAccountControllerTest : AccountControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var loginUser = new LoginRequest(user.UserName!, user.UserName!, true);
+        var loginUser = new LoginRequest { UserName = user.UserName!, Password = user.UserName! };
         var userNameRequest = _generator.Generate();
 
         // Act

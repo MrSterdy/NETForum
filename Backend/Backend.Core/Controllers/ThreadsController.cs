@@ -1,8 +1,9 @@
-﻿using Backend.Core.Database.Repositories;
+﻿using AutoMapper;
+
+using Backend.Core.Database.Repositories;
 using Backend.Core.Identity;
 using Backend.Core.Models;
 using Backend.Core.Models.Thread;
-using Backend.Core.Models.User;
 using Thread = Backend.Core.Database.Entities.Thread;
 
 using Microsoft.AspNetCore.Authorization;
@@ -19,34 +20,27 @@ public class ThreadsController : ControllerBase
 
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public ThreadsController(IThreadRepository repository, UserManager<ApplicationUser> userManager)
+    private readonly IMapper _mapper;
+
+    public ThreadsController(
+        IThreadRepository repository, 
+        UserManager<ApplicationUser> userManager,
+        IMapper mapper
+    )
     {
         _repository = repository;
+        
         _userManager = userManager;
+
+        _mapper = mapper;
     }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ThreadResponse>> GetById(int id) 
     {
         var thread = await _repository.GetByIdAsync(id);
-        
-        if (thread is null)
-            return NotFound();
 
-        var user = thread.User;
-
-        return new ThreadResponse(
-            id,
-            thread.CreatedDate,
-            new UserResponse(
-                user.Id, 
-                user.UserName!, 
-                user.Enabled,
-                await _userManager.IsInRoleAsync(user, "Admin")
-            ),
-            thread.Title,
-            thread.Content
-        );
+        return thread is null ? NotFound() : _mapper.Map<ThreadResponse>(thread);
     }
     
     [HttpPost]
@@ -113,21 +107,6 @@ public class ThreadsController : ControllerBase
             ? await _repository.GetByPageAsync(page)
             : await _repository.GetByUserIdAsync(userId.Value, page);
 
-        var threads = new List<ThreadResponse>();
-        foreach (var thread in rawPage.Items)
-            threads.Add(new ThreadResponse(
-                thread.Id,
-                thread.CreatedDate,
-                new UserResponse(
-                    thread.UserId,
-                    thread.User.UserName!,
-                    thread.User.Enabled,
-                    await _userManager.IsInRoleAsync(thread.User, "Admin")
-                ),
-                thread.Title,
-                thread.Content
-            ));
-
-        return new Page<ThreadResponse>(threads, rawPage.IsLast);
+        return _mapper.Map<Page<ThreadResponse>>(rawPage);
     }
 }
