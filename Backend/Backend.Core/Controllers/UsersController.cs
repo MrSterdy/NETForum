@@ -31,9 +31,9 @@ public class UsersController : ControllerBase
         return iUser is null ? NotFound() : _mapper.Map<UserResponse>(iUser);
     }
 
-    [HttpPost("Block/{id:int}")]
+    [HttpPost("Ban/{id:int}")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> BlockById(int id)
+    public async Task<IActionResult> BanById(int id)
     {
         var iUser = await _manager.FindByIdAsync(id.ToString());
 

@@ -7,16 +7,16 @@ using FluentAssertions;
 
 namespace Backend.Testing.IntegrationTesting.Controllers.UsersController;
 
-public class BlockByIdUsersControllerTest : UsersControllerTest
+public class BanByIdUsersControllerTest : UsersControllerTest
 {
     protected override string Endpoint => base.Endpoint + "/Block";
     
-    public BlockByIdUsersControllerTest(BackendFactory factory) : base(factory)
+    public BanByIdUsersControllerTest(BackendFactory factory) : base(factory)
     {
     }
     
     [Fact]
-    public async Task BlockById_Ok()
+    public async Task BanById_Ok()
     {
         // Arrange
         var target = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
@@ -34,7 +34,7 @@ public class BlockByIdUsersControllerTest : UsersControllerTest
     }
     
     [Fact]
-    public async Task BlockById_NotFound()
+    public async Task BanById_NotFound()
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedAdminUserAsync();
