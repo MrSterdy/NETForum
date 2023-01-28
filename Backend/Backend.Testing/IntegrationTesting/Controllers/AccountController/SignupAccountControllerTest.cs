@@ -43,7 +43,7 @@ public class SignupAccountControllerTest : AccountControllerTest
         result.Id.Should().BeGreaterThan(0);
         result.Email.Should().Be(user.Email);
         result.UserName.Should().Be(user.UserName);
-        result.Confirmed.Should().BeFalse();
+        result.EmailConfirmed.Should().BeFalse();
     }
     
     [Fact]

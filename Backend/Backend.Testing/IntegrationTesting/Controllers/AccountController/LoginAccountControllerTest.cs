@@ -40,7 +40,7 @@ public class LoginAccountControllerTest : AccountControllerTest
         result.Id.Should().Be(user.Id);
         result.UserName.Should().Be(user.UserName);
         result.Email.Should().Be(user.Email);
-        result.Confirmed.Should().BeTrue();
+        result.EmailConfirmed.Should().BeTrue();
     }
     
     [Fact]

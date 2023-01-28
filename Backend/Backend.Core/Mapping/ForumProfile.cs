@@ -18,7 +18,6 @@ public class ForumProfile : Profile
         CreateMap<ApplicationUser, UserResponse>()
             .ForMember(r => r.Admin, opt => opt.MapFrom<AdminResolver<UserResponse>>());
         CreateMap<ApplicationUser, AccountResponse>()
-            .ForMember(r => r.Confirmed, cfg => cfg.MapFrom(src => src.EmailConfirmed))
             .ForMember(r => r.Admin, opt => opt.MapFrom<AdminResolver<AccountResponse>>());
 
         CreateMap<Thread, ThreadResponse>()
