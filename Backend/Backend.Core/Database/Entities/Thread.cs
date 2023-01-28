@@ -21,4 +21,7 @@ public class Thread
 
     [Required, MinLength(4), MaxLength(short.MaxValue)]
     public string Content { get; set; } = default!;
+
+    [Required]
+    public int Views { get; set; }
 }

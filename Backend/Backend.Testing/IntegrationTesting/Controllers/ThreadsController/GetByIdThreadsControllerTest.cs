@@ -30,6 +30,7 @@ public class GetByIdThreadsControllerTest : ThreadsControllerTest
         result.Content.Should().Be(thread.Content);
         result.User.Should().NotBeNull();
         result.User.Id.Should().Be(thread.UserId);
+        result.Views.Should().Be(1);
     }
     
     [Fact]

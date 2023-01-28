@@ -40,7 +40,13 @@ public class ThreadsController : ControllerBase
     {
         var thread = await _repository.GetByIdAsync(id);
 
-        return thread is null ? NotFound() : _mapper.Map<ThreadResponse>(thread);
+        if (thread is null)
+            return NotFound();
+        
+        thread.Views++;
+        await _repository.UpdateAsync(thread);
+
+        return _mapper.Map<ThreadResponse>(thread);
     }
     
     [HttpPost]
