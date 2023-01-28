@@ -11,7 +11,7 @@ export default function Signup() {
     const { account, signUp, isLoading, error } = useAuth();
 
     if (account !== undefined)
-        return account.confirmed ?
+        return account.emailConfirmed ?
             <Navigate to="/" /> :
             <h1 className="title">Please confirm your email address</h1>;
 

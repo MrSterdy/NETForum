@@ -47,7 +47,7 @@ export default function Home() {
             <div>
                 <h1 className="title">Recent threads</h1>
 
-                {account?.confirmed &&
+                {account?.emailConfirmed &&
                     <h3 className="description">
                         <Link to="/thread/create">Create new thread</Link>
                     </h3>
@@ -64,7 +64,7 @@ export default function Home() {
                         <div className="info-bar row">
                             <h3 className="description">
                                 <Link to={`/user/${thread.user.id}`}>
-                                    {thread.user.enabled ? thread.user.userName : <s>{thread.user.userName}</s>}
+                                    {thread.user.banned ? <s>{thread.user.userName}</s> : thread.user.userName}
                                 </Link>
                             </h3>
 

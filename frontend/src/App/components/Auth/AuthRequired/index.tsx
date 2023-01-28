@@ -11,8 +11,5 @@ export default function AuthRequired({ children }: { children: ReactNode }) {
     if (isLoading)
         return <Loader />;
 
-    if (!account?.confirmed)
-        return <Navigate to="/account/login" />;
-
-    return <>{children}</>;
+    return account?.emailConfirmed ? <>{children}</> : <Navigate to="/account/login" />;
 }

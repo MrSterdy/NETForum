@@ -8,4 +8,8 @@ export default interface IThread extends IEntity {
 
     title: string,
     content: string
+
+    views: number,
+
+    commentCount: number
 }

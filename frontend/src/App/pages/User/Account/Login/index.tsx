@@ -17,7 +17,7 @@ export default function Login() {
     const [resetPasswordError, setResetPasswordError] = useState(false);
     const [isResettingPassword, setResettingPassword] = useState(false);
 
-    if (account?.confirmed)
+    if (account?.emailConfirmed)
         return <Navigate to="/" />;
 
     if (isLoading || isResettingPassword)

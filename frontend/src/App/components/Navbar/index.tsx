@@ -21,8 +21,10 @@ export default function Navbar() {
 
             <ul>
                 <li>
-                    {!account?.confirmed && <Link to="/account/login">Log in</Link>}
-                    {account?.confirmed && <Link to={`/user/${account.id}`}>{account.userName}</Link>}
+                    {account?.emailConfirmed ?
+                        <Link to={`/user/${account.id}`}>{account.userName}</Link> :
+                        <Link to="/account/login">Log in</Link>
+                    }
                 </li>
             </ul>
         </nav>

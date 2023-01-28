@@ -6,7 +6,7 @@ import { IPage, IThread, IUser } from "../../api/models";
 
 import { Loader } from "../../components";
 
-import { blockById, getUserById } from "../../api/endpoints/users";
+import { banById, getUserById } from "../../api/endpoints/users";
 import { getThreadsByUserId } from "../../api/endpoints/threads";
 
 import { useAuth, useFetch } from "../../hooks";
@@ -52,7 +52,7 @@ export default function User() {
     function ban() {
         setBanning(true);
 
-        blockById(user.id!)
+        banById(user.id!)
             .then(() => window.location.reload())
             .finally(() => setBanning(false));
     }
@@ -69,7 +69,7 @@ export default function User() {
                         <div>
                             <h2 className="title">{user.userName}</h2>
 
-                            {!user.enabled && <h3 className="description">Banned</h3>}
+                            {user.banned && <h3 className="description">Banned</h3>}
                         </div>
 
                         {user.id === account?.id &&
@@ -82,9 +82,9 @@ export default function User() {
 
                 {account?.admin && account.id !== user.id &&
                     <section className="full-width option-bar row">
-                        {user.enabled ?
-                            <Lock className="clickable icon" onClick={ban} /> :
-                            <Unlock className="clickable icon" onClick={ban} />
+                        {user.banned ?
+                            <Unlock className="clickable icon" onClick={ban} /> :
+                            <Lock className="clickable icon" onClick={ban} />
                         }
                     </section>
                 }

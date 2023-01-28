@@ -8,6 +8,6 @@ export function getUserById(id: number) {
     return axios.get<IUser>(`${endpoint}/${id}`);
 }
 
-export async function blockById(id: number) {
-    return axios.post(`${endpoint}/block/${id}`, {}, { withCredentials: true });
+export async function banById(id: number) {
+    return axios.post(`${endpoint}/ban/${id}`, {}, { withCredentials: true });
 }

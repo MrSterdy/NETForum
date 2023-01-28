@@ -185,7 +185,7 @@ export default function Thread() {
                 <div className="info-bar row">
                     <h4 className="description">
                         <Link to={`/user/${thread.user.id}`}>
-                            {thread.user.enabled ? thread.user.userName : <s>{thread.user.userName}</s>}
+                            {thread.user.banned ? <s>{thread.user.userName}</s> : thread.user.userName}
                         </Link>
                     </h4>
 
@@ -194,7 +194,7 @@ export default function Thread() {
 
                 <article>{thread.content}</article>
 
-                {account?.confirmed && !isCommenting &&
+                {account?.emailConfirmed && !isCommenting &&
                     <ul className="row option-bar">
                         {(account?.admin || account?.id === thread.user.id) &&
                             <>
@@ -285,7 +285,7 @@ export default function Thread() {
                                             <div className="info-bar row">
                                                 <h4 className="description">
                                                     <Link to={`/user/${c.user.id}`}>
-                                                        {c.user.enabled ? c.user.userName : <s>{c.user.userName}</s>}
+                                                        {c.user.banned ? <s>{c.user.userName}</s> : c.user.userName}
                                                     </Link>
                                                 </h4>
 
