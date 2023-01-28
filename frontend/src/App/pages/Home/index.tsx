@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import dayjs from "dayjs";
 
 import { Loader } from "../../components";
 
@@ -8,7 +9,9 @@ import { IPage, IThread } from "../../api/models";
 import { getThreadsByPage } from "../../api/endpoints/threads";
 
 import { useAuth } from "../../hooks";
-import dayjs from "dayjs";
+
+import { ReactComponent as Views } from "../../assets/icons/eye.svg";
+import { ReactComponent as Comments } from "../../assets/icons/comment.svg";
 
 export default function Home() {
     const [page, setPage] = useState<IPage<IThread>>({} as IPage<IThread>);
@@ -57,9 +60,22 @@ export default function Home() {
             <ul className="content column thread-list">
                 {page.items.map(thread => (
                     <li key={ thread.id }>
-                        <h2 className="title">
-                            <Link to={`/thread/${thread.id}`}>{thread.title}</Link>
-                        </h2>
+                        <div className="info-bar row">
+                            <h2 className="title">
+                                <Link to={`/thread/${thread.id}`}>{thread.title}</Link>
+                            </h2>
+
+                            <ul className="center row">
+                                <li className="row">
+                                    <h3 className="title">{thread.views}</h3>
+                                    <Views className="icon" />
+                                </li>
+                                <li className="row">
+                                    <h3 className="title">{thread.commentCount}</h3>
+                                    <Comments className="icon" />
+                                </li>
+                            </ul>
+                        </div>
 
                         <div className="info-bar row">
                             <h3 className="description">
