@@ -2,6 +2,7 @@ using System.Net;
 
 using Backend.Core.Database;
 using Backend.Core.Database.Repositories;
+using Backend.Core.Filters;
 using Backend.Core.Identity;
 using Backend.Core.Mail;
 using Backend.Core.Middlewares;
@@ -72,7 +73,7 @@ builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IThreadRepository, ThreadRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => options.Filters.Add<DisabledUserFilter>());
 
 var app = builder.Build();
 
@@ -80,8 +81,6 @@ app.UseCors("CORS");
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseMiddleware<DisabledUserMiddleware>();
 
 app.MapControllers();
 
