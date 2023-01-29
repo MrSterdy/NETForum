@@ -2,6 +2,8 @@
 
 public class Page<T>
 {
+    public static Page<T> Empty => new (new List<T>(), true);
+
     public IEnumerable<T> Items { get; set; }
     
     public bool IsLast { get; set; }

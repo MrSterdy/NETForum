@@ -49,7 +49,11 @@ public class ThreadsController : ControllerBase
 
         return _mapper.Map<ThreadResponse>(thread);
     }
-    
+
+    [HttpGet("Search")]
+    public async Task<ActionResult<Page<ThreadResponse>>> Search(string title, int page) =>
+       _mapper.Map<Page<ThreadResponse>>(await _repository.SearchAsync(title, page));
+
     [HttpPost]
     [Authorize]
     public async Task Create([FromBody] ThreadRequest model) =>

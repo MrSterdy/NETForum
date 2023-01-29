@@ -24,7 +24,7 @@ public class CommentRepository : ICommentRepository
     public async Task<Page<Comment>> GetByPageAsync(int page, int threadId)
     {
         if (page <= 0)
-            return new Page<Comment>(new List<Comment>(), true);
+            return Page<Comment>.Empty;
 
         var skipped = _context.Comments
             .Where(c => c.ThreadId == threadId)

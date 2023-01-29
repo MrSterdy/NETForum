@@ -41,10 +41,27 @@ public class ThreadRepository : IThreadRepository
     public async Task<Page<Thread>> GetByUserIdAsync(int userId, int page)
     {
         if (page <= 0)
-            return new Page<Thread>(new List<Thread>(), true);
+            return Page<Thread>.Empty;
 
         var skipped = _context.Threads
             .Where(t => t.UserId == userId)
+            .OrderByDescending(t => t.CreatedDate)
+            .Skip((page - 1) * Constants.PageSize);
+        var isLast = Math.Ceiling((await skipped.CountAsync() - Constants.PageSize) / (float) Constants.PageSize) < 1;
+
+        return new Page<Thread>(await skipped
+            .Take(Constants.PageSize)
+            .Include(t => t.User)
+            .ToListAsync(), isLast);
+    }
+
+    public async Task<Page<Thread>> SearchAsync(string title, int page)
+    {
+        if (page <= 0)
+            return Page<Thread>.Empty;
+        
+        var skipped = _context.Threads
+            .Where(t => t.Title.Contains(title))
             .OrderByDescending(t => t.CreatedDate)
             .Skip((page - 1) * Constants.PageSize);
         var isLast = Math.Ceiling((await skipped.CountAsync() - Constants.PageSize) / (float) Constants.PageSize) < 1;
