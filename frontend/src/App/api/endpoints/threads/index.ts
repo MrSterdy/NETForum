@@ -16,6 +16,10 @@ export function getThreadsByUserId(userId: number, page: number) {
     return axios.get<IPage<IThread>>(endpoint, { params: { userId, page } });
 }
 
+export function search(title: string, page: number) {
+    return axios.get<IPage<IThread>>(`${endpoint}/search`, { params: { title, page } });
+}
+
 export function createThread(title: string, content: string) {
     return axios.post(endpoint, { title, content }, { withCredentials: true });
 }
