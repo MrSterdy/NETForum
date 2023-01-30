@@ -17,11 +17,11 @@ import { ReactComponent as Search } from "../../assets/icons/search.svg";
 import "./index.css";
 
 export default function Home() {
-    const [mainPage, setMainPage] = useState<IPage<IThread>>({} as IPage<IThread>);
+    const [mainPage, setMainPage] = useState<IPage<IThread>>();
     const [mainPageNumber, setMainPageNumber] = useState(1);
 
     const [searchTitle, setSearchTitle] = useState("");
-    const [searchPage, setSearchPage] = useState<IPage<IThread>>({} as IPage<IThread>);
+    const [searchPage, setSearchPage] = useState<IPage<IThread>>();
     const [searchPageNumber, setSearchPageNumber] = useState(0);
 
     const [isMainPageLoading, setMainPageLoading] = useState(true);
@@ -31,17 +31,13 @@ export default function Home() {
 
     const { account } = useAuth();
 
-    // TODO: deal with this gross shit
-
     useEffect(() => {
         if (mainPageNumber === 0)
             return;
 
-        setMainPageLoading(true);
-
         getThreadsByPage(mainPageNumber)
             .then(res => setMainPage(p => ({
-                items: p.items ? p.items.concat(res.data.items) : res.data.items,
+                items: p?.items.concat(res.data.items) ?? res.data.items,
                 isLast: res.data.isLast
             })))
             .catch(() => setError(true))
@@ -52,11 +48,9 @@ export default function Home() {
         if (searchPageNumber === 0)
             return;
 
-        setSearchPageLoading(true);
-
         searchByTitle(searchTitle, searchPageNumber)
             .then(res => setSearchPage(p => ({
-                items: p.items ? p.items.concat(res.data.items) : res.data.items,
+                items: p?.items.concat(res.data.items) ?? res.data.items,
                 isLast: res.data.isLast
             })))
             .catch(() => setError(true))
@@ -67,26 +61,29 @@ export default function Home() {
         return <h1 className="error title">Fetch Failed</h1>;
 
     function loadMoreMain() {
-        setMainPageNumber(mainPageNumber + 1);
+        setMainPageLoading(true);
+        setMainPageNumber(p => p + 1);
     }
 
     function loadMoreSearch() {
-        setSearchPageNumber(searchPageNumber + 1);
+        setSearchPageLoading(true);
+        setSearchPageNumber(p => p + 1);
     }
 
     function search(event: RMouseEvent<SVGElement, MouseEvent>) {
         const title = new FormData(event.currentTarget.closest("form")!).get("title") as string;
+
         if (title.length === 0) {
             setMainPageLoading(true);
 
-            setSearchPage({} as IPage<IThread>)
+            setSearchPage(undefined);
             setSearchPageNumber(0);
 
             setMainPageNumber(1);
         } else {
             setSearchPageLoading(true);
 
-            setMainPage({} as IPage<IThread>);
+            setMainPage(undefined);
             setMainPageNumber(0);
 
             setSearchPageNumber(1);
@@ -106,10 +103,8 @@ export default function Home() {
                 </div>
             </form>
 
-            {isSearchPageLoading && <Loader />}
-
             <section>
-                {searchPageNumber === 0 &&
+                {mainPage &&
                     <div>
                         <h1 className="title">Recent threads</h1>
 
@@ -121,10 +116,10 @@ export default function Home() {
                     </div>
                 }
 
-                {((isMainPageLoading && mainPage.isLast === undefined) || (isSearchPageLoading && searchPage.isLast === undefined)) ?
+                {((isMainPageLoading && !mainPage) || (isSearchPageLoading && !searchPage)) ?
                     <Loader /> :
                     <ul className="content column thread-list">
-                        {(searchPageNumber === 0 ? mainPage : searchPage).items.map(thread => (
+                        {(mainPage ?? searchPage!).items.map(thread => (
                             <li key={thread.id}>
                                 <div className="info-bar row">
                                     <h2 className="title">
@@ -158,8 +153,13 @@ export default function Home() {
                 }
             </section>
 
-            {mainPage.isLast === false && <button type="button" onClick={loadMoreMain}>Load more</button>}
-            {searchPage.isLast === false && <button type="button" onClick={loadMoreSearch}>Load more</button>}
+            {mainPage?.isLast === false &&
+                (isMainPageLoading ? <Loader /> : <button type="button" onClick={loadMoreMain}>Load more</button>)
+            }
+
+            {searchPage?.isLast === false &&
+                (isSearchPageLoading ? <Loader /> : <button type="button" onClick={loadMoreSearch}>Load more</button>)
+            }
         </section>
     );
 }
