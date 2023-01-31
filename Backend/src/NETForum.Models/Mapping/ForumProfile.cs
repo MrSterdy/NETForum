@@ -18,6 +18,9 @@ public class ForumProfile : Profile
 
         CreateMap<Thread, ThreadResponse>()
             .ForMember(r => r.CommentCount, opt => opt.MapFrom<CommentCountResolver>());
+        CreateMap<ThreadTags, TagResponse>()
+            .IncludeMembers(src => src.Tag);
+        CreateMap<Tag, TagResponse>();
         CreateMap<Comment, CommentResponse>();
 
         CreateMap(typeof(Page<>), typeof(Page<>));

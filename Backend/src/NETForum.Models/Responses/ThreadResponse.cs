@@ -15,4 +15,6 @@ public class ThreadResponse
     public int Views { get; set; }
 
     public int CommentCount { get; set; }
+    
+    public IEnumerable<TagResponse>? Tags { get; set; }
 }

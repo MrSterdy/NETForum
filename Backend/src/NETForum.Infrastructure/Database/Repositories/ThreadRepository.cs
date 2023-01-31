@@ -20,6 +20,8 @@ public class ThreadRepository : IThreadRepository
     public async Task<Thread?> GetByIdAsync(int id) =>
         await _context.Threads
             .Include(t => t.User)
+            .Include(t => t.Tags)
+                .ThenInclude(t => t.Tag)
             .SingleOrDefaultAsync(t => t.Id == id);
 
     public async Task<Page<Thread>> GetByPageAsync(int page)
@@ -35,6 +37,8 @@ public class ThreadRepository : IThreadRepository
         return new Page<Thread>(await skipped
             .Take(Constants.PageSize)
             .Include(t => t.User)
+            .Include(t => t.Tags)
+                .ThenInclude(t => t.Tag)
             .ToListAsync(), isLast);
     }
 
@@ -52,6 +56,8 @@ public class ThreadRepository : IThreadRepository
         return new Page<Thread>(await skipped
             .Take(Constants.PageSize)
             .Include(t => t.User)
+            .Include(t => t.Tags)
+                .ThenInclude(t => t.Tag)
             .ToListAsync(), isLast);
     }
 
@@ -69,6 +75,8 @@ public class ThreadRepository : IThreadRepository
         return new Page<Thread>(await skipped
             .Take(Constants.PageSize)
             .Include(t => t.User)
+            .Include(t => t.Tags)
+                .ThenInclude(t => t.Tag)
             .ToListAsync(), isLast);
     }
 

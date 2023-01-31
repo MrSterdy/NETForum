@@ -17,6 +17,9 @@ public class ApplicationDbContext : IdentityUserContext<ApplicationUser, int>
     public DbSet<IdentityRole<int>> Roles { get; set; } = default!;
     public DbSet<IdentityUserRole<int>> UserRoles { get; set; } = default!;
 
+    public DbSet<Tag> Tags { get; set; } = default!;
+    public DbSet<ThreadTags> ThreadTags { get; set; } = default!;
+
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
@@ -43,6 +46,9 @@ public class ApplicationDbContext : IdentityUserContext<ApplicationUser, int>
 
         builder.Entity<IdentityUserClaim<int>>()
             .ToTable("Claims");
+
+        builder.Entity<ThreadTags>()
+            .HasKey(t => new { t.ThreadId, t.TagId });
 
         builder.Ignore<IdentityUserToken<int>>();
         builder.Ignore<IdentityUserLogin<int>>();

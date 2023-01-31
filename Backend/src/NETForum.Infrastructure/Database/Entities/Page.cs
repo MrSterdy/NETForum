@@ -2,7 +2,7 @@
 
 public class Page<T>
 {
-    public static Page<T> Empty => new (new List<T>(), true);
+    public static Page<T> Empty => new (Enumerable.Empty<T>(), true);
 
     public IEnumerable<T> Items { get; set; }
     

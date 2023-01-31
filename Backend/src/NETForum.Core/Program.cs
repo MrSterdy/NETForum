@@ -68,6 +68,7 @@ builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof
 builder.Services.AddScoped<IMailService, MailService>();
 
 builder.Services.AddScoped<IThreadRepository, ThreadRepository>();
+builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
 builder.Services.AddAutoMapper(typeof(ForumProfile));

@@ -24,4 +24,6 @@ public class Thread
 
     [Required]
     public int Views { get; set; }
+
+    public ICollection<ThreadTags> Tags { get; set; } = new List<ThreadTags>();
 }
