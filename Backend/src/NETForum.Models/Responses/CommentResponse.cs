@@ -6,6 +6,8 @@ public class CommentResponse
     
     public DateTimeOffset CreatedDate { get; set; }
     
+    public DateTimeOffset? ModifiedDate { get; set; }
+    
     public UserResponse? User { get; set; }
     
     public int ThreadId { get; set; }

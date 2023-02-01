@@ -11,6 +11,8 @@ public class Comment
     
     [Required]
     public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
+
+    public DateTimeOffset? ModifiedDate { get; set; }
     
     [Required]
     public int UserId { get; set; }

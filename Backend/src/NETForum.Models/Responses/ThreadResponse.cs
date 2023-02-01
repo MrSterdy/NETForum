@@ -6,6 +6,8 @@ public class ThreadResponse
     
     public DateTimeOffset CreatedDate { get; set; }
     
+    public DateTimeOffset? ModifiedDate { get; set; }
+    
     public UserResponse? User { get; set; }
 
     public string? Title { get; set; }

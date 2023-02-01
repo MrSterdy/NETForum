@@ -82,6 +82,7 @@ public class ThreadsController : ControllerBase
         {
             Id = id,
             CreatedDate = thread.CreatedDate,
+            ModifiedDate = DateTimeOffset.UtcNow,
             UserId = user,
             Title = model.Title,
             Content = model.Content

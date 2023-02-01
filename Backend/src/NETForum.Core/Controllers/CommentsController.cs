@@ -77,6 +77,7 @@ public class CommentsController : ControllerBase
         {
             Id = id,
             CreatedDate = comment.CreatedDate,
+            ModifiedDate = DateTimeOffset.UtcNow,
             UserId = user,
             ThreadId = comment.ThreadId,
             Content = model.Content

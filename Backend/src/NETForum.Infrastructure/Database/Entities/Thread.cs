@@ -12,6 +12,8 @@ public class Thread
     [Required]
     public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
     
+    public DateTimeOffset? ModifiedDate { get; set; }
+    
     [Required]
     public int UserId { get; set; }
     public ApplicationUser User { get; set; } = default!;
