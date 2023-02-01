@@ -51,8 +51,8 @@ public class ThreadsController : ControllerBase
     }
 
     [HttpGet("Search")]
-    public async Task<ActionResult<Page<ThreadResponse>>> Search(string title, int page) =>
-       _mapper.Map<Page<ThreadResponse>>(await _repository.SearchAsync(title, page));
+    public async Task<ActionResult<Page<ThreadResponse>>> Search(string? title, [FromQuery] string[]? tags, int page) =>
+       _mapper.Map<Page<ThreadResponse>>(await _repository.SearchAsync(title, tags, page));
 
     [HttpPost]
     [Authorize]

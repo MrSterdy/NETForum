@@ -9,5 +9,5 @@ public interface IThreadRepository : IRepository<Thread>
 
     Task<Page<Thread>> GetByUserIdAsync(int userId, int page);
 
-    Task<Page<Thread>> SearchAsync(string title, int page);
+    Task<Page<Thread>> SearchAsync(string? title, string[]? tags, int page);
 }

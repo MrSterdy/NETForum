@@ -61,18 +61,26 @@ public class ThreadRepository : IThreadRepository
             .ToListAsync(), isLast);
     }
 
-    public async Task<Page<Thread>> SearchAsync(string title, int page)
+    public async Task<Page<Thread>> SearchAsync(string? title, string[]? tags, int page)
     {
-        if (page <= 0)
+        if (page <= 0 || (title is null && tags is null))
             return Page<Thread>.Empty;
+
+        var threads = _context.Threads.AsQueryable();
+
+        if (title is not null)
+            threads = threads.Where(t => t.Title.Contains(title));
         
-        var skipped = _context.Threads
-            .Where(t => t.Title.Contains(title))
+        if (tags is not null)
+            threads = threads
+                .Where(t => !t.Tags.All(threadTag => tags.Contains(threadTag.Tag.Name))); // ???
+
+        threads = threads
             .OrderByDescending(t => t.CreatedDate)
             .Skip((page - 1) * Constants.PageSize);
-        var isLast = Math.Ceiling((await skipped.CountAsync() - Constants.PageSize) / (float) Constants.PageSize) < 1;
+        var isLast = Math.Ceiling((await threads.CountAsync() - Constants.PageSize) / (float) Constants.PageSize) < 1;
 
-        return new Page<Thread>(await skipped
+        return new Page<Thread>(await threads
             .Take(Constants.PageSize)
             .Include(t => t.User)
             .Include(t => t.Tags)
