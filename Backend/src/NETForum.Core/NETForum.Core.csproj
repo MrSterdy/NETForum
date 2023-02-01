@@ -8,23 +8,27 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <PublishSingleFile>true</PublishSingleFile>
-        
         <AssemblyName>NETForum</AssemblyName>
         <OutputType>Exe</OutputType>
-        
-        <DebugType>embedded</DebugType>
+        <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
     
     <Choose>
         <When Condition="'$(Configuration)' == 'Release'">
             <PropertyGroup>
+                <PublishSingleFile>true</PublishSingleFile>
+                <DebugType>portable</DebugType>
                 <Optimize>true</Optimize>
             </PropertyGroup>
             
             <ItemGroup>
                 <Content Remove="appsettings.Development.json" />
             </ItemGroup>
+        </When>
+        <When Condition="'$(Configuration)' == 'Debug'">
+            <PropertyGroup>
+                <DebugType>full</DebugType>
+            </PropertyGroup>
         </When>
     </Choose>
     

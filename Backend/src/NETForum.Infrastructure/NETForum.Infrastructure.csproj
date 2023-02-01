@@ -9,7 +9,8 @@
     
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        
+
+        <DebugSymbols>true</DebugSymbols>
         <DebugType>embedded</DebugType>
     </PropertyGroup>
 
