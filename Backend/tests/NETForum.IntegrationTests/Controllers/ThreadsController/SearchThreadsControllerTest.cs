@@ -7,22 +7,23 @@ namespace NETForum.IntegrationTests.Controllers.ThreadsController;
 
 public class SearchThreadsControllerTest : ThreadsControllerTest
 {
-    protected override string Endpoint => base.Endpoint + "/Search";
-
     public SearchThreadsControllerTest(BackendFactory factory) : base(factory)
     {
     }
     
     [Fact]
-    public async void Search_Ok()
+    public async void Search_User_Title_Page_Ok()
     {
         // Arrange
         var thread = await Factory.DbManager.Seeder.SeedThreadAsync();
-        var search = thread.Title[..5];
+
+        var userId = thread.UserId;
+        var title = thread.Title[..5];
+        var page = 1;
         
         // Act
         using var client = Factory.CreateClient();
-        using var response = await client.GetAsync(Endpoint + $"?title={search}&page=1");
+        using var response = await client.GetAsync(Endpoint + $"?userId={userId}title={title}&page={page}");
         
         // Assert
         response.EnsureSuccessStatusCode();

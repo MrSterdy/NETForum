@@ -24,49 +24,15 @@ public class ThreadRepository : IThreadRepository
                 .ThenInclude(t => t.Tag)
             .SingleOrDefaultAsync(t => t.Id == id);
 
-    public async Task<Page<Thread>> GetByPageAsync(int page)
+    public async Task<Page<Thread>> SearchAsync(int? userId, string? title, string[]? tags, int page)
     {
-        if (page <= 0)
-            return new Page<Thread>(new List<Thread>(), true);
-
-        var skipped = _context.Threads
-            .OrderByDescending(t => t.CreatedDate)
-            .Skip((page - 1) * Constants.PageSize);
-        var isLast = Math.Ceiling((await skipped.CountAsync() - Constants.PageSize) / (float) Constants.PageSize) < 1;
-
-        return new Page<Thread>(await skipped
-            .Take(Constants.PageSize)
-            .Include(t => t.User)
-            .Include(t => t.Tags)
-                .ThenInclude(t => t.Tag)
-            .ToListAsync(), isLast);
-    }
-
-    public async Task<Page<Thread>> GetByUserIdAsync(int userId, int page)
-    {
-        if (page <= 0)
-            return Page<Thread>.Empty;
-
-        var skipped = _context.Threads
-            .Where(t => t.UserId == userId)
-            .OrderByDescending(t => t.CreatedDate)
-            .Skip((page - 1) * Constants.PageSize);
-        var isLast = Math.Ceiling((await skipped.CountAsync() - Constants.PageSize) / (float) Constants.PageSize) < 1;
-
-        return new Page<Thread>(await skipped
-            .Take(Constants.PageSize)
-            .Include(t => t.User)
-            .Include(t => t.Tags)
-                .ThenInclude(t => t.Tag)
-            .ToListAsync(), isLast);
-    }
-
-    public async Task<Page<Thread>> SearchAsync(string? title, string[]? tags, int page)
-    {
-        if (page <= 0 || (title is null && tags is null))
+        if (page <= 0 || (userId is null && title is null && tags is null))
             return Page<Thread>.Empty;
 
         var threads = _context.Threads.AsQueryable();
+
+        if (userId is not null)
+            threads = threads.Where(t => t.UserId == userId);
 
         if (title is not null)
             threads = threads.Where(t => t.Title.Contains(title));

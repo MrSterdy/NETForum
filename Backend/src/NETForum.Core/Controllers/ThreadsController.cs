@@ -50,9 +50,13 @@ public class ThreadsController : ControllerBase
         return _mapper.Map<ThreadResponse>(thread);
     }
 
-    [HttpGet("Search")]
-    public async Task<ActionResult<Page<ThreadResponse>>> Search(string? title, [FromQuery] string[]? tags, int page) =>
-       _mapper.Map<Page<ThreadResponse>>(await _repository.SearchAsync(title, tags, page));
+    [HttpGet]
+    public async Task<ActionResult<Page<ThreadResponse>>> Search(
+        int? userId,
+        string? title,
+        [FromQuery] string[]? tags,
+        int page
+    ) => _mapper.Map<Page<ThreadResponse>>(await _repository.SearchAsync(userId, title, tags, page));
 
     [HttpPost]
     [Authorize]
@@ -110,15 +114,5 @@ public class ThreadsController : ControllerBase
         }
 
         return Forbid();
-    }
-    
-    [HttpGet]
-    public async Task<Page<ThreadResponse>> GetByPage(int page, int? userId)
-    {
-        var rawPage = userId is null
-            ? await _repository.GetByPageAsync(page)
-            : await _repository.GetByUserIdAsync(userId.Value, page);
-
-        return _mapper.Map<Page<ThreadResponse>>(rawPage);
     }
 }
