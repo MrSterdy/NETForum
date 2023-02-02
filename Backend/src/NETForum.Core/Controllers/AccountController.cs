@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using NETForum.Infrastructure.Database.Repositories;
 
 namespace NETForum.Core.Controllers;
 
@@ -19,6 +20,8 @@ namespace NETForum.Core.Controllers;
 [Route("Api/[controller]")]
 public class AccountController : ControllerBase
 {
+    private readonly IUserRepository _repository;
+    
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
 
@@ -27,12 +30,15 @@ public class AccountController : ControllerBase
     private readonly IMapper _mapper;
 
     public AccountController(
-        UserManager<ApplicationUser> userManager, 
+        IUserRepository repository,
+        UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         IMailService mailService,
         IMapper mapper
     )
     {
+        _repository = repository;
+        
         _userManager = userManager;
         _signInManager = signInManager;
         
@@ -52,7 +58,7 @@ public class AccountController : ControllerBase
         if (User.Identity!.IsAuthenticated)
             return Forbid();
         
-        var user = await _userManager.FindByIdAsync(userId.ToString());
+        var user = await _repository.GetByIdAsync(userId);
         if (user is null)
             return NotFound();
 
@@ -72,7 +78,7 @@ public class AccountController : ControllerBase
         
         user.NewEmail = null;
 
-        await _userManager.UpdateAsync(user);
+        await _repository.UpdateAsync(user);
 
         return Ok();
     }
@@ -83,7 +89,7 @@ public class AccountController : ControllerBase
         var user = await _userManager.GetUserAsync(User);
         user!.NewEmail = model.Email;
 
-        await _userManager.UpdateAsync(user);
+        await _repository.UpdateAsync(user);
 
         var url = QueryHelpers.AddQueryString(callbackUrl, new Dictionary<string, string?>
         {
@@ -101,7 +107,7 @@ public class AccountController : ControllerBase
         var user = await _userManager.GetUserAsync(User);
         user!.UserName = model.UserName;
 
-        await _userManager.UpdateAsync(user);
+        await _repository.UpdateAsync(user);
     }
     
     [AllowAnonymous]
