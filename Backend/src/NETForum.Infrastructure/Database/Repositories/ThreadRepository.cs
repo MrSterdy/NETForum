@@ -24,9 +24,9 @@ public class ThreadRepository : IThreadRepository
                 .ThenInclude(t => t.Tag)
             .SingleOrDefaultAsync(t => t.Id == id);
 
-    public async Task<Page<Thread>> SearchAsync(int? userId, string? title, string[]? tags, int page)
+    public async Task<Page<Thread>> SearchAsync(int? userId, string? title, int[]? tagIds, int page)
     {
-        if (page <= 0 || (userId is null && title is null && tags is null))
+        if (page <= 0 || (userId is null && title is null && tagIds is null))
             return Page<Thread>.Empty;
 
         var threads = _context.Threads.AsQueryable();
@@ -37,9 +37,9 @@ public class ThreadRepository : IThreadRepository
         if (title is not null)
             threads = threads.Where(t => t.Title.Contains(title));
         
-        if (tags is not null)
+        if (tagIds is not null)
             threads = threads
-                .Where(t => !t.Tags.All(threadTag => tags.Contains(threadTag.Tag.Name))); // ???
+                .Where(t => !t.Tags.All(threadTag => tagIds.Contains(threadTag.TagId))); // ???
 
         threads = threads
             .OrderByDescending(t => t.CreatedDate)
