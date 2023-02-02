@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using NETForum.Infrastructure.Identity;
+using NETForum.Infrastructure.Database.Entities;
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using NETForum.Infrastructure.Identity;
 
 namespace NETForum.Infrastructure.Database.Repositories;
 
 public interface IUserRepository : IRepository<ApplicationUser>
 {
+    public Task<Page<ApplicationUser>> SearchAsync(string username, int page);
 }
 
 public class UserRepository : IUserRepository
@@ -20,6 +23,21 @@ public class UserRepository : IUserRepository
 
     public async Task<ApplicationUser?> GetByIdAsync(int id) =>
         await _manager.FindByIdAsync(id.ToString());
+
+    public async Task<Page<ApplicationUser>> SearchAsync(string username, int page)
+    {
+        if (page <= 0)
+            return Page<ApplicationUser>.Empty;
+
+        var skipped = _manager.Users
+            .Where(u => u.UserName!.Contains(username))
+            .Skip((page - 1) * Constants.PageSize);
+        var isLast = Math.Ceiling((await skipped.CountAsync() - Constants.PageSize) / (float) Constants.PageSize) < 1;
+
+        return new Page<ApplicationUser>(await skipped
+            .Take(Constants.PageSize)
+            .ToListAsync(), isLast);
+    }
 
     public async Task<bool> Exists(int id) =>
         await _manager.Users.AnyAsync(u => u.Id == id);

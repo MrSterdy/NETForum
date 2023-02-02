@@ -2,6 +2,7 @@
 
 using NETForum.Models.Responses;
 using NETForum.Infrastructure.Database.Repositories;
+using NETForum.Infrastructure.Database.Entities;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,10 @@ public class UsersController : ControllerBase
 
         return iUser is null ? NotFound() : _mapper.Map<UserResponse>(iUser);
     }
+    
+    [HttpGet("Search")]
+    public async Task<Page<UserResponse>> Search(string username, int page) =>
+        _mapper.Map<Page<UserResponse>>(await _repository.SearchAsync(username, page));
 
     [HttpPost("Ban/{id:int}")]
     [Authorize(Roles = "Admin")]
