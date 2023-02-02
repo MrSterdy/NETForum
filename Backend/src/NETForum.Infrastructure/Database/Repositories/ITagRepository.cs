@@ -6,7 +6,7 @@ namespace NETForum.Infrastructure.Database.Repositories;
 
 public interface ITagRepository : IRepository<Tag>
 {
-    Task<Page<Tag>> GetByPageAsync(int page);
+    Task<Page<Tag>> SearchAsync(int page, string? name);
 }
 
 public class TagRepository : ITagRepository
@@ -22,15 +22,20 @@ public class TagRepository : ITagRepository
     public async Task<Tag?> GetByIdAsync(int id) =>
         await _context.Tags.FindAsync(id);
 
-    public async Task<Page<Tag>> GetByPageAsync(int page)
+    public async Task<Page<Tag>> SearchAsync(int page, string? name)
     {
         if (page <= 0)
             return Page<Tag>.Empty;
 
-        var skipped = _context.Tags.Skip((page - 1) * Constants.PageSize);
-        var isLast = Math.Ceiling((await skipped.CountAsync() - Constants.PageSize) / (float) Constants.PageSize) < 1;
+        var tags = _context.Tags.AsQueryable();
 
-        return new Page<Tag>(await skipped.Take(Constants.PageSize).ToListAsync(), isLast);
+        if (name is not null)
+            tags = tags.Where(t => t.Name.Contains(name));
+
+        tags = tags.Skip((page - 1) * Constants.PageSize);
+        var isLast = Math.Ceiling((await tags.CountAsync() - Constants.PageSize) / (float) Constants.PageSize) < 1;
+
+        return new Page<Tag>(await tags.Take(Constants.PageSize).ToListAsync(), isLast);
     }
 
     public async Task<bool> Exists(int id) =>
