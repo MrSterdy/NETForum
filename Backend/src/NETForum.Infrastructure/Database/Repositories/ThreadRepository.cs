@@ -24,7 +24,7 @@ public class ThreadRepository : IThreadRepository
                 .ThenInclude(t => t.Tag)
             .SingleOrDefaultAsync(t => t.Id == id);
 
-    public async Task<Page<Thread>> SearchAsync(int? userId, string? title, int[]? tagIds, int page)
+    public async Task<Page<Thread>> SearchAsync(int page, int? userId, string? title, int[]? tagIds)
     {
         if (page <= 0 || (userId is null && title is null && tagIds is null))
             return Page<Thread>.Empty;

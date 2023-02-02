@@ -5,5 +5,5 @@ namespace NETForum.Infrastructure.Database.Repositories;
 
 public interface IThreadRepository : IRepository<Thread>
 {
-    Task<Page<Thread>> SearchAsync(int? userId, string? title, int[]? tagIds, int page);
+    Task<Page<Thread>> SearchAsync(int page, int? userId, string? title, int[]? tagIds);
 }

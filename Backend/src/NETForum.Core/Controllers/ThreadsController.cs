@@ -52,11 +52,11 @@ public class ThreadsController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<Page<ThreadResponse>>> Search(
+        int page,
         int? userId,
         string? title,
-        [FromQuery] int[]? tagIds,
-        int page
-    ) => _mapper.Map<Page<ThreadResponse>>(await _repository.SearchAsync(userId, title, tagIds, page));
+        [FromQuery] int[]? tagIds
+    ) => _mapper.Map<Page<ThreadResponse>>(await _repository.SearchAsync(page, userId, title, tagIds));
 
     [HttpPost]
     [Authorize]
