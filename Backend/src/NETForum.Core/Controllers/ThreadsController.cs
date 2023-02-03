@@ -60,13 +60,26 @@ public class ThreadsController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task Create([FromBody] ThreadRequest model) =>
-        await _repository.AddAsync(new Thread
+    public async Task Create([FromBody] ThreadRequest model)
+    {
+        var entity = new Thread
         {
             UserId = int.Parse(_userManager.GetUserId(User)!),
             Title = model.Title,
             Content = model.Content
-        });
+        };
+
+        await _repository.AddAsync(entity);
+
+        if (model.TagIds is not null)
+        {
+            entity.Tags = model.TagIds
+                .Select(tagId => new ThreadTags { TagId = tagId, ThreadId = entity.Id })
+                .ToList();
+
+            await _repository.UpdateAsync(entity);
+        }
+    }
 
     [Authorize]
     [HttpPut("{id:int}")]
