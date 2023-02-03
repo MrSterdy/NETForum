@@ -8,16 +8,17 @@ export function getThreadById(id: number) {
     return axios.get<IThread>(`${endpoint}/${id}`);
 }
 
-export function getThreadsByPage(page: number) {
-    return axios.get<IPage<IThread>>(endpoint, { params: { page } });
-}
+export function getThreads(page: number, userId?: number, title?: string, tagIds?: number[]) {
+    const params: Record<string, any> = { page };
 
-export function getThreadsByUserId(userId: number, page: number) {
-    return axios.get<IPage<IThread>>(endpoint, { params: { userId, page } });
-}
+    if (userId !== undefined)
+        params["userId"] = userId;
+    if (title !== undefined)
+        params["title"] = title;
+    if (tagIds !== undefined && tagIds.length !== 0)
+        params["tagIds"] = tagIds;
 
-export function search(title: string, page: number) {
-    return axios.get<IPage<IThread>>(`${endpoint}/search`, { params: { title, page } });
+    return axios.get<IPage<IThread>>(endpoint, { params });
 }
 
 export function createThread(title: string, content: string) {

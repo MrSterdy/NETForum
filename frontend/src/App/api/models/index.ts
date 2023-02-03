@@ -3,3 +3,4 @@ export type { default as IPage } from "./IPage";
 export type { default as IThread } from "./IThread";
 export type { default as IUser } from "./IUser";
 export type { default as IComment } from "./IComment";
+export type { default as ITag } from "./ITag";

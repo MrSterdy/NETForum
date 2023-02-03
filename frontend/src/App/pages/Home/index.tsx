@@ -1,26 +1,43 @@
-import { MouseEvent as RMouseEvent, useEffect, useState } from "react";
+import React, { MouseEvent as RMouseEvent, useEffect, useState } from "react";
+import { WithContext as ReactTags } from 'react-tag-input';
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 
 import { Loader } from "../../components";
 
-import { IPage, IThread } from "../../api/models";
+import { IPage, IThread, IUser } from "../../api/models";
 
-import { getThreadsByPage, search as searchByTitle } from "../../api/endpoints/threads";
+import { getThreads } from "../../api/endpoints/threads";
 
 import { useAuth } from "../../hooks";
 
 import { ReactComponent as Views } from "../../assets/icons/eye.svg";
 import { ReactComponent as Comments } from "../../assets/icons/comment.svg";
 import { ReactComponent as Search } from "../../assets/icons/search.svg";
+import { ReactComponent as Settings } from "../../assets/icons/settings.svg";
 
 import "./index.css";
+import {getTags} from "../../api/endpoints/tags";
+import {searchUsers} from "../../api/endpoints/users";
+
+interface SearchTag {
+    id: string,
+    text: string
+}
 
 export default function Home() {
     const [mainPage, setMainPage] = useState<IPage<IThread>>();
     const [mainPageNumber, setMainPageNumber] = useState(1);
 
     const [searchTitle, setSearchTitle] = useState("");
+
+    const [showSettings, setShowSettings] = useState(false);
+    const [searchUser, setSearchUser] = useState<IUser>();
+    const [searchTags, setSearchTags] = useState([] as SearchTag[]);
+
+    const [suggestions, setSuggestions] = useState([] as SearchTag[]);
+    const [users, setUsers] = useState<IPage<IUser>>();
+
     const [searchPage, setSearchPage] = useState<IPage<IThread>>();
     const [searchPageNumber, setSearchPageNumber] = useState(0);
 
@@ -35,7 +52,7 @@ export default function Home() {
         if (mainPageNumber === 0)
             return;
 
-        getThreadsByPage(mainPageNumber)
+        getThreads(mainPageNumber)
             .then(res => setMainPage(p => ({
                 items: p?.items.concat(res.data.items) ?? res.data.items,
                 isLast: res.data.isLast
@@ -48,14 +65,19 @@ export default function Home() {
         if (searchPageNumber === 0)
             return;
 
-        searchByTitle(searchTitle, searchPageNumber)
+        getThreads(
+            searchPageNumber,
+            searchUser?.id,
+            searchTitle,
+            searchTags.map(t => parseInt(t.id))
+        )
             .then(res => setSearchPage(p => ({
                 items: p?.items.concat(res.data.items) ?? res.data.items,
                 isLast: res.data.isLast
             })))
             .catch(() => setError(true))
             .finally(() => setSearchPageLoading(false));
-    }, [searchTitle, searchPageNumber]);
+    }, [searchTitle, searchPageNumber, searchTags, searchUser?.id]);
     
     if (error)
         return <h1 className="error title">Fetch Failed</h1>;
@@ -70,10 +92,14 @@ export default function Home() {
         setSearchPageNumber(p => p + 1);
     }
 
+    function showSearchSettings() {
+        setShowSettings(s => !s);
+    }
+
     function search(event: RMouseEvent<SVGElement, MouseEvent>) {
         const title = new FormData(event.currentTarget.closest("form")!).get("title") as string;
 
-        if (title.length === 0) {
+        if (title.length === 0 && searchTags.length === 0 && searchUser === undefined) {
             setMainPageLoading(true);
 
             setSearchPage(undefined);
@@ -91,15 +117,110 @@ export default function Home() {
 
         setSearchTitle(title);
     }
+
+    function fetchTags(value: string) {
+        getTags(1, value)
+            .then(res => setSuggestions(res.data.items.map(t => ({ id: t.id!.toString(), text: t.name }))));
+    }
+
+    function addTag(tag: SearchTag) {
+        if (!suggestions.some(t => t.id === tag.id))
+            return;
+
+        setSearchTags([...searchTags, tag]);
+    }
+
+    function removeTag(item: number) {
+        setSearchTags(searchTags.filter((tag, index) => index !== item));
+    }
+
+    function fetchUsers(event: React.ChangeEvent<HTMLInputElement>) {
+        setSearchUser(undefined);
+
+        const username = event.currentTarget.value;
+
+        if (username.length === 0)
+            return setUsers({ items: [], isLast: true });
+
+        searchUsers(1, username)
+            .then(res => {
+                if (res.data.items.length === 1) {
+                    const user = res.data.items[0];
+
+                    if (user.userName === username) {
+                        res.data.items = [];
+
+                        setSearchUser(user);
+                    }
+                }
+
+                setUsers(res.data)
+            });
+    }
+
+    function setUser(event: React.MouseEvent<HTMLButtonElement>) {
+        const username = event.currentTarget.innerText;
+
+        const user = users!.items.find(u => u.userName === username)!;
+
+        const input = event.currentTarget.closest("ul")!.previousElementSibling as HTMLInputElement;
+        input.value = user.userName;
+
+        setSearchUser(user);
+        setUsers({ items: [], isLast: true });
+    }
     
     return (
         <section className="main threads">
-            <form className="search">
+            <form className="search column">
                 <h2 className="title">Search</h2>
 
                 <div className="center row">
                     <input type="text" name="title" placeholder="Title" />
+
+                    <Settings className="clickable icon" onClick={showSearchSettings} />
                     <Search className="clickable icon" onClick={search} />
+                </div>
+
+                <div className="column settings content" style={{display: showSettings ? "flex" : "none"}}>
+                    <div className="center row">
+                        <span>User:</span>
+
+                        <div className="full-width column">
+                            <input type="text" name="username" placeholder="Enter username" onChange={fetchUsers} />
+
+                            <ul className="user-suggestions row">
+                                {users?.items.map(u =>
+                                    <li key={u.id}>
+                                        <button type="button" onClick={setUser}>{u.userName}</button>
+                                    </li>
+                                )}
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="center row">
+                        <span>Tags:</span>
+
+                        <ReactTags
+                            tags={searchTags}
+                            suggestions={suggestions}
+                            handleInputChange={fetchTags}
+                            delimiters={[13]}
+                            handleAddition={addTag}
+                            handleDelete={removeTag}
+                            classNames={{
+                                tags: "tags",
+                                tagInput: "column tag-input",
+                                suggestions: "suggestions",
+                                remove: "remove-button",
+                                selected: "center row selected-tags",
+                                tag: "tag"
+                            }}
+                            placeholder="Enter new tag"
+                            autocomplete
+                            allowDragDrop={false}
+                        />
+                    </div>
                 </div>
             </form>
 

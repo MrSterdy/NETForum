@@ -7,7 +7,7 @@ import { IPage, IThread, IUser } from "../../api/models";
 import { Loader } from "../../components";
 
 import { banById, getUserById } from "../../api/endpoints/users";
-import { getThreadsByUserId } from "../../api/endpoints/threads";
+import { getThreads } from "../../api/endpoints/threads";
 
 import { useAuth, useFetch } from "../../hooks";
 
@@ -34,7 +34,7 @@ export default function User() {
         if (user.id === undefined)
             return;
 
-        getThreadsByUserId(user.id, pageNumber)
+        getThreads(pageNumber, user.id)
             .then(res => setPage(p => ({
                 items: p.items ? p.items.concat(res.data.items) : res.data.items,
                 isLast: res.data.isLast
