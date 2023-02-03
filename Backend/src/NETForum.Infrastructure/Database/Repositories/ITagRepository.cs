@@ -7,6 +7,8 @@ namespace NETForum.Infrastructure.Database.Repositories;
 public interface ITagRepository : IRepository<Tag>
 {
     Task<Page<Tag>> SearchAsync(int page, string? name);
+
+    Task<bool> Exists(string name);
 }
 
 public class TagRepository : ITagRepository
@@ -40,6 +42,9 @@ public class TagRepository : ITagRepository
 
     public async Task<bool> Exists(int id) =>
         await _context.Tags.AnyAsync(t => t.Id == id);
+
+    public async Task<bool> Exists(string name) =>
+        await _context.Tags.AnyAsync(t => t.Name == name);
 
     public async Task DeleteAsync(Tag entity)
     {
