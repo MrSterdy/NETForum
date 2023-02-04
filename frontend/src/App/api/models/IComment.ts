@@ -2,11 +2,12 @@ import IEntity from "./IEntity";
 import IUser from "./IUser";
 
 export default interface IComment extends IEntity {
-    user: IUser,
+    user: IUser;
 
-    createdDate: string,
+    createdDate: string;
+    modifiedDate?: string;
 
-    threadId: number,
+    threadId: number;
 
-    content: string
+    content: string;
 }

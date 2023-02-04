@@ -6,6 +6,7 @@ export default interface IThread extends IEntity {
     user: IUser;
 
     createdDate: string;
+    modifiedDate?: string;
 
     title: string;
     content: string;

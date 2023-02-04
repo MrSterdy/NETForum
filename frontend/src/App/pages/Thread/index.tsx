@@ -1,4 +1,6 @@
 import React, { MouseEvent as RMouseEvent, useEffect, useState, Fragment, FormEvent } from "react";
+import { Tooltip } from "react-tooltip"
+import "react-tooltip/dist/react-tooltip.css"
 import { Tag } from "react-tag-input";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
@@ -207,7 +209,18 @@ export default function Thread() {
                         </Link>
                     </h4>
 
-                    <h4 className="description calendar">{dayjs(thread!.createdDate).calendar()}</h4>
+                    <div className="center row">
+                        <h4 className="description calendar">{dayjs(thread!.createdDate).calendar()}</h4>
+
+                        {thread!.modifiedDate &&
+                            <>
+                                <Edit className="active small edited icon" id="thread-edited" />
+                                <Tooltip anchorId="thread-edited" className="small">
+                                    Modified {dayjs(thread!.modifiedDate).calendar()}
+                                </Tooltip>
+                            </>
+                        }
+                    </div>
                 </div>
 
                 <article>{thread!.content}</article>
@@ -319,7 +332,18 @@ export default function Thread() {
                                                     </Link>
                                                 </h4>
 
-                                                <h4 className="description calendar">{dayjs(c.createdDate).calendar()}</h4>
+                                                <div className="center row">
+                                                    <h4 className="description calendar">{dayjs(c.createdDate).calendar()}</h4>
+
+                                                    {c.modifiedDate &&
+                                                        <>
+                                                            <Edit className="active small edited icon" id={`comment-edited-${c.id}`} />
+                                                            <Tooltip anchorId={`comment-edited-${c.id}`} className="small">
+                                                                Modified {dayjs(c.modifiedDate).calendar()}
+                                                            </Tooltip>
+                                                        </>
+                                                    }
+                                                </div>
                                             </div>
 
                                             {c.content}

@@ -213,6 +213,14 @@ button:hover {
     display: block;
 }
 
+.icon.small {
+    width: 18px;
+    height: 18px;
+}
+.icon.active {
+    fill: var(--main-color);
+}
+
 .clickable.icon:hover {
     fill: var(--main-color);
 }
