@@ -102,7 +102,10 @@ public class ThreadsController : ControllerBase
             ModifiedDate = DateTimeOffset.UtcNow,
             UserId = user,
             Title = model.Title,
-            Content = model.Content
+            Content = model.Content,
+            Tags = model.TagIds
+                .Select(tagId => new ThreadTags {TagId = tagId, ThreadId = id })
+                .ToList()
         });
 
         return Ok();
