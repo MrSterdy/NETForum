@@ -80,7 +80,17 @@ public class ThreadRepository : IThreadRepository
     public async Task UpdateAsync(Thread entity)
     {
         _context.Threads.Update(entity);
-        
+
+        var threadTags = await _context.ThreadTags
+            .Where(t => t.ThreadId == entity.Id)
+            .ToListAsync();
+
+        foreach (var threadTag in threadTags.Where(threadTag => entity.Tags.All(t => t.TagId != threadTag.TagId)))
+            _context.ThreadTags.Remove(threadTag);
+
+        foreach (var threadTag in entity.Tags.Where(threadTag => threadTags.All(t => t.TagId != threadTag.TagId)))
+            _context.ThreadTags.Add(threadTag);
+
         await _context.SaveChangesAsync();
     }
 
