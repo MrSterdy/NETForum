@@ -173,11 +173,18 @@ export default function Home() {
                             </ul>
                         </div>
                     </div>
+
                     <div className="center row">
                         <span>Tags:</span>
 
                         <TagInput tags={searchTags} setTags={setSearchTags} />
                     </div>
+
+                    {account?.admin &&
+                        <h3 className="description">
+                            <Link to="/tag/create">Create new tag</Link>
+                        </h3>
+                    }
                 </div>
             </form>
 

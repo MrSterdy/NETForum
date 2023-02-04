@@ -1,8 +1,10 @@
+import React from "react";
 import { Routes, Route } from "react-router-dom";
 import dayjs from "dayjs";
 import Calendar from "dayjs/plugin/calendar";
 
 import { Navbar, AuthRequired } from "./components";
+
 import {
     User,
     Home,
@@ -13,7 +15,9 @@ import {
     ConfirmEmail,
     ChangeEmail,
     ThreadCreate,
-    ResetPassword
+    ResetPassword,
+    TagCreate,
+    TagEdit
 } from "./pages";
 
 import "./index.css";
@@ -55,6 +59,20 @@ export default function App() {
                       <Route path="create" element={
                           <AuthRequired>
                               <ThreadCreate />
+                          </AuthRequired>
+                      } />
+                  </Route>
+
+                  <Route path="tag">
+                      <Route path="create" element={
+                          <AuthRequired>
+                              <TagCreate />
+                          </AuthRequired>
+                      } />
+
+                      <Route path="edit/:id" element={
+                          <AuthRequired>
+                              <TagEdit />
                           </AuthRequired>
                       } />
                   </Route>

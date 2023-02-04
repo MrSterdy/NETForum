@@ -8,3 +8,5 @@ export { default as Signup } from "./User/Account/Signup";
 export { default as ConfirmEmail } from "./User/Account/ConfirmEmail";
 export { default as ChangeEmail } from "./User/Account/ChangeEmail";
 export { default as ResetPassword } from "./User/Account/ResetPassword";
+export { default as TagCreate } from "./Tag/Create";
+export { default as TagEdit } from "./Tag/Edit";

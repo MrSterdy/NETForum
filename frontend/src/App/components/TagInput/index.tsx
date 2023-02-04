@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { WithContext as ReactTags, Tag } from "react-tag-input";
 
 import { getTags } from "../../api/endpoints/tags";
+
+import { useAuth } from "../../hooks";
 
 import "./index.css";
 
@@ -11,7 +14,11 @@ interface TagInputParams {
 }
 
 export default function TagInput({ tags, setTags }: TagInputParams) {
+    const { account } = useAuth();
+
     const [suggestions, setSuggestions] = useState([] as Tag[]);
+
+    const navigate = useNavigate();
 
     function fetchTags(value: string) {
         if (value.length < 2)
@@ -32,6 +39,13 @@ export default function TagInput({ tags, setTags }: TagInputParams) {
         setTags(p => p.filter((tag, index) => index !== item));
     }
 
+    function editTag(i: number) {
+        if (!account?.admin)
+            return;
+
+        navigate(`/tag/edit/${tags[i].id}`);
+    }
+
     function renderSuggestion(tag: Tag) {
         return <button type="button">{tag.text}</button>
     }
@@ -46,13 +60,14 @@ export default function TagInput({ tags, setTags }: TagInputParams) {
         handleInputChange={fetchTags}
         handleAddition={addTag}
         handleDelete={removeTag}
+        handleTagClick={editTag}
         classNames={{
             tags: "tags",
             tagInput: "column tag-input",
             suggestions: "small tag-suggestions",
             remove: "tag-remove-button",
             selected: "center row selected-tags",
-            tag: "tag"
+            tag: `${account?.admin ? "clickable" : ""} tag`
         }}
         renderSuggestion={renderSuggestion}
     />
