@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+using NETForum.Models.Requests.RequestValidation;
+
 namespace NETForum.Models.Requests;
 
 public class ThreadRequest
@@ -10,5 +12,6 @@ public class ThreadRequest
     [Required, MinLength(4), MaxLength(short.MaxValue)]
     public string Content { get; set; } = default!;
 
+    [UniqueTagIds]
     public int[] TagIds { get; set; } = Array.Empty<int>();
 }
