@@ -66,4 +66,18 @@ public class TagsController : ControllerBase
 
         return Ok();
     }
+
+    [HttpDelete]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeleteById(int id)
+    {
+        var tag = await _repository.GetByIdAsync(id);
+
+        if (tag is null)
+            return NotFound();
+
+        await _repository.DeleteAsync(tag);
+
+        return Ok();
+    }
 }
