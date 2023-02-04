@@ -291,7 +291,7 @@ export default function Thread() {
 
                                     <ul className="row option-bar">
                                         <li>
-                                            <Confirm className="clickable icon" onClick={confirmCommentHandler} />
+                                            <Confirm className="clickable icon" type="submit" onClick={confirmCommentHandler} />
                                         </li>
                                         <li>
                                             <Cancel className="clickable icon" onClick={commentHandler} />
@@ -312,7 +312,7 @@ export default function Thread() {
 
                                             <ul className="row option-bar">
                                                 <li>
-                                                    <Confirm className="clickable icon" onClick={confirmEditCommentHandler} />
+                                                    <Confirm className="clickable icon" type="submit" onClick={confirmEditCommentHandler} />
                                                 </li>
                                                 <li>
                                                     <Cancel className="clickable icon" onClick={() => editCommentHandler()} />

@@ -168,6 +168,10 @@ input[type=checkbox] {
 form:has(input:invalid) [type=submit], form:has(textarea:invalid) [type=submit] {
     pointer-events: none;
 
+    fill: var(--error-color);
+}
+
+form:has(input:invalid) button[type=submit], form:has(textarea:invalid) button[type=submit] {
     background-color: var(--error-color);
 }
 
