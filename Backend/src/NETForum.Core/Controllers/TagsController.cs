@@ -24,6 +24,13 @@ public class TagsController : ControllerBase
         _mapper = mapper;
     }
 
+    public async Task<ActionResult<TagResponse>> GetById(int id)
+    {
+        var tag = await _repository.GetByIdAsync(id);
+
+        return tag is null ? NotFound() : _mapper.Map<TagResponse>(tag);
+    }
+
     [HttpGet]
     public async Task<Page<TagResponse>> Search(int page, string? name) =>
         _mapper.Map<Page<TagResponse>>(await _repository.SearchAsync(page, name));
