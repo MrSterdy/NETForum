@@ -43,20 +43,28 @@ public class ThreadRepository : IThreadRepository
             threads = threads.Where(t => t.Title.Contains(title));
 
         if (tagIds.Length != 0)
-            threads = threads
-                .Where(t => !t.Tags.All(threadTag => tagIds.Contains(threadTag.TagId))); // ???
+        {
+            var list = await threads
+                .Include(t => t.Tags)
+                    .ThenInclude(t => t.Tag)
+                .ToListAsync();
+
+            threads = list
+                .Where(t => tagIds.All(tagId => t.Tags.Any(threadTag => threadTag.TagId == tagId)))
+                .AsQueryable();
+        }
 
         threads = threads
             .OrderByDescending(t => t.CreatedDate)
             .Skip((page - 1) * Constants.PageSize);
-        var isLast = Math.Ceiling((await threads.CountAsync() - Constants.PageSize) / (float) Constants.PageSize) < 1;
+        var isLast = Math.Ceiling((threads.Count() - Constants.PageSize) / (float) Constants.PageSize) < 1;
 
-        return new Page<Thread>(await threads
+        return new Page<Thread>(threads
             .Take(Constants.PageSize)
             .Include(t => t.User)
             .Include(t => t.Tags)
                 .ThenInclude(t => t.Tag)
-            .ToListAsync(), isLast);
+            .ToList(), isLast);
     }
 
     public async Task<bool> Exists(int id) =>
