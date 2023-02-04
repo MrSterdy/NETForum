@@ -1,6 +1,53 @@
-﻿export type { default as IAccount } from "./IAccount";
-export type { default as IPage } from "./IPage";
-export type { default as IThread } from "./IThread";
-export type { default as IUser } from "./IUser";
-export type { default as IComment } from "./IComment";
-export type { default as ITag } from "./ITag";
+﻿export interface IEntity {
+    id?: number
+}
+
+export interface IUser extends IEntity {
+    userName: string,
+
+    banned: boolean,
+
+    admin: boolean
+}
+
+export interface IAccount extends IUser {
+    email: string,
+    emailConfirmed: boolean
+}
+
+export interface IThread extends IEntity {
+    user: IUser;
+
+    createdDate: string;
+    modifiedDate?: string;
+
+    title: string;
+    content: string;
+
+    views: number;
+
+    tags: ITag[];
+
+    commentCount: number;
+}
+
+export interface ITag extends IEntity {
+    name: string
+}
+
+export interface IComment extends IEntity {
+    user: IUser;
+
+    createdDate: string;
+    modifiedDate?: string;
+
+    threadId: number;
+
+    content: string;
+}
+
+export interface IPage<T extends IEntity> {
+    items: T[],
+
+    isLast: boolean
+}

@@ -67,7 +67,7 @@ export default function TagInput({ tags, setTags }: TagInputParams) {
             suggestions: "small tag-suggestions",
             remove: "tag-remove-button",
             selected: "center row selected-tags",
-            tag: `${account?.admin ? "clickable" : ""} tag`
+            tag: "tag"
         }}
         renderSuggestion={renderSuggestion}
     />

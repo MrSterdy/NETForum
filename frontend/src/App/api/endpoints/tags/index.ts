@@ -11,8 +11,8 @@ export function getTagById(id: number) {
 export function getTags(page: number, name?: string) {
     const params: Record<string, any> = { page };
 
-    if (name !== undefined)
-        params["name"] = name;
+    if (name)
+        params.name = name;
 
     return axios.get<IPage<ITag>>(`${endpoint}/search`, { params })
 }

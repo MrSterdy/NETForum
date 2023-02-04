@@ -11,12 +11,12 @@ export function getThreadById(id: number) {
 export function getThreads(page: number, userId?: number, title?: string, tagIds?: number[]) {
     const params: Record<string, any> = { page };
 
-    if (userId !== undefined)
-        params["userId"] = userId;
-    if (title !== undefined)
-        params["title"] = title;
-    if (tagIds !== undefined && tagIds.length !== 0)
-        params["tagIds"] = tagIds;
+    if (userId)
+        params.userId = userId;
+    if (title)
+        params.title = title;
+    if (tagIds && tagIds.length !== 0)
+        params.tagIds = tagIds;
 
     return axios.get<IPage<IThread>>(endpoint, { params });
 }

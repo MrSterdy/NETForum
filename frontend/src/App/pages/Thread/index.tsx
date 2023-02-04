@@ -303,7 +303,7 @@ export default function Thread() {
 
                         {comments.items?.map(c =>
                             <Fragment key={c.id}>
-                                {editingComment === c.id &&
+                                {editingComment === c.id ?
                                     <li>
                                         <form className="comment-create column content">
                                             <textarea className="full-width" name="content" minLength={4} maxLength={32767} defaultValue={c.content} required></textarea>
@@ -319,10 +319,7 @@ export default function Thread() {
                                                 </li>
                                             </ul>
                                         </form>
-                                    </li>
-                                }
-
-                                {editingComment !== c.id &&
+                                    </li> :
                                     <li className="column">
                                         <article className="content">
                                             <div className="info-bar row">
@@ -354,19 +351,17 @@ export default function Thread() {
                                                     editingComment === undefined
                                                 ) &&
                                                 <ul className="row option-bar">
-                                                    {readyToDeleteComment === c.id &&
+                                                    {readyToDeleteComment === c.id ?
                                                         <>
-                                                            <span>Are you sure?</span>
+                                                            <li className="row">
+                                                                <span>Are you sure?</span>
 
-                                                            <li>
                                                                 <Confirm className="clickable icon" onClick={confirmDeleteCommentHandler} />
                                                             </li>
                                                             <li>
                                                                 <Cancel className="clickable icon" onClick={() => deleteCommentHandler()} />
                                                             </li>
-                                                        </>
-                                                    }
-                                                    {readyToDeleteComment === undefined &&
+                                                        </> :
                                                         <>
                                                             {account!.id === c.user.id &&
                                                                 <li>

@@ -23,7 +23,7 @@ export default function User() {
 
     const { account } = useAuth();
 
-    const [page, setPage] = useState<IPage<IThread>>({} as IPage<IThread>);
+    const [page, setPage] = useState<IPage<IThread>>();
     const [pageNumber, setPageNumber] = useState(1);
     const [threadsLoading, setThreadsLoading] = useState(true);
     const [threadsError, setThreadsError] = useState(false);
@@ -36,7 +36,7 @@ export default function User() {
 
         getThreads(pageNumber, user.id)
             .then(res => setPage(p => ({
-                items: p.items ? p.items.concat(res.data.items) : res.data.items,
+                items: p?.items.concat(res.data.items) ?? res.data.items,
                 isLast: res.data.isLast
             })))
             .catch(() => setThreadsError(true))
@@ -63,7 +63,7 @@ export default function User() {
         <section className="user-profile main">
             <section className="content column">
                 <section className="user-header row">
-                    <div className="center column">
+                    <div className="center centered column">
                         <img src={ProfilePic} className="user-avatar" alt=""/>
 
                         <div>
@@ -90,12 +90,12 @@ export default function User() {
                 }
             </section>
 
-            {!threadsLoading && !threadsError && !!page.items.length &&
+            {!threadsLoading && !threadsError && page!.items.length !== 0 &&
                 <section className="column">
                     <h2 className="title">Recent user's threads</h2>
 
                     <ul className="content column">
-                        {page.items.map(thread => (
+                        {page!.items.map(thread => (
                             <li key={ thread.id }>
                                 <h2 className="title">
                                     <Link to={`/thread/${thread.id}`}>{thread.title}</Link>
@@ -112,11 +112,11 @@ export default function User() {
                         ))}
                     </ul>
 
-                    {!page.isLast && <button type="button" onClick={loadMore} className="centered">Load more</button>}
+                    {!page!.isLast && <button type="button" onClick={loadMore} className="centered">Load more</button>}
                 </section>
             }
 
-            {threadsError && <h2 className="centered error title">Couldn't fetch user's threads</h2>}
+            {threadsError && <h2 className="centered error title">Fetch Failed</h2>}
         </section>
     );
 }
