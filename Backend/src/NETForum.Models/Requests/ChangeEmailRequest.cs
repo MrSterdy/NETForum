@@ -4,8 +4,8 @@ using NETForum.Models.Requests.RequestValidation;
 
 namespace NETForum.Models.Requests;
 
-public class TagRequest
+public class ChangeEmailRequest
 {
-    [Required, MinLength(2), MaxLength(16), UniqueTagName]
-    public string Name { get; set; } = default!;
+    [Required, EmailAddress, UniqueEmailAddress]
+    public string Email { get; set; } = default!;
 }

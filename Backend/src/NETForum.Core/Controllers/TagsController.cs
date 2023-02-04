@@ -38,16 +38,9 @@ public class TagsController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Create([FromBody] TagRequest model)
-    {
-        if (await _repository.Exists(model.Name))
-            return Conflict();
-
+    public async Task Create([FromBody] TagRequest model) =>
         await _repository.AddAsync(new Tag { Name = model.Name });
 
-        return Ok();
-    }
-    
     [HttpPut]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateById(int id, [FromBody] TagRequest model)
@@ -56,9 +49,6 @@ public class TagsController : ControllerBase
 
         if (tag is null)
             return NotFound();
-
-        if (await _repository.Exists(model.Name))
-            return Conflict();
 
         tag.Name = model.Name;
 

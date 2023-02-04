@@ -2,7 +2,7 @@
 
 namespace NETForum.Models.Requests;
 
-public class RequiredEmailRequest
+public class ResetPasswordRequest
 {
     [Required, EmailAddress]
     public string Email { get; set; } = default!;

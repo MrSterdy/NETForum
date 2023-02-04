@@ -84,7 +84,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("ChangeEmail")]
-    public async Task<IActionResult> RequestChangeEmail([Url] string callbackUrl, [FromBody] RequiredEmailRequest model)
+    public async Task<IActionResult> RequestChangeEmail([Url] string callbackUrl, [FromBody] ChangeEmailRequest model)
     {
         var user = await _userManager.GetUserAsync(User);
         user!.NewEmail = model.Email;
@@ -138,7 +138,7 @@ public class AccountController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("ResetPassword")]
-    public async Task<IActionResult> RequestResetPassword([Url] string callbackUrl, [FromBody] RequiredEmailRequest model)
+    public async Task<IActionResult> RequestResetPassword([Url] string callbackUrl, [FromBody] ResetPasswordRequest model)
     {
         var user = User.Identity!.IsAuthenticated
             ? await _userManager.GetUserAsync(User)
@@ -164,13 +164,7 @@ public class AccountController : ControllerBase
     {
         if (User.Identity!.IsAuthenticated)
             return Forbid();
-        
-        if (
-            await _userManager.FindByNameAsync(user.UserName) is not null ||
-            await _userManager.FindByEmailAsync(user.Email) is not null
-        )
-            return Conflict();
-        
+
         var iUser = new ApplicationUser { UserName = user.UserName, Email = user.Email };
         
         var result = await _userManager.CreateAsync(iUser, user.Password);
