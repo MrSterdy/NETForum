@@ -10,5 +10,5 @@ public class ThreadRequest
     [Required, MinLength(4), MaxLength(short.MaxValue)]
     public string Content { get; set; } = default!;
 
-    public int[]? TagIds { get; set; }
+    public int[] TagIds { get; set; } = Array.Empty<int>();
 }

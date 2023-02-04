@@ -71,7 +71,7 @@ public class ThreadsController : ControllerBase
 
         await _repository.AddAsync(entity);
 
-        if (model.TagIds is not null)
+        if (model.TagIds.Length != 0)
         {
             entity.Tags = model.TagIds
                 .Select(tagId => new ThreadTags { TagId = tagId, ThreadId = entity.Id })
