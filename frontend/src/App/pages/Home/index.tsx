@@ -1,13 +1,14 @@
 import React, { MouseEvent as RMouseEvent, useEffect, useState } from "react";
-import { WithContext as ReactTags } from 'react-tag-input';
+import { Tag } from 'react-tag-input';
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 
-import { Loader } from "../../components";
+import { Loader, TagInput } from "../../components";
 
 import { IPage, IThread, IUser } from "../../api/models";
 
 import { getThreads } from "../../api/endpoints/threads";
+import { searchUsers } from "../../api/endpoints/users";
 
 import { useAuth } from "../../hooks";
 
@@ -15,15 +16,6 @@ import { ReactComponent as Views } from "../../assets/icons/eye.svg";
 import { ReactComponent as Comments } from "../../assets/icons/comment.svg";
 import { ReactComponent as Search } from "../../assets/icons/search.svg";
 import { ReactComponent as Settings } from "../../assets/icons/settings.svg";
-
-import "./index.css";
-import {getTags} from "../../api/endpoints/tags";
-import {searchUsers} from "../../api/endpoints/users";
-
-interface SearchTag {
-    id: string,
-    text: string
-}
 
 export default function Home() {
     const [mainPage, setMainPage] = useState<IPage<IThread>>();
@@ -33,9 +25,8 @@ export default function Home() {
 
     const [showSettings, setShowSettings] = useState(false);
     const [searchUser, setSearchUser] = useState<IUser>();
-    const [searchTags, setSearchTags] = useState([] as SearchTag[]);
+    const [searchTags, setSearchTags] = useState([] as Tag[]);
 
-    const [suggestions, setSuggestions] = useState([] as SearchTag[]);
     const [users, setUsers] = useState<IPage<IUser>>();
 
     const [searchPage, setSearchPage] = useState<IPage<IThread>>();
@@ -118,28 +109,12 @@ export default function Home() {
         setSearchTitle(title);
     }
 
-    function fetchTags(value: string) {
-        getTags(1, value)
-            .then(res => setSuggestions(res.data.items.map(t => ({ id: t.id!.toString(), text: t.name }))));
-    }
-
-    function addTag(tag: SearchTag) {
-        if (!suggestions.some(t => t.id === tag.id))
-            return;
-
-        setSearchTags([...searchTags, tag]);
-    }
-
-    function removeTag(item: number) {
-        setSearchTags(searchTags.filter((tag, index) => index !== item));
-    }
-
     function fetchUsers(event: React.ChangeEvent<HTMLInputElement>) {
         setSearchUser(undefined);
 
         const username = event.currentTarget.value;
 
-        if (username.length === 0)
+        if (username.length < 2)
             return setUsers({ items: [], isLast: true });
 
         searchUsers(1, username)
@@ -192,7 +167,7 @@ export default function Home() {
                             <ul className="user-suggestions row">
                                 {users?.items.map(u =>
                                     <li key={u.id}>
-                                        <button type="button" onClick={setUser}>{u.userName}</button>
+                                        <button className="small" type="button" onClick={setUser}>{u.userName}</button>
                                     </li>
                                 )}
                             </ul>
@@ -201,30 +176,12 @@ export default function Home() {
                     <div className="center row">
                         <span>Tags:</span>
 
-                        <ReactTags
-                            tags={searchTags}
-                            suggestions={suggestions}
-                            handleInputChange={fetchTags}
-                            delimiters={[13]}
-                            handleAddition={addTag}
-                            handleDelete={removeTag}
-                            classNames={{
-                                tags: "tags",
-                                tagInput: "column tag-input",
-                                suggestions: "suggestions",
-                                remove: "remove-button",
-                                selected: "center row selected-tags",
-                                tag: "tag"
-                            }}
-                            placeholder="Enter new tag"
-                            autocomplete
-                            allowDragDrop={false}
-                        />
+                        <TagInput tags={searchTags} setTags={setSearchTags} />
                     </div>
                 </div>
             </form>
 
-            <section>
+            <section className="column">
                 {mainPage &&
                     <div>
                         <h1 className="title">Recent threads</h1>

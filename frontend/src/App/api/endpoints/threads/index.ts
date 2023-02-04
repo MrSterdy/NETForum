@@ -21,8 +21,8 @@ export function getThreads(page: number, userId?: number, title?: string, tagIds
     return axios.get<IPage<IThread>>(endpoint, { params });
 }
 
-export function createThread(title: string, content: string) {
-    return axios.post(endpoint, { title, content }, { withCredentials: true });
+export function createThread(title: string, content: string, tagIds: number[]) {
+    return axios.post(endpoint, { title, content, tagIds }, { withCredentials: true });
 }
 
 export function updateThreadById(id: number, title: string, content: string) {
