@@ -4,6 +4,7 @@ using AutoMapper;
 
 using NETForum.Infrastructure.Identity;
 using NETForum.Infrastructure.Mail;
+using NETForum.Infrastructure.Database.Repositories;
 using NETForum.Models.Requests;
 using NETForum.Models.Responses;
 
@@ -11,7 +12,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using NETForum.Infrastructure.Database.Repositories;
 
 namespace NETForum.Core.Controllers;
 

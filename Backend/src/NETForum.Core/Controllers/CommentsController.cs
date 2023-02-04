@@ -73,15 +73,10 @@ public class CommentsController : ControllerBase
         if (comment.UserId != user)
             return Forbid();
 
-        await _commentRepository.UpdateAsync(new Comment
-        {
-            Id = id,
-            CreatedDate = comment.CreatedDate,
-            ModifiedDate = DateTimeOffset.UtcNow,
-            UserId = user,
-            ThreadId = comment.ThreadId,
-            Content = model.Content
-        });
+        comment.ModifiedDate = DateTimeOffset.UtcNow;
+        comment.Content = model.Content;
+
+        await _commentRepository.UpdateAsync(comment);
 
         return Ok();
     }

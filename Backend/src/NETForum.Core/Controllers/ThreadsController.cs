@@ -56,7 +56,8 @@ public class ThreadsController : ControllerBase
         [FromQuery] int[] tagIds,
         int? userId,
         string? title
-    ) => _mapper.Map<Page<ThreadResponse>>(await _repository.SearchAsync(page, tagIds, userId, title));
+    ) => 
+        _mapper.Map<Page<ThreadResponse>>(await _repository.SearchAsync(page, tagIds, userId, title));
 
     [HttpPost]
     [Authorize]
@@ -95,18 +96,14 @@ public class ThreadsController : ControllerBase
         if (thread.UserId != user)
             return Forbid();
 
-        await _repository.UpdateAsync(new Thread
-        {
-            Id = id,
-            CreatedDate = thread.CreatedDate,
-            ModifiedDate = DateTimeOffset.UtcNow,
-            UserId = user,
-            Title = model.Title,
-            Content = model.Content,
-            Tags = model.TagIds
-                .Select(tagId => new ThreadTags {TagId = tagId, ThreadId = id })
-                .ToList()
-        });
+        thread.ModifiedDate = DateTimeOffset.UtcNow;
+        thread.Title = model.Title;
+        thread.Content = model.Content;
+        thread.Tags = model.TagIds
+            .Select(tagId => new ThreadTags { TagId = tagId, ThreadId = id })
+            .ToList();
+
+        await _repository.UpdateAsync(thread);
 
         return Ok();
     }

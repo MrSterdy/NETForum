@@ -4,6 +4,7 @@ using NETForum.Models.Responses;
 using NETForum.Models.Requests;
 
 using AutoMapper;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
