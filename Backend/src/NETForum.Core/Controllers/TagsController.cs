@@ -39,4 +39,23 @@ public class TagsController : ControllerBase
 
         return Ok();
     }
+    
+    [HttpPut]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateById(int id, [FromBody] TagRequest model)
+    {
+        var tag = await _repository.GetByIdAsync(id);
+
+        if (tag is null)
+            return NotFound();
+
+        if (await _repository.Exists(model.Name))
+            return Conflict();
+
+        tag.Name = model.Name;
+
+        await _repository.UpdateAsync(tag);
+
+        return Ok();
+    }
 }
