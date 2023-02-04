@@ -19,7 +19,7 @@ public class RequestResetPasswordAccountControllerTest : AccountControllerTest
     {
         // Arrange
         var user = await Factory.DbManager.Seeder.SeedVerifiedUserAsync();
-        var emailRequest = new RequiredEmailRequest { Email = user.Email! };
+        var emailRequest = new ResetPasswordRequest { Email = user.Email! };
 
         // Act
         using var client = Factory.CreateClient();

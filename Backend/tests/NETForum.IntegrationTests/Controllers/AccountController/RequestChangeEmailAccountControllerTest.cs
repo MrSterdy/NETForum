@@ -10,7 +10,7 @@ public class RequestChangeEmailAccountControllerTest : AccountControllerTest
 {
     protected override string Endpoint => base.Endpoint + "/ChangeEmail";
 
-    private readonly Faker<RequiredEmailRequest> _generator = new Faker<RequiredEmailRequest>()
+    private readonly Faker<ChangeEmailRequest> _generator = new Faker<ChangeEmailRequest>()
         .RuleFor(r => r.Email, faker => faker.Internet.Email());
 
     public RequestChangeEmailAccountControllerTest(BackendFactory factory) : base(factory)
