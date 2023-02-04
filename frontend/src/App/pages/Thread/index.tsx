@@ -1,4 +1,4 @@
-import React, { MouseEvent as RMouseEvent, useEffect, useState, Fragment } from "react";
+import React, { MouseEvent as RMouseEvent, useEffect, useState, Fragment, FormEvent } from "react";
 import { Tag } from "react-tag-input";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
@@ -109,10 +109,12 @@ export default function Thread() {
         setEditingThread(!isEditingThread);
     }
 
-    function confirmEditThreadHandler(event: RMouseEvent<SVGSVGElement, MouseEvent>) {
+    function confirmEditThreadHandler(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+
         setSubmittingThread(true);
 
-        const data = new FormData(event.currentTarget.closest("form")!);
+        const data = new FormData(event.currentTarget);
 
         updateThreadById(
             threadId,
@@ -165,7 +167,7 @@ export default function Thread() {
 
     if (isEditingThread)
         return (
-            <form className="thread-create main">
+            <form className="thread-create main" onSubmit={confirmEditThreadHandler}>
                 <div>
                     <h2 className="title">Title:</h2>
 
@@ -175,26 +177,20 @@ export default function Thread() {
                 <div>
                     <h2 className="title">Content:</h2>
 
-                    <article className="content column">
-                        <textarea className="full-width" name="content" minLength={4} maxLength={32767} defaultValue={thread!.content} required></textarea>
-
-                        {submitThreadError && <span className="centered error">An error occurred. Please try again later</span>}
-
-                        <ul className="row option-bar">
-                            <li>
-                                <Confirm className="clickable icon" onClick={confirmEditThreadHandler} />
-                            </li>
-                            <li>
-                                <Cancel className="clickable icon" onClick={editThreadHandler} />
-                            </li>
-                        </ul>
-                    </article>
+                    <textarea className="full-width" name="content" minLength={4} maxLength={32767} defaultValue={thread!.content} required></textarea>
                 </div>
 
                 <div className="center row">
                     <h3 className="title">Tags:</h3>
 
                     <TagInput tags={tags} setTags={setTags} />
+                </div>
+
+                {submitThreadError && <span className="centered error">An error occurred. Please try again later</span>}
+
+                <div className="centered row">
+                    <button type="submit">Confirm</button>
+                    <button type="button" onClick={editThreadHandler}>Cancel</button>
                 </div>
             </form>
         );
