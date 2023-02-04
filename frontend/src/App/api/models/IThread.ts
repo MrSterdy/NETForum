@@ -1,15 +1,18 @@
 ﻿import IEntity from "./IEntity";
 import IUser from "./IUser";
+import ITag from "./ITag";
 
 export default interface IThread extends IEntity {
-    user: IUser,
+    user: IUser;
 
-    createdDate: string,
+    createdDate: string;
 
-    title: string,
-    content: string
+    title: string;
+    content: string;
 
-    views: number,
+    views: number;
 
-    commentCount: number
+    tags: ITag[];
+
+    commentCount: number;
 }

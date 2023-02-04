@@ -25,8 +25,8 @@ export function createThread(title: string, content: string, tagIds: number[]) {
     return axios.post(endpoint, { title, content, tagIds }, { withCredentials: true });
 }
 
-export function updateThreadById(id: number, title: string, content: string) {
-    return axios.put(`${endpoint}/${id}`, { title, content }, { withCredentials: true });
+export function updateThreadById(id: number, title: string, content: string, tagIds: number[]) {
+    return axios.put(`${endpoint}/${id}`, { title, content, tagIds }, { withCredentials: true });
 }
 
 export function deleteThread(id: number) {

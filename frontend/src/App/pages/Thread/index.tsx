@@ -1,15 +1,16 @@
 import React, { MouseEvent as RMouseEvent, useEffect, useState, Fragment } from "react";
+import { Tag } from "react-tag-input";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 
 import { IPage, IThread, IComment } from "../../api/models";
 
-import { Loader } from "../../components";
+import { Loader, TagInput } from "../../components";
 
 import { updateThreadById, deleteThread, getThreadById } from "../../api/endpoints/threads";
 import { getCommentsByPage, createComment, deleteCommentById, updateCommentById } from "../../api/endpoints/comments";
 
-import { useFetch, useAuth } from "../../hooks";
+import { useAuth } from "../../hooks";
 
 import { ReactComponent as Delete } from "../../assets/icons/trash.svg";
 import { ReactComponent as Edit } from "../../assets/icons/pencil.svg";
@@ -21,6 +22,12 @@ import "./index.css";
 
 export default function Thread() {
     const { account } = useAuth();
+
+    const [thread, setThread] = useState<IThread>();
+    const [isThreadLoading, setThreadLoading] = useState(true);
+    const [threadError, setThreadError] = useState(false);
+
+    const [tags, setTags] = useState<Tag[]>([]);
 
     const [isSubmittingComment, setSubmittingComment] = useState(false);
     const [isLoadingComments, setLoadingComments] = useState(false);
@@ -34,18 +41,22 @@ export default function Thread() {
     const [isEditingThread, setEditingThread] = useState(false);
     const [isReadyToDeleteThread, setReadyToDeleteThread] = useState(false);
 
-    const threadId = parseInt(useParams().id!);
-
-    const {
-        data: thread,
-        isLoading: isThreadLoading,
-        error: threadError
-    } = useFetch<IThread>(getThreadById, threadId);
-
     const [comments, setComments] = useState<IPage<IComment>>({} as IPage<IComment>);
     const [commentPage, setCommentPage] = useState(1);
 
     const navigate = useNavigate();
+
+    const threadId = parseInt(useParams().id!);
+
+    useEffect(() => {
+        getThreadById(threadId)
+            .then(res => {
+                setThread(res.data);
+                setTags(res.data.tags.map(t => ({ id: t.id!.toString(), text: t.name })));
+            })
+            .catch(() => setThreadError(true))
+            .finally(() => setThreadLoading(false));
+    }, [threadId]);
 
     useEffect(() => {
         setLoadingComments(true);
@@ -103,7 +114,12 @@ export default function Thread() {
 
         const data = new FormData(event.currentTarget.closest("form")!);
 
-        updateThreadById(threadId, data.get("title") as string, data.get("content") as string)
+        updateThreadById(
+            threadId,
+            data.get("title") as string,
+            data.get("content") as string,
+            tags.map(t => parseInt(t.id))
+        )
             .then(() => window.location.reload())
             .catch(() => setSubmitThreadError(true))
             .finally(() => setSubmittingThread(false));
@@ -153,14 +169,14 @@ export default function Thread() {
                 <div>
                     <h2 className="title">Title:</h2>
 
-                    <input className="full-width" type="text" name="title" minLength={4} maxLength={127} defaultValue={thread.title} required />
+                    <input className="full-width" type="text" name="title" minLength={4} maxLength={127} defaultValue={thread!.title} required />
                 </div>
 
                 <div>
                     <h2 className="title">Content:</h2>
 
                     <article className="content column">
-                        <textarea className="full-width" name="content" minLength={4} maxLength={32767} defaultValue={thread.content} required></textarea>
+                        <textarea className="full-width" name="content" minLength={4} maxLength={32767} defaultValue={thread!.content} required></textarea>
 
                         {submitThreadError && <span className="centered error">An error occurred. Please try again later</span>}
 
@@ -174,29 +190,47 @@ export default function Thread() {
                         </ul>
                     </article>
                 </div>
+
+                <div className="center row">
+                    <h3 className="title">Tags:</h3>
+
+                    <TagInput tags={tags} setTags={setTags} />
+                </div>
             </form>
         );
 
     return (
         <section className="thread main">
-            <h1 className="title">{thread.title}</h1>
+            <h1 className="title">{thread!.title}</h1>
 
-            <section className="content">
+            <section className="column content">
                 <div className="info-bar row">
                     <h4 className="description">
-                        <Link to={`/user/${thread.user.id}`}>
-                            {thread.user.banned ? <s>{thread.user.userName}</s> : thread.user.userName}
+                        <Link to={`/user/${thread!.user.id}`}>
+                            {thread!.user.banned ? <s>{thread!.user.userName}</s> : thread!.user.userName}
                         </Link>
                     </h4>
 
-                    <h4 className="description calendar">{dayjs(thread.createdDate).calendar()}</h4>
+                    <h4 className="description calendar">{dayjs(thread!.createdDate).calendar()}</h4>
                 </div>
 
-                <article>{thread.content}</article>
+                <article>{thread!.content}</article>
+
+                {thread!.tags.length !== 0 &&
+                    <div className="row">
+                        <h4 className="center title">Tags:</h4>
+
+                        <ul className="small row">
+                            {thread!.tags.map(t =>
+                                <li className="tag" key={t.id}>{t.name}</li>
+                            )}
+                        </ul>
+                    </div>
+                }
 
                 {account?.emailConfirmed && !isCommenting &&
                     <ul className="row option-bar">
-                        {(account?.admin || account?.id === thread.user.id) &&
+                        {(account?.admin || account?.id === thread!.user.id) &&
                             <>
                                 {isReadyToDeleteThread &&
                                     <>
@@ -212,7 +246,7 @@ export default function Thread() {
                                 }
                                 {!isReadyToDeleteThread &&
                                     <>
-                                        {account.id === thread.user.id &&
+                                        {account.id === thread!.user.id &&
                                             <li>
                                                 <Edit className="clickable icon" onClick={editThreadHandler} />
                                             </li>
